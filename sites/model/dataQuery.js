@@ -2,7 +2,11 @@ var mongoose = require('mongoose');
 
 var mongodbUri = 'mongodb://127.0.0.1:27017/ngGather';
 try {
-    mongodbUri = process.env.mongodb[0].credentials.uri
+    console.error(process.env.VCAP_SERVICES);
+    console.info(JSON.parse(process.env.VCAP_SERVICES));
+    console.error(JSON.parse(process.env.VCAP_SERVICES).mongodb[0]);
+    console.log(JSON.parse(process.env.VCAP_SERVICES).mongodb[0].credentials.uri);
+    mongodbUri = JSON.parse(process.env.VCAP_SERVICES).mongodb[0].credentials.uri;
 }
 catch(e) {
     console.log(e);
