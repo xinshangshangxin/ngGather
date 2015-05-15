@@ -93,7 +93,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
         getUpdateTime: function(cb) {
             $http.get('getupdatetime')
                 .success(function(data) {
-                    cb(data);
+                    cb(data.time);
                 })
                 .error(function(data) {
                     cb(0);
