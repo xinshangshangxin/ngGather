@@ -24,7 +24,7 @@ var gatherSchema = new mongoose.Schema({
         type: String
     },
     time: {
-        type: Date,
+        type: Number,
         default: Date.now
     },
     intro: {
@@ -67,6 +67,14 @@ function searchOne(conditions) {
     return gatherModel.findOne(conditions || {}).exec();
 }
 
+function update(siteObj) {
+    return gatherModel.update({
+        href: siteObj.href
+    }, siteObj);
+}
+
 exports.searchSite = searchSite;
+exports.searchOne = searchOne;
 exports.add = add;
 exports.addArr = addArr;
+exports.update = update;

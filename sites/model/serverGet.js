@@ -110,13 +110,33 @@ function uniq2Arr(arr1, arr2) {
     }
 
     for (i = 0; i < arr1.length; i++) {
+        arr1[i].currenttime = new Date().getTime() + arr1.length - i;
         if (!temp[arr1[i].href]) {
-            arr1[i].time = new Date().getTime() + 1000 - i;
+            arr1[i].time = arr1[i].currenttime;
             temparray.push(arr1[i]);
+        }
+        else {
+            // 如果为相同文章更新
+            dealSameHref(arr1[i]);
         }
     }
 
     return temparray;
+}
+
+function dealSameHref(siteObj) {
+    dataQuery.searchOne({
+        href: siteObj.href
+    }).then(function(docs) {
+        if (docs) {
+            if (siteObj.time - docs.time > 24 * 60 * 60 * 1000) {
+                siteObj.time = siteObj.currenttime;
+                dataQuery.update(siteObj).then(function(data) {
+                    console.log(data);
+                });
+            }
+        }
+    })
 }
 
 function saveList(name, list) {
