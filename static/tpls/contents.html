@@ -31,7 +31,7 @@
                     </a>
                 </div>
                 <div class="col-xs-2">
-                    {{content.time | date:"yy/MM/dd"}}
+                    {{content.time | date:"yy/MM/dd HH:mm"}}
                 </div>
                 <div class="col-xs-12">
                     <p>{{content.intro}}</p>
@@ -41,5 +41,9 @@
                 <hr/>
             </div>
         </div>
+    </div>
+
+    <div class="addmore text-center" ng-click="addMore()">
+        <a class="btn btn-info">{{addMoreInfo}}</a>
     </div>
 </div>

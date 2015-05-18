@@ -1,8 +1,10 @@
-<div class="panel panel-primary">
+<div class="panel panel-primary" ng-controller="ChooseCtrl">
     <div class="panel-heading text-center">
-        <h3>可选站点</h3>
+        <a class="btn btn-block btn-info" ng-click="changeShow()">
+            <h3>可选站点</h3>
+        </a>
     </div>
-    <div class="panel-body" ng-controller="ChooseCtrl">
+    <div class="panel-body" ng-show="ishow">
         <table class="table table-bordered table-striped">
             <tr ng-repeat="choose in hadChooses">
                 <td>

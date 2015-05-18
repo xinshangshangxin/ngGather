@@ -55,7 +55,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
             }
             localStorage.setItem('shang_chooses', JSON.stringify(obj));
         },
-        getData: function(fun, isforce) {
+        getData: function(fun, isforce, start) {
             this.saveChooses();
 
             if (isforce) {
@@ -73,7 +73,8 @@ mainModule.factory('choosesData', ['$http', function($http) {
                     });
             }
             else {
-                $http.get('getinfo')
+                start = start || 0;
+                $http.get('getinfo?start=' + start)
                     .success(function(data) {
                         console.log('data', data);
                         try {
@@ -103,6 +104,12 @@ mainModule.factory('choosesData', ['$http', function($http) {
 }]);
 
 mainModule.controller('ChooseCtrl', ['$rootScope', '$scope', 'choosesData', function($rootScope, $scope, choosesData) {
+
+    $scope.ishow = true;
+
+    $scope.changeShow = function() {
+        $scope.ishow = !$scope.ishow;
+    };
 
     $scope.forceUpdate = function() {
         $rootScope.$broadcast('force.update');
@@ -183,19 +190,38 @@ mainModule.controller('ChooseCtrl', ['$rootScope', '$scope', 'choosesData', func
 }]);
 
 mainModule.controller('contentsCtrl', ['$scope', '$rootScope', '$http', 'choosesData', function($scope, $rootScope, $http, choosesData) {
+
+    var start = 0;
+
     $scope.contents = [];
     $scope.isloading = true;
+    $scope.addMoreInfo = '加载更多~';
 
     choosesData.getData(function(arr) {
-
         $scope.contents = arr;
+        start = start + arr.length;
         $scope.isloading = false;
     });
+
+    $scope.addMore = function() {
+        choosesData.getData(function(arr) {
+            if (arr.length === 0) {
+                $scope.addMoreInfo = '没有更多了~';
+            }
+            else {
+                start = start + arr.length;
+                $scope.contents = $scope.contents.concat(arr);
+                $scope.isloading = false;
+            }
+        }, false, start);
+    };
 
     $scope.$on('info.update', function() {
         $scope.isloading = true;
         choosesData.getData(function(arr) {
             $scope.contents = arr;
+            start = arr.length;
+            $scope.addMoreInfo = '加载更多~';
             $scope.isloading = false;
         });
     });

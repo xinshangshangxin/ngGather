@@ -32,6 +32,19 @@ var allSites = [{
 }];
 
 
+var dataCache = [];
+updateDataCache();
+
+function updateDataCache() {
+    dataQuery.searchAll()
+        .then(function(data) {
+            dataCache = data;
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+}
+
 
 function getImg(req, res) {
     var url = req.query.imgurl;
@@ -44,31 +57,14 @@ function getImg(req, res) {
 }
 
 function getInfo(req, res) {
-    var sites = ['zd', 'ccav', 'llm', 'qiuquan', 'iqq'];//req.query.sites.replace(/^\s*\[|]\s*$/gi, '').split(',');
-    var arr = [];
-    for (var i = 0; i < sites.length; i++) {
-        arr.push(dataQuery.searchSite(sites[i].trim()));
-    }
-
-    q.all(arr).then(function(result) {
-        var temparr = [];
-        for (var i = 0; i < result.length; i++) {
-            temparr = temparr.concat(result[i]);
-        }
-        res.send(
-            temparr.sort(function(o1, o2) {
-                return o2.time - o1.time;
-            })
-        );
-    }).catch(function(err) {
-        console.log(err);
-        res.end();
-    });
+    var start = parseInt(req.query.start || 0);
+    res.send(dataCache.slice(start, start + 20));
 }
 
 function getLatest(req, res) {
     crawlerSites().then(function(result) {
-        res.send(result);
+        updateDataCache();
+        res.send(dataCache.slice(0, 20));
     });
 }
 

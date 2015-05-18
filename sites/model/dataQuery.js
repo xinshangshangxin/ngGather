@@ -5,7 +5,8 @@ try {
     console.error(JSON.parse(process.env.VCAP_SERVICES))
     console.log(JSON.parse(process.env.VCAP_SERVICES).mongodb)
     mongodbUri = JSON.parse(process.env.VCAP_SERVICES).mongodb[0].credentials.uri;
-} catch (e) {
+}
+catch (e) {
     console.log(e);
 }
 
@@ -51,6 +52,13 @@ function addArr(siteArr) {
     });
 }
 
+function searchAll() {
+    return gatherModel.find({},
+        {_id: 0}, {
+            sort: {time: -1}
+        });
+}
+
 function searchSite(site) {
     return gatherModel.find({
         site: site
@@ -78,3 +86,4 @@ exports.searchOne = searchOne;
 exports.add = add;
 exports.addArr = addArr;
 exports.update = update;
+exports.searchAll = searchAll;
