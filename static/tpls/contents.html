@@ -19,21 +19,21 @@
     </div>
     <div class="row" ng-repeat="content in contents | timeFilter | contentFilter">
         <div class="contents">
-            <div class="col-xs-4 col-sm-3">
+            <div class="col-xs-12 col-sm-3 text-center">
                 <a href="{{content.href}}" target="_blank">
                     <img ng-src="{{content.img | imgUrlChange}}">
                 </a>
             </div>
-            <div class="col-xs-8 col-sm-9">
-                <div class="col-xs-10">
+            <div class="col-xs-12 col-sm-9">
+                <div class="col-xs-12 col-sm-10">
                     <a href="{{content.href}}" target="_blank">
                         <h4>[{{content.site}}] {{content.title}}</h4>
                     </a>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-xs-12 col-sm-2">
                     {{content.time | date:"yy/MM/dd HH:mm"}}
                 </div>
-                <div class="col-xs-12">
+                <div class="col-xs-12 col-sm-12">
                     <p>{{content.intro}}</p>
                 </div>
             </div>
