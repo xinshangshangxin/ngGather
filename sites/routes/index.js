@@ -5,9 +5,17 @@ var serverGet = require('../model/serverGet');
 
 /* GET home page. */
 router
+    .use(function(req, res, next) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader(
+            "Access-Control-Allow-Methods",
+            "GET, POST, HEAD"
+        );
+
+        next();
+    })
     .get('/', function(req, res, next) {
         res.render('index.html');
-        //res.end('nihao');
     })
     .get('/getimg', function(req, res, next) {
         serverGet.getImg(req, res);
