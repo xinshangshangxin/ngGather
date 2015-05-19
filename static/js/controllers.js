@@ -105,7 +105,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
 
 mainModule.controller('ChooseCtrl', ['$rootScope', '$scope', 'choosesData', function($rootScope, $scope, choosesData) {
 
-    $scope.ishow = true;
+    $scope.ishow = false;
 
     $scope.changeShow = function() {
         $scope.ishow = !$scope.ishow;
