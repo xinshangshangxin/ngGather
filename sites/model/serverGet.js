@@ -110,9 +110,8 @@ function uniq2Arr(arr1, arr2) {
         if (!temp[arr1[i].href]) {
             arr1[i].time = arr1[i].currenttime;
             temparray.push(arr1[i]);
-        }
-        else {
-            // 如果为相同文章更新
+        }   // 采集时间和发布时间在同一天并且为相同文章 判断是否为更新文章
+        else if(arr1[i].currenttime - arr1[i].time < 24 * 60 * 60 * 1000){
             dealSameHref(arr1[i]);
         }
     }
@@ -125,7 +124,7 @@ function dealSameHref(siteObj) {
         href: siteObj.href
     }).then(function(docs) {
         if (docs) {
-            if (siteObj.time - docs.time > 24 * 60 * 60 * 1000) {
+            if (siteObj.currenttime - docs.time >= 24 * 60 * 60 * 1000) {
                 siteObj.time = siteObj.currenttime;
                 dataQuery.update(siteObj).then(function(data) {
                     console.log(data);

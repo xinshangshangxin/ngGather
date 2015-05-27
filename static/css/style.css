@@ -8,3 +8,7 @@ img {
     word-wrap: break-word;
     word-break: break-all;
 }
+.maxwidth {
+    max-width: 100%;
+    height: auto;
+}
