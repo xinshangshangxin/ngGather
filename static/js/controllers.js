@@ -1,4 +1,5 @@
 var mainModule = angular.module('MainModule', []);
+var SERVERURL = ''; //'http://localhost:1340';
 
 mainModule.factory('choosesData', ['$http', function($http) {
 
@@ -59,7 +60,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
             this.saveChooses();
 
             if (isforce) {
-                $http.get('getlatest')
+                $http.get(SERVERURL + '/getlatest')
                     .success(function(data) {
                         try {
                             fun && fun(data);
@@ -74,7 +75,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
             }
             else {
                 start = start || 0;
-                $http.get('getinfo?start=' + start)
+                $http.get(SERVERURL + '/getinfo?start=' + start)
                     .success(function(data) {
                         console.log('data', data);
                         try {
@@ -92,7 +93,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
 
         },
         getUpdateTime: function(cb) {
-            $http.get('getupdatetime')
+            $http.get(SERVERURL + '/getupdatetime')
                 .success(function(data) {
                     cb(data.time);
                 })
@@ -242,7 +243,7 @@ mainModule.controller('contentsCtrl', ['$scope', '$rootScope', '$http', 'chooses
 mainModule.filter('imgUrlChange', function() {
     return function(input) {
         if (input && input.indexOf('zdfans') !== -1) {
-            return 'getImg?imgurl=' + encodeURIComponent(input);
+            return SERVERURL + '/getImg?imgurl=' + encodeURIComponent(input);
         }
         else {
             return input;

@@ -2,8 +2,6 @@ var mongoose = require('mongoose');
 
 var mongodbUri = 'mongodb://127.0.0.1:27017/ngGather';
 try {
-    console.error(JSON.parse(process.env.VCAP_SERVICES))
-    console.log(JSON.parse(process.env.VCAP_SERVICES).mongodb)
     mongodbUri = JSON.parse(process.env.VCAP_SERVICES).mongodb[0].credentials.uri;
 }
 catch (e) {
@@ -33,6 +31,10 @@ var gatherSchema = new mongoose.Schema({
     },
     site: {
         type: String
+    },
+    gatherTime: {
+        type: Number,
+        default: Date.now
     }
 });
 
@@ -44,18 +46,19 @@ function add(siteObj) {
     });
 }
 
-function addArr(siteArr) {
+function addArr(siteArr, cb) {
     return gatherModel.collection.insert(siteArr, function(err, doc) {
         if (err) {
             console.log(err);
         }
+        cb && cb();
     });
 }
 
 function searchAll() {
     return gatherModel.find({},
         {_id: 0}, {
-            sort: {time: -1}
+            sort: {gatherTime: -1}
         });
 }
 
@@ -87,3 +90,5 @@ exports.add = add;
 exports.addArr = addArr;
 exports.update = update;
 exports.searchAll = searchAll;
+
+
