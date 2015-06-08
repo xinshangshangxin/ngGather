@@ -157,8 +157,10 @@ function httpGet(siteInfo) {
         encoding: null
     }, function(error, response, body) {
         if (error) {
-            console.log('reject');
-            deferred.reject();
+            console.log('reject   ' + siteInfo.url);
+            //deferred.reject();
+            // 直接返回 空
+            deferred.resolve([]);
         }
         else {
             var $ = cheerio.load(changeEncoding(body));
