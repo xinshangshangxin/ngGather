@@ -48,7 +48,6 @@ function updateDataCache() {
         });
 }
 
-
 function getImg(req, res) {
     var url = req.query.imgurl;
     if (!url) {
@@ -339,34 +338,6 @@ function calculateTime(timeStr) {
     }
     return timeNu;
 }
-
-
-function databaseOperate() {
-    dataQuery.searchAll()
-        .then(function(data) {
-            for (var i = 0; i < data.length; i++) {
-                var obj = {
-                    img: data[i].img,
-                    title: data[i].title,
-                    href: data[i].href,
-                    time: data[i].time,
-                    intro: data[i].intro,
-                    site: data[i].site,
-                    currentTime: data[i].currentTime || 0,
-                    gatherTime: data[i].currentTime || 0        // 新加
-                };
-                dataQuery.update(obj).then(function(doc) {
-                    console.log(doc);
-                }).catch(function(e) {
-                    console.log(e);
-                });
-            }
-        })
-        .catch(function(err) {
-            console.log(err)
-        });
-}
-
 
 exports.getImg = getImg;
 exports.getInfo = getInfo;

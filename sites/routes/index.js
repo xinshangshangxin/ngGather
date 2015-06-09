@@ -22,20 +22,12 @@ router
     })
     .get('/getinfo', function(req, res) {
         serverGet.getInfo(req, res);
-    }).get('/getlatest', function(req, res) {
+    })
+    .get('/getlatest', function(req, res) {
         serverGet.getLatest(req, res);
-    }).get('/getupdatetime', function(req, res) {
+    })
+    .get('/getupdatetime', function(req, res) {
         serverGet.getUpdateTime(req, res);
-    }).get('/databaseoperate', function(req, res) {
-        var token = req.query.token;
-        console.log(token);
-        if (token != ( process.env.token)) {
-            res.send('token 错误!!');
-        }
-        else {
-            res.send('start');
-            serverGet.databaseOperate(req, res);
-        }
     });
 
 module.exports = router;
