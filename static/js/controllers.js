@@ -1,5 +1,6 @@
 var mainModule = angular.module('MainModule', []);
-var SERVERURL = ''; //'http://localhost:1340';
+//var SERVERURL = '';
+var SERVERURL = 'http://localhost:1340';
 
 mainModule.factory('choosesData', ['$http', function($http) {
 

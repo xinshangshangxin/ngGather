@@ -342,7 +342,6 @@ function calculateTime(timeStr) {
 exports.getImg = getImg;
 exports.getInfo = getInfo;
 exports.getLatest = getLatest;
-exports.databaseOperate = databaseOperate;
 exports.getUpdateTime = function(req, res) {
     res.send({
         time: updateTime
