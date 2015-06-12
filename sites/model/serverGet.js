@@ -29,8 +29,8 @@ var allSites = [{
 
 //// 调试事例
 //var allSites = [{
-//    name: 'qiuquan',
-//    url: 'http://www.qiuquan.cc/'
+//    name: 'iqq',
+//    url: 'http://www.iqshw.com/'
 //}];
 
 
@@ -91,7 +91,7 @@ function crawlerSites() {
     }).catch(function(e) {
         console.log(e);
         return 'err';
-    })
+    });
 }
 
 /**
@@ -129,7 +129,7 @@ function dealSameHref(siteObj) {
             if (siteObj.time - docs.time >= 23 * 60 * 60 * 1000) {
                 dataQuery.update(siteObj).then(function(data) {
                     clearTimeout(updateTimer);
-                    setTimeout(function() {
+                    updateTimer = setTimeout(function() {
                         updateDataCache();
                     }, 1000);
                     console.log(data);
@@ -174,7 +174,7 @@ function httpGet(siteInfo) {
                 }
                 case 'iqq':
                 {
-                    list = captureIQQ($);
+                    list = captureNewIQQ($);
                     saveList('iqq', list);
                     break;
                 }
@@ -208,6 +208,28 @@ function httpGet(siteInfo) {
     return deferred.promise;
 }
 
+
+function captureNewIQQ($) {
+    var list = [];
+    $('.tab_box .news-comm-wrap').first().find('.news-comm li').each(function(i, e) {
+        var img = 'http://www.iqshw.com/templets/iqshw_new/logo.jpg';
+        var oA = $(e).children('a').last();
+        var href = oA.attr('href');
+        var title = oA.attr('title');
+        var time = $(e).children('span').last().text();
+        list.push({
+            'site': 'iqq',
+            "img": img,
+            "title": title,
+            "href": 'http://www.iqshw.com' + href,
+            "time": moment((new Date().getFullYear() + '-' + time).replace('-', ' ')) + 1000 - i,
+            "intro": title
+        });
+
+    });
+    return list;
+}
+
 function captureIQQ($) {
     var list = [];
     $('#content .content-middle .content-middle-news ul li').each(function(i, e) {
@@ -235,7 +257,7 @@ function captureZDList($) {
         var item = $(e).children("h2").last();
         var title = item.text();
         var link = item.children("a").last().attr("href");
-        var img = $(e).children("a").first().children("img").attr('src');
+        var img = $(e).children("a").first().children("img").first().attr('src');
         var time = $(e).children(".info").last().children(".time").last().text();
         var note = $(e).children(".note").last().text();
         list.push({

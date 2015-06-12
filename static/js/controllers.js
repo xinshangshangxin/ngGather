@@ -268,7 +268,7 @@ mainModule.filter('timeFilter', ['choosesData', function(choosesData) {
         for (var i = 0; i < input.length; i++) {
             var obj = input[i];
 
-            if (currentTime - new Date(obj.time) < time) {
+            if (currentTime - new Date(obj.gatherTime) < time) {
                 arr.push(obj);
             }
         }
