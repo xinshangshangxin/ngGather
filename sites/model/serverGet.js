@@ -153,6 +153,7 @@ function httpGet(siteInfo) {
     request({
         url: siteInfo.url,
         method: 'GET',
+        timeout: 15 * 1000,
         encoding: null
     }, function(error, response, body) {
         if (error) {
