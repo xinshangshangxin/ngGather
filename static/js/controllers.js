@@ -98,7 +98,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
                 .success(function(data) {
                     cb(data.time);
                 })
-                .error(function(data) {
+                .error(function() {
                     cb(0);
                 });
         }

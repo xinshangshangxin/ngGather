@@ -1,28 +1,31 @@
 <div ng-controller="ChooseCtrl">
     <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <span class="navbar-brand">ngGather</span>
-            </div>
-            <div class="nav navbar-form navbar-nav navbar-left">
-                <a class="btn" ng-click="changeShow()">站点设置</a>
+        <div class="navbar-header">
+            <div class="navbar-brand">ngGather</div>
+        </div>
+        <ul class="nav navbar-nav navbar-left">
+            <li>
+                <a class="btn graybtn" ng-click="changeShow()">站点选择</a>
+            </li>
+            <li>
                 <select class="form-control" ng-model="selectValue"
-                        ng-options="dataChoose.value as dataChoose.str for dataChoose in dataChooses"
+                        ng-options="dataChoose.value as dataChoose.str
+                                for dataChoose in dataChooses"
                         ng-change="selectChange()">
                 </select>
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a class="btn" ng-click="getData()">重新获取</a>
-                </li>
-                <li>
-                    <a class="btn" ng-click="forceUpdate()">强制更新</a>
-                </li>
-                <li>
-                    <a>更新时间: {{updateTime | updateTimeFilter}}</a>
-                </li>
-            </ul>
-        </div>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a class="btn" ng-click="getData()">重新获取</a>
+            </li>
+            <li>
+                <a class="btn" ng-click="forceUpdate()">强制更新</a>
+            </li>
+            <li>
+                <a class="btn">更新时间: {{updateTime | updateTimeFilter}}</a>
+            </li>
+        </ul>
     </nav>
     <div ng-show="ishow" id="sites">
         <table class="table table-bordered table-striped">

@@ -16,3 +16,17 @@ img {
 #sites {
     margin-top: -20px;
 }
+
+.graybtn {
+    color: #777777;
+}
+
+select {
+    margin: 10px auto 0;
+    max-width: 200px;
+}
+
+.navbar-brand {
+    float: none;
+    text-align: center;
+}
