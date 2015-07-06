@@ -57,7 +57,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
             }
             localStorage.setItem('shang_chooses', JSON.stringify(obj));
         },
-        getData: function(fun, isforce, start) {
+        getData: function(fun, isforce, start, gatherTime) {
             this.saveChooses();
 
             if (isforce) {
@@ -76,7 +76,7 @@ mainModule.factory('choosesData', ['$http', function($http) {
             }
             else {
                 start = start || 0;
-                $http.get(SERVERURL + '/getinfo?start=' + start)
+                $http.get(SERVERURL + '/getinfo?start=' + start + '&gathertime=' + gatherTime)
                     .success(function(data) {
                         console.log('data', data);
                         try {
@@ -205,6 +205,8 @@ mainModule.controller('contentsCtrl', ['$scope', '$rootScope', '$http', 'chooses
         $scope.isloading = false;
     });
 
+
+    var gatherTime = 0;
     $scope.addMore = function() {
         choosesData.getData(function(arr) {
             if (arr.length === 0) {
@@ -214,8 +216,9 @@ mainModule.controller('contentsCtrl', ['$scope', '$rootScope', '$http', 'chooses
                 start = start + arr.length;
                 $scope.contents = $scope.contents.concat(arr);
                 $scope.isloading = false;
+                gatherTime = arr[arr.length - 1].gatherTime;
             }
-        }, false, start);
+        }, false, start, gatherTime);
     };
 
     $scope.$on('info.update', function() {

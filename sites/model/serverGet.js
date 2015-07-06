@@ -39,7 +39,7 @@ var updateTimer = null; // 延时更新 timer
 updateDataCache();
 
 function updateDataCache() {
-    dataQuery.searchAll()
+    dataQuery.searchTop60()
         .then(function(data) {
             dataCache = data;
         })
@@ -60,7 +60,25 @@ function getImg(req, res) {
 
 function getInfo(req, res) {
     var start = parseInt(req.query.start || 0);
-    res.send(dataCache.slice(start, start + 20));
+    if (start < 60) {
+        res.send(dataCache.slice(start, start + 20));
+    }
+    else {
+        var gatherTime = req.query.gathertime;
+        if(!gatherTime) {
+            res.send(404);
+            return;
+        }
+        dataQuery.searchOver60(gatherTime)
+            .then(function(data) {
+                //console.log(data);
+                res.send(data);
+            })
+            .catch(function(err) {
+                console.error(err);
+                res.send(500);
+            });
+    }
 }
 
 function getLatest(req, res) {

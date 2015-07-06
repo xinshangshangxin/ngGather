@@ -55,11 +55,16 @@ function addArr(siteArr, cb) {
     });
 }
 
-function searchAll() {
-    return gatherModel.find({},
-        {_id: 0}, {
-            sort: {gatherTime: -1}
-        });
+function searchTop60() {
+    return gatherModel.find(
+        {}, {_id: 0}, {sort: {gatherTime: -1}}
+    ).limit(60);
+}
+
+function searchOver60(gatherTime, nu) {
+    return gatherModel.find(
+        {'gatherTime': {"$lt": gatherTime}}, {_id: 0}, {sort: {gatherTime: -1}}
+    ).limit(nu || 20);
 }
 
 function searchSite(site) {
@@ -89,6 +94,7 @@ exports.searchOne = searchOne;
 exports.add = add;
 exports.addArr = addArr;
 exports.update = update;
-exports.searchAll = searchAll;
+exports.searchTop60 = searchTop60;
+exports.searchOver60 = searchOver60;
 
 
