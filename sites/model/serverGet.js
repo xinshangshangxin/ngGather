@@ -234,7 +234,7 @@ function captureNewIQQ($) {
         var img = 'http://www.iqshw.com/templets/iqshw_new/logo.jpg';
         var oA = $(e).children('a').last();
         var href = oA.attr('href');
-        var title = oA.attr('title');
+        var title = oA.text();
         var time = $(e).children('span').last().text();
         list.push({
             'site': 'iqq',
