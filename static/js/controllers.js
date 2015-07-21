@@ -132,15 +132,8 @@ mainModule.controller('ChooseCtrl', ['$rootScope', '$scope', 'choosesData', func
         });
     };
 
-    $scope.selectValue = {
-        value: 0,
-        str: '不限'
-    };
 
     $scope.dataChooses = [{
-        value: 0,
-        str: '不限'
-    }, {
         value: 1,
         str: '1天内'
     }, {
