@@ -54,7 +54,15 @@ function getImg(req, res) {
         res.send(404);
     }
     else {
-        request.get(url).pipe(res);
+        //request.get(url).pipe(res);
+        request({
+            url: url,
+            method: 'GET',
+            timeout: 10 * 1000
+        }).on('error', function(err) {
+            console.log(err);
+            res.send(404);
+        }).pipe(res);
     }
 }
 
