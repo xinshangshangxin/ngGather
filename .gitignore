@@ -48,3 +48,6 @@ Temporary Items
 # user
 .git
 .idea
+
+static/vendor/
+sites/public/

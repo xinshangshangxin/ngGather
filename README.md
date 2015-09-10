@@ -12,8 +12,8 @@
 [qiuquan](http://www.qiuquan.cc/)  
 [iqshw](http://www.iqshw.com/)  
 
-> sites 为演示文件夹(public/**/* 和 views/**/* 全部经过 `fis` 压缩处理);
-> static 为前端静态文件夹(未压缩)
+> sites 为演示文件夹(`public/**/*` 和 `views/**/*` 经过压缩处理);
+> static 为前端静态文件夹
 
 ## 安装
 
