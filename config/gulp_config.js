@@ -8,7 +8,9 @@ module.exports = {
   },
   'js': {
     'src': [
-      'app/**/*.js'
+      '**/*.js',
+      '!vendor/**/*',
+      '!framework/**/*'
     ],
     'opt': {
       'cwd': 'static',
@@ -28,7 +30,7 @@ module.exports = {
   },
   'html2js': {
     'src': [
-      'app/**/*.html'
+      '**/*.html'
     ],
     'opt': {
       'cwd': 'static',
@@ -40,26 +42,34 @@ module.exports = {
       'useStrict': false
     },
     'name': 'template-app.js',
-    'dest': 'sites/public/app/js'
+    'dest': 'sites/public/js/'
   },
   'inject': {
     'src': [
       'static/index.html'
     ],
-    'source': [
+    'source':[
       'vendor/angular/**/*.js',
       'vendor/angular-*/**/*.js',
-      'vendor/*.css',
       'vendor/lodash/**/*.js',
+      'vendor/*.css',
       'vendor/fontawesome/css/font-awesome.min.css',
-      'app/**/*.js',
       'styles/**/*.css',
-      '*.js'
+      'js/*.js'
     ],
     'opt': {
       'cwd': 'sites/public',
       'base': 'sites/public',
       'read': 'false'
+    },
+    'ngSource': [
+      '**/*.js',
+      '!vendor/**/*',
+      '!js/*.js'
+    ],
+    'ngOpt': {
+      'cwd': 'sites/public',
+      'base': 'sites/public'
     },
     'dest': 'sites/views'
   },
@@ -110,6 +120,11 @@ module.exports = {
     'src': [
       'sites/public/',
       'sites/views/'
+    ]
+  },
+  'cleanProd': {
+    'src': [
+      'production'
     ]
   }
 };

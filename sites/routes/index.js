@@ -2,10 +2,12 @@
 
 var express = require('express');
 var router = express.Router();
-var serverGet = {};
+var article = require('../models/article.js');
+var utilitiesService = require('../service/utilitiesService.js');
 
 router
-  .use(function(req, res, next) {
+  .use(/^\/(?=api)/, function(req, res, next) {
+    console.log('api');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
       'Access-Control-Allow-Methods',
@@ -13,20 +15,28 @@ router
     );
     next();
   })
-  .get('/', function(req, res) {
+  .get(/^\/(?!api)/, function(req, res) {
     res.render('index.html');
   })
-  .get('/getimg', function(req, res) {
-    serverGet.getImg(req, res);
+  .get('/api/v1/sites', function (req, res) {
+    if (req.query.force) {
+      article.taskUpdate();
+      return res.json({});
+    }
+    article.getSites(req, res);
   })
-  .get('/getinfo', function(req, res) {
-    serverGet.getInfo(req, res);
+  .get('/api/v1/updateTime', function(req, res) {
+    res.json({
+      updateTime: article.updateTime
+    });
   })
-  .get('/getlatest', function(req, res) {
-    serverGet.getLatest(req, res);
+  .get('/api/v1/tasks', function (req, res) {
+    article.taskUpdate();
+    return res.json({});
   })
-  .get('/getupdatetime', function(req, res) {
-    serverGet.getUpdateTime(req, res);
-  });
+  .get('/api/v1/getImg', function(req, res) {
+    return utilitiesService.getImg(req, res);
+  })
+;
 
 module.exports = router;

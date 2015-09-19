@@ -1,6 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var config = require('config');
+
 
 function getCodingMongodbUri() {
   try {
@@ -65,7 +67,9 @@ function getMongodbUri() {
   };
 }
 
-var mongodbUri = getMongodbUri(getCodingMongodbUri, getDockerMongo, getDaoCloudorLocalMongodbUri)('test');
+
+var dbName = config.get('dbName');
+var mongodbUri = getMongodbUri(getCodingMongodbUri, getDockerMongo, getDaoCloudorLocalMongodbUri)(dbName);
 
 //console.log(mongodbUri);
 

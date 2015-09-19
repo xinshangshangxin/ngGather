@@ -49,5 +49,7 @@ Temporary Items
 .git
 .idea
 
-static/vendor/
-sites/public/
+static/vendor/*
+sites/public/*
+sites/views/*
+production/*

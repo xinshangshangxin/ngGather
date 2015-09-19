@@ -6,6 +6,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var config = require('config');
 
 var routes = require('./routes/index');
 
@@ -51,7 +52,7 @@ app.use(function(err, req, res) {
   });
 });
 
-var port = process.env.PORT || 1337;
+var port = config.get('port');
 app.set('port', port);
 
 var server = http.createServer(app);
@@ -85,7 +86,7 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  console.log('Listening on: ' + bind + '   0.0.0.0:' + port);
+  console.log('Listening on: ' + bind + '   http://0.0.0.0:' + port);
 }
 
 server.on('error', onError);
