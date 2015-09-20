@@ -7,7 +7,7 @@
 
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
-var cheerio = require('cheerio');    // 类jq操作DOM
+var cheerio = require('cheerio'); // 类jq操作DOM
 
 var utilitiesService = require('../service/utilitiesService.js');
 var articleDao = require('../daos/articleDao.js');
@@ -18,19 +18,19 @@ var updateTime = 0;
 
 // 服务器采集站点
 var allSites = [{
-  name: 'waitsun',
-  chName: '爱情守望者',
-  description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
-  url: 'http://www.waitsun.com/',
-  siteInfo: capture.captureIQQ,
-  classify: 'mac'
-}, {
-  name: 'MacPeers',
-  url: 'http://www.macpeers.com/',
-  description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
-  siteInfo: capture.captureIQQ,
-  classify: 'mac'
-}, {
+//   name: 'waitsun',
+//   chName: '爱情守望者',
+//   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
+//   url: 'http://www.waitsun.com/',
+//   siteInfo: capture.captureIQQ,
+//   classify: 'mac'
+// }, {
+//   name: 'MacPeers',
+//   url: 'http://www.macpeers.com/',
+//   description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
+//   siteInfo: capture.captureIQQ,
+//   classify: 'mac'
+// }, {
   name: 'zd',
   url: 'http://www.zdfans.com/',
   description: '专注绿软，分享软件、传递最新软件资讯',
@@ -88,11 +88,11 @@ var updateSiteArticles = function(siteInfo, captureFun) {
   updateTime = new Date();
   captureFun = captureFun || siteInfo.siteInfo;
   return request({
-    url: siteInfo.url,
-    method: 'GET',
-    timeout: 15 * 1000,
-    encoding: null
-  })
+      url: siteInfo.url,
+      method: 'GET',
+      timeout: 15 * 1000,
+      encoding: null
+    })
     .spread(function(response, body) {
       var $ = cheerio.load(utilitiesService.changeEncoding(body));
       return captureFun($);
@@ -129,23 +129,22 @@ var getSites = function(req, res) {
       res.send(400, {
         err: 1001
       });
-    }
-  );
+    });
 };
 
 var taskUpdate = function() {
 
-  if(new Date().getTime() - new Date(updateTime).getTime() < 2 * 60 * 1000) {
+  if (new Date().getTime() - new Date(updateTime).getTime() < 2 * 60 * 1000) {
     console.log('last update in 2 min');
     return;
   }
 
   allSites.forEach(function(siteInfo) {
     updateSiteArticles(siteInfo)
-      .then(function (data ) {
+      .then(function(data) {
         console.log(data);
       })
-      .catch(function (data) {
+      .catch(function(data) {
         console.log(data);
       });
   });
@@ -153,7 +152,9 @@ var taskUpdate = function() {
 
 exports.taskUpdate = taskUpdate;
 exports.getSites = getSites;
-exports.updateTime = updateTime;
+exports.updateTime = function() {
+  return updateTime;
+};
 
 
 //allSites.forEach(function(siteObj) {
@@ -167,5 +168,3 @@ exports.updateTime = updateTime;
 //function getLatest(req, res) {
 //  
 //}
-
-

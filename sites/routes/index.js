@@ -27,7 +27,7 @@ router
   })
   .get('/api/v1/updateTime', function(req, res) {
     res.json({
-      updateTime: article.updateTime
+      updateTime: article.updateTime()
     });
   })
   .get('/api/v1/tasks', function (req, res) {

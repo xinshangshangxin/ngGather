@@ -12,6 +12,18 @@ angular.module('ngGather')
     $scope.addMoreInfo = '加载更多~';
 
 
+    var getUpdateTime = function() {
+      updateTimeEntity
+        .get()
+        .$promise
+        .then(function(data) {
+          $scope.updateTime = data.updateTime;
+        })
+        .catch(function(e) {
+          console.log(e);
+        });
+    };
+
     $scope.changeShow = function() {
       $scope.ishow = !$scope.ishow;
     };
@@ -33,6 +45,7 @@ angular.module('ngGather')
     $scope.getData = function() {
       $scope.pageNu = 0;
       $scope.addMore(true);
+      getUpdateTime();
     };
 
     $scope.addMore = function(isClear) {
@@ -62,13 +75,5 @@ angular.module('ngGather')
     };
 
     $scope.getData();
-    updateTimeEntity
-      .get()
-      .$promise
-      .then(function(data) {
-        $scope.updateTime = data.updateTime;
-      })
-      .catch(function(e) {
-        console.log(e);
-      });
+    getUpdateTime();
   });
