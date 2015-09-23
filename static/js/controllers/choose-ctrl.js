@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('ngGather')
-  .controller('chooseCtrl', function($scope, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
+  .controller('chooseCtrl', function($scope, themeService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
 
     $scope.contents = [];
     $scope.updateTime = 0;
@@ -76,4 +76,14 @@ angular.module('ngGather')
 
     $scope.getData();
     getUpdateTime();
+
+    var type = true;
+    $scope.changeTheme = function() {
+      var themes = [];
+      // <!-- inject:themes -->
+      // <!-- endinject -->
+      type = !type;
+      themeService.replaceThemes(themes);
+    };
+
   });

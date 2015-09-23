@@ -11,8 +11,9 @@
 [liulanmi](http://liulanmi.com/)  
 [iqshw](http://www.iqshw.com/)
 
-> sites 为演示文件夹(`public/**/*` 和 `views/**/*` 经过压缩处理);
-> static 为前端静态文件夹
+> sites 后端逻辑处理
+> static 前端静态文件
+> production 演示/部署文件
 
 ## 安装
 
@@ -22,6 +23,13 @@
 3. `make`
 4. 浏览器打开 `http://localhost:1337/`
 
+## todo
+1. 添加 站点选择器
+2. 添加 其他站点
+3. 强制更新时 提示信息
+4. 加载更多/强制更新/重新获取  点击后disabled
+5. 加载更多按钮变成 无更多后不恢复
+6. 黑色主题
 
 ## 许可证
 ### MIT

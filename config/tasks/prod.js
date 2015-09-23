@@ -48,6 +48,14 @@ function clean(cb) {
   return del(config.clean.src, cb);
 }
 
+function prodThemes() {
+  return gulp
+    .src(config.themesCss.src, config.themesCss.opt)
+    .pipe(minifyCSS())
+    .pipe(gulp.dest('production/public/'));
+}
+
+
 function lessDev() {
   return gulp
     .src(config.less.src, config.less.opt)
@@ -114,6 +122,7 @@ function injecHtmlProd() {
     .pipe(inject(
       gulp.src([
         '**/*.css',
+        '!themes/**/*',
         'vendor*.js',
         'production*.js'
       ], {
@@ -141,11 +150,19 @@ function prodVendorJs() {
 
 function prodStyles() {
   return gulp
-    .src(['sites/public/**/*.css'])
+    .src(['sites/public/styles/**/*.css'])
     .pipe(concat('vendor.css'))
     .pipe(minifyCSS())
     .pipe(rev())
     .pipe(gulp.dest('production/public/'));
+}
+
+function prodThemesStyle() {
+  return gulp
+    .src(['sites/public/themes/**/*.css'])
+    .pipe(minifyCSS())
+    .pipe(rev())
+    .pipe(gulp.dest('production/public/themes/'));
 }
 
 function prodUserJs() {
@@ -170,6 +187,7 @@ gulp.task('prod', gulp.series(
     cleanProd
   ),
   gulp.parallel(
+    prodThemes,
     cpServer,
     prodVendorJs,
     prodStyles,

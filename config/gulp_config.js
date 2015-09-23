@@ -20,7 +20,18 @@ module.exports = {
   },
   'less': {
     'src': [
-      'styles/**/*.less'
+      'styles/**/*.less',
+      'themes/**/*.less'
+    ],
+    'opt': {
+      'cwd': 'static',
+      'base': 'static'
+    },
+    'dest': 'sites/public'
+  },
+  'themesCss': {
+    'src': [
+      'themes/**/*.css'
     ],
     'opt': {
       'cwd': 'static',

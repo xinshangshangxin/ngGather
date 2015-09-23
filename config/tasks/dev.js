@@ -15,6 +15,7 @@ var less = require('gulp-less');
 var angularFilesort = require('gulp-angular-filesort');
 var ngAnnotate = require('gulp-ng-annotate');
 
+
 //var emmitter = new events.EventEmitter();
 //var watch = require('gulp-watch');
 //var batch = require('gulp-batch');
@@ -51,6 +52,12 @@ function clean(cb) {
   return del(config.clean.src, cb);
 }
 
+function cpThemesCss() {
+  return gulp
+    .src(config.themesCss.src, config.themesCss.opt)
+    .pipe(gulp.dest(config.themesCss.dest));
+}
+
 function lessDev() {
   return gulp
     .src(config.less.src, config.less.opt)
@@ -84,47 +91,73 @@ function htmljs() {
 function vendorJs() {
   return gulp
     .src(
-    config.vendorjs.src,
-    config.vendorjs.opt
-  ).pipe(gulp.dest(config.vendorjs.dest));
+      config.vendorjs.src,
+      config.vendorjs.opt
+    ).pipe(gulp.dest(config.vendorjs.dest));
 }
 
 function vendorCss() {
   return gulp
     .src(
-    config.vendorcss.src,
-    config.vendorcss.opt
-  ).pipe(gulp.dest(config.vendorcss.dest));
+      config.vendorcss.src,
+      config.vendorcss.opt
+    ).pipe(gulp.dest(config.vendorcss.dest));
 }
 
 function vendorOther() {
   return gulp
     .src(
-    config.vendorother.src,
-    config.vendorother.opt
-  ).pipe(gulp.dest(config.vendorother.dest));
+      config.vendorother.src,
+      config.vendorother.opt
+    ).pipe(gulp.dest(config.vendorother.dest));
 }
 
 function otherdependencies() {
   return gulp
     .src(
-    config.otherdependencies.src,
-    config.otherdependencies.opt
-  ).pipe(gulp.dest(config.otherdependencies.dest));
+      config.otherdependencies.src,
+      config.otherdependencies.opt
+    ).pipe(gulp.dest(config.otherdependencies.dest));
 }
 
 function injecHtml() {
   return gulp
     .src(config.inject.src)
     .pipe(
-    inject(
-      series(gulp
+      inject(
+        series(gulp
           .src(config.inject.source, config.inject.opt),
-        gulp
+          gulp
           .src(config.inject.ngSource, config.inject.ngOpt)
           .pipe(angularFilesort()))
-    ))
+      ))
     .pipe(gulp.dest(config.inject.dest));
+}
+
+function injectUserCode() {
+  return gulp.src('js/controllers/choose-ctrl.js', {
+      cwd: './static/',
+      base: './static'
+    })
+    .pipe(inject(
+      gulp.src(['themes/**/*.css'], {
+        read: false,
+        cwd: './static/'
+      }), {
+        starttag: '// <!-- inject:themes -->',
+        endtag: '// <!-- endinject -->',
+        transform: function(filepath) {
+          console.log(filepath);
+          if (/\/night\//.test(filepath)) {
+            return 'if(type) {themes.push(\'' + filepath + '\');}';
+          }
+          else {
+            return 'if(!type) {themes.push(\'' + filepath + '\');}';
+          }
+        }
+      }
+    ))
+    .pipe(gulp.dest('./sites/public/'));
 }
 
 function watchAll() {
@@ -132,7 +165,8 @@ function watchAll() {
     'static/**/*',
     'sites/**/*.js',
     '!sites/public/**/*',
-    '!sites/test/**/*']);
+    '!sites/test/**/*'
+  ]);
   watcher
     .on('change', function(event) {
       console.info(event.type, event.path);
@@ -154,6 +188,7 @@ function watchAll() {
         gulp.series(
           clean,
           gulp.parallel(
+            cpThemesCss,
             otherdependencies,
             vendorJs,
             vendorCss,
@@ -162,6 +197,7 @@ function watchAll() {
             lessDev,
             htmljs
           ),
+          injectUserCode,
           injecHtml
         )();
       }
@@ -171,6 +207,7 @@ function watchAll() {
 gulp.task('default', gulp.series(
   clean,
   gulp.parallel(
+    cpThemesCss,
     otherdependencies,
     vendorJs,
     vendorCss,
@@ -179,6 +216,7 @@ gulp.task('default', gulp.series(
     lessDev,
     htmljs
   ),
+  injectUserCode,
   injecHtml,
   watchAll
 ));
