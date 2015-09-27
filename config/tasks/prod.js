@@ -50,9 +50,10 @@ function clean(cb) {
 
 function prodThemes() {
   return gulp
-    .src(config.themesCss.src, config.themesCss.opt)
+    .src(['sites/public/themes/**/*'])
     .pipe(minifyCSS())
-    .pipe(gulp.dest('production/public/'));
+    .pipe(rev())
+    .pipe(gulp.dest('production/public/themes'));
 }
 
 
@@ -150,7 +151,7 @@ function prodVendorJs() {
 
 function prodStyles() {
   return gulp
-    .src(['sites/public/styles/**/*.css'])
+    .src(['sites/public/styles/**/*.css', 'sites/public/vendor/**/*.css'])
     .pipe(concat('vendor.css'))
     .pipe(minifyCSS())
     .pipe(rev())
@@ -174,8 +175,34 @@ function prodUserJs() {
     .pipe(gulp.dest('production/public/'));
 }
 
+function prodInjectUserCode() {
+  return gulp.src('js/controllers/choose-ctrl.js', {
+      cwd: './sites/public',
+      base: './sites/public'
+    })
+    .pipe(inject(
+      gulp.src(['themes/**/*.css'], {
+        read: false,
+        cwd: './production/public'
+      }), {
+        starttag: '// <!-- inject:themes -->',
+        endtag: '// <!-- endinject -->',
+        transform: function(filepath) {
+          console.log(filepath);
+          if (/\/night\//.test(filepath)) {
+            return 'themes.push(\'' + filepath + '\');';
+          }
+        }
+      }
+    ))
+    .pipe(gulp.dest('./sites/public/'));
+}
+
 gulp.task('prod', gulp.series(
-  clean,
+  gulp.parallel(
+    cleanProd,
+    clean
+  ),
   gulp.parallel(
     otherdependencies,
     vendorJs,
@@ -183,15 +210,15 @@ gulp.task('prod', gulp.series(
     vendorOther,
     js,
     lessDev,
-    htmljs,
-    cleanProd
+    htmljs
   ),
+  prodThemes,
+  prodInjectUserCode,
   gulp.parallel(
-    prodThemes,
     cpServer,
     prodVendorJs,
-    prodStyles,
-    prodUserJs
+    prodUserJs,
+    prodStyles
   ),
   injecHtmlProd
 ));

@@ -142,17 +142,14 @@ function injectUserCode() {
     .pipe(inject(
       gulp.src(['themes/**/*.css'], {
         read: false,
-        cwd: './static/'
+        cwd: './sites/public'
       }), {
         starttag: '// <!-- inject:themes -->',
         endtag: '// <!-- endinject -->',
         transform: function(filepath) {
           console.log(filepath);
           if (/\/night\//.test(filepath)) {
-            return 'if(type) {themes.push(\'' + filepath + '\');}';
-          }
-          else {
-            return 'if(!type) {themes.push(\'' + filepath + '\');}';
+            return 'themes.push(\'' + filepath + '\');';
           }
         }
       }
@@ -207,7 +204,6 @@ function watchAll() {
 gulp.task('default', gulp.series(
   clean,
   gulp.parallel(
-    cpThemesCss,
     otherdependencies,
     vendorJs,
     vendorCss,

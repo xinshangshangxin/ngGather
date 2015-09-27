@@ -18,19 +18,19 @@ var updateTime = 0;
 
 // 服务器采集站点
 var allSites = [{
-  //   name: 'waitsun',
-  //   chName: '爱情守望者',
-  //   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
-  //   url: 'http://www.waitsun.com/',
-  //   siteInfo: capture.captureIQQ,
-  //   classify: 'mac'
-  // }, {
-  //   name: 'MacPeers',
-  //   url: 'http://www.macpeers.com/',
-  //   description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
-  //   siteInfo: capture.captureIQQ,
-  //   classify: 'mac'
-  // }, {
+//   name: 'waitsun',
+//   chName: '爱情守望者',
+//   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
+//   url: 'http://www.waitsun.com/',
+//   siteInfo: capture.captureIQQ,
+//   classify: 'mac'
+// }, {
+//   name: 'MacPeers',
+//   url: 'http://www.macpeers.com/',
+//   description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
+//   siteInfo: capture.captureIQQ,
+//   classify: 'mac'
+// }, {
   name: 'zd',
   url: 'http://www.zdfans.com/',
   description: '专注绿软，分享软件、传递最新软件资讯',
@@ -155,3 +155,16 @@ exports.getSites = getSites;
 exports.updateTime = function() {
   return updateTime;
 };
+
+
+//allSites.forEach(function(siteObj) {
+//  updateSiteArticles(siteObj);
+//});
+
+//function getInfo(req, res) {
+//
+//}
+
+//function getLatest(req, res) {
+//  
+//}

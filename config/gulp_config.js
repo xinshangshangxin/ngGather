@@ -34,8 +34,8 @@ module.exports = {
       'themes/**/*.css'
     ],
     'opt': {
-      'cwd': 'static',
-      'base': 'static'
+      'cwd': 'sites',
+      'base': 'sites'
     },
     'dest': 'sites/public'
   },
@@ -64,6 +64,7 @@ module.exports = {
       'vendor/angular-*/**/*.js',
       'vendor/lodash/**/*.js',
       'vendor/*.css',
+      'vendor/angular-*/**/*.min.css',
       'vendor/fontawesome/css/font-awesome.min.css',
       'styles/**/*.css',
       'js/*.js'
@@ -88,7 +89,7 @@ module.exports = {
     'src': [
       'fontawesome/css/font-awesome.min.css',
       'angular/**/*.csp.css',
-      'angular-*/**/*.css'
+      'angular-*/**/*.min.css'
     ],
     'opt': {
       'cwd': 'static/vendor',

@@ -1,69 +1,32 @@
 <div>
   <nav class="navbar navbar-default">
-    <div class="container-fluid header">
-      <div class="navbar-header">
-        <a class="navbar-brand">ngGather</a>
-      </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li>
-            <a class="btn btn-link" ng-click="changeShow()">站点选择</a>
-          </li>
-          <!--<li>-->
-            <!--<select class="form-control" -->
-                    <!--ng-model="selectValue"-->
-                    <!--ng-options="dataChoose.value as dataChoose.str-->
-          <!--for dataChoose in dataChooses"-->
-                    <!--ng-change="selectChange()">-->
-              <!--<option value="">不限</option>-->
-            <!--</select>-->
-          <!--</li>-->
-          <!--<li class="dropdown">-->
-            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown-->
-              <!--<span class="caret"></span></a>-->
-            <!--<ul class="dropdown-menu" role="menu">-->
-              <!--<li>-->
-                <!--<a href="#">Action</a>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<a href="#">Another action</a>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<a href="#">Something else here</a>-->
-              <!--</li>-->
-              <!--<li class="divider"></li>-->
-              <!--<li>-->
-                <!--<a href="#">Separated link</a>-->
-              <!--</li>-->
-              <!--<li class="divider"></li>-->
-              <!--<li>-->
-                <!--<a href="#">One more separated link</a>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</li>-->
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a class="btn btn-link" ng-click="getData()">重新获取</a>
-          </li>
-          <li>
-            <a class="btn btn-link" ng-click="changeTheme()">测试</a>
-          </li>
-          <li>
-            <a class="btn btn-link" ng-click="forceUpdate()">更新时间: {{updateTime | updateTimeFilter}}</a>
-          </li>
-        </ul>
-      </div>
+    <div class="navbar-header">
+      <a class="navbar-brand text-center btn-link" ng-click="ishide = !ishide">ngGather</a>
     </div>
+    <ul class="nav navbar-nav navbar-left" ng-hide="ishide">
+      <li>
+        <a class="btn btn-link" ng-click="changeShow()">站点选择</a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li ng-hide="ishide">
+        <a class="btn btn-link" ng-click="getData()">重新获取</a>
+      </li>
+      <li ng-hide="ishide">
+        <a class="btn btn-link" ng-click="changeTheme()">{{type ? '换黑色主题' : '换白色主题'}}</a>
+      </li>
+      <li>
+        <a class="btn btn-link" ng-click="forceUpdate()">更新时间: {{updateTime | updateTimeFilter}}</a>
+      </li>
+    </ul>
   </nav>
-
   <div ng-show="ishow" id="sites">
     <table class="table table-bordered table-striped">
       <tr ng-repeat="choose in chooseSite">
         <td>
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="choose.ischecked" ng-change="CheckChange()"/>{{choose.name}}
+              <input type="checkbox" ng-model="choose.ischecked" ng-change="CheckChange()" />{{choose.name}}
             </label>
           </div>
         </td>

@@ -14,3 +14,5 @@ start:
 	./node_modules/pm2/bin/pm2 start production/app.js --no-daemon
 test:
 	mocha --recursive --timeout 10000 -R spec --require should --harmony test/ --bail
+prod: 
+	node production/app.js

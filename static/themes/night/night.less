@@ -13,17 +13,21 @@ hr {
   background-color: #060606;
 }
 
-
 .navbar-default,
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form,
 .navbar-default .navbar-toggle {
-      border-color: #282828;
+  border-color: #282828;
 }
 
 .navbar {
   border: 1px solid transparent;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  color: #ccc;
 }
 
 .navbar-default .navbar-nav>.active>a,
@@ -31,18 +35,40 @@ hr {
 .navbar-default .navbar-nav>.active>a:hover,
 .navbar-default .navbar-nav>li>a:focus,
 .navbar-default .navbar-nav>li>a:hover {
-  color: #fff;
   background-color: transparent;
 }
 
+.table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: black;
+}
+
+#sites table {
+  td,
+  th {
+    border: 1px solid grey;
+  }
+}
+
 .btn-link:active {
-  background-color: #888;
-  background-image: -webkit-radial-gradient(circle, #888 10%, #fff 11%);
-  background-image: -o-radial-gradient(circle, #888 10%, #fff 11%);
-  background-image: radial-gradient(circle, #888 10%, #fff 11%);
+  background-color: grey;
+  background-image: radial-gradient(circle, grey 10%, black 11%);
   background-repeat: no-repeat;
   -webkit-background-size: 1000% 1000%;
   background-size: 1000%;
-  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus {
+  color: #ccc;
+  background-color: transparent;
+}
+
+.contents {
+  a {
+    img {
+      opacity: 0.7;
+    }
+  }
 }

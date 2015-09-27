@@ -18,7 +18,7 @@ router
   .get(/^\/(?!api)/, function(req, res) {
     res.render('index.html');
   })
-  .get('/api/v1/sites', function (req, res) {
+  .get('/api/v1/sites', function(req, res) {
     if (req.query.force) {
       article.taskUpdate();
       return res.json({});
@@ -30,13 +30,12 @@ router
       updateTime: article.updateTime()
     });
   })
-  .get('/api/v1/tasks', function (req, res) {
+  .get('/api/v1/tasks', function(req, res) {
     article.taskUpdate();
     return res.json({});
   })
   .get('/api/v1/getImg', function(req, res) {
     return utilitiesService.getImg(req, res);
-  })
-;
+  });
 
 module.exports = router;

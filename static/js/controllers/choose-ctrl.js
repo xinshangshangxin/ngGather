@@ -8,8 +8,10 @@ angular.module('ngGather')
     $scope.pageNu = 0;
     $scope.isloading = true;
     $scope.chooseSite = ALL_SITES;
-    $scope.ishow = false;
+    $scope.ishow = false; // 站点选择
+    $scope.type = true; // themes 样式
     $scope.addMoreInfo = '加载更多~';
+    $scope.ishide = true; // 导航栏按钮显示
 
 
     var getUpdateTime = function() {
@@ -50,10 +52,14 @@ angular.module('ngGather')
 
     $scope.addMore = function(isClear) {
       $scope.isloading = true;
+      var query = {
+        pageNu: $scope.pageNu || 0
+      };
+      if (isClear) {
+        query.times = new Date().getTime();
+      }
       sitesInfoEntity
-        .query({
-          pageNu: $scope.pageNu || 0
-        })
+        .query(query)
         .$promise
         .then(function(arr) {
           $scope.isloading = false;
@@ -75,14 +81,17 @@ angular.module('ngGather')
     };
 
     $scope.getData();
-    getUpdateTime();
 
-    var type = true;
     $scope.changeTheme = function() {
       var themes = [];
-      // <!-- inject:themes -->
-      // <!-- endinject -->
-      type = !type;
+      if ($scope.type) {
+        // <!-- inject:themes -->
+        // <!-- endinject -->
+      }
+      else {
+        themeService.clearThemes();
+      }
+      $scope.type = !$scope.type;
       themeService.replaceThemes(themes);
     };
 
