@@ -1,6 +1,9 @@
 'use strict';
 
-var calculateTime = require('../service/utilitiesService.js').calculateTime;
+var utilitiesService = require('../service/utilitiesService.js');
+var calculateTime = utilitiesService.calculateTime;
+var calculateTimeWithChinese = utilitiesService.calculateTimeWithChinese;
+
 
 
 function captureZD($) {
@@ -20,8 +23,7 @@ function captureZD($) {
       href: link,
       time: new Date(time).getTime() + 1000 - i,
       gatherTime: now.getTime() + 1000 - i,
-      intro: note,
-      site: 'zd'
+      intro: note
     });
   });
   return list;
@@ -37,7 +39,6 @@ function captureIQQ($) {
     var title = oA.text();
     var time = now.getFullYear() + '-' + $(e).children('span').last().text();
     list.push({
-      site: 'iqq',
       img: img,
       title: title,
       href: 'http://www.iqshw.com' + href,
@@ -65,8 +66,7 @@ function captureCCAV($) {
       href: aItem.attr('href'),
       time: timeNu + 1000 - i, // 通过 + i 来消除sort排序不稳定性
       gatherTime: now.getTime() + 1000 - i,
-      intro: $(e).find('.post-excerpt').text(),
-      site: 'ccav'
+      intro: $(e).find('.post-excerpt').text()
     });
   });
   return list;
@@ -85,10 +85,60 @@ function captureLLM($) {
       href: aItem.attr('href'),
       time: timeNu + 1000 - i,
       gatherTime: now.getTime() + 1000 - i,
-      intro: $(e).find('.note').text(),
-      site: 'llm'
+      intro: $(e).find('.note').text()
     });
   });
+  return list;
+}
+
+function captureWaitsun($) {
+  var list = [];
+  var now = new Date();
+  $('.content .group .post-inner')
+    .each(function(i, e) {
+      var temp = $(e).find('.post-thumbnail').first();
+      var content = $(e).find('.post-content').first();
+
+      var img = temp.find('a').first().find('img').first().data('cfsrc');
+      var title = temp.find('a').first().attr('title');
+      var href = temp.find('a').first().attr('href');
+      var timeNu = calculateTimeWithChinese(content.find('.post-date').first().text());
+      var intro = $(e).find('.excerpt').first().find('p').first().text();
+
+      list.push({
+        img: img,
+        title: title,
+        href: href,
+        time: timeNu + 1000 - i,
+        gatherTime: now.getTime() + 1000 - i,
+        intro: intro
+      });
+    });
+  return list;
+}
+
+function captureMacpeers($) {
+  var list = [];
+  var now = new Date();
+  $('#themepacific_infinite .blogposts-inner')
+    .each(function(i, e) {
+      var thumb = $(e).find('.magbig-thumb').first().find('a').first();
+
+      var img = thumb.find('img').first().attr('src');
+      var title = thumb.attr('title');
+      var href = thumb.attr('href');
+      var timeNu = calculateTimeWithChinese($(e).find('.post-meta-blog').first().find('.meta_date').first().text().replace('月', ''));
+      var intro = title;
+
+      list.push({
+        img: img,
+        title: title,
+        href: href,
+        time: timeNu + 1000 - i,
+        gatherTime: now.getTime() + 1000 - i,
+        intro: intro
+      });
+    });
   return list;
 }
 
@@ -96,3 +146,5 @@ exports.captureZD = captureZD;
 exports.captureIQQ = captureIQQ;
 exports.captureCCAV = captureCCAV;
 exports.captureLLM = captureLLM;
+exports.captureWaitsun = captureWaitsun;
+exports.captureMacpeers = captureMacpeers;

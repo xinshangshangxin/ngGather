@@ -18,49 +18,56 @@ var updateTime = 0;
 
 // 服务器采集站点
 var allSites = [{
-//   name: 'waitsun',
-//   chName: '爱情守望者',
-//   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
-//   url: 'http://www.waitsun.com/',
-//   siteInfo: capture.captureIQQ,
-//   classify: 'mac'
-// }, {
-//   name: 'MacPeers',
-//   url: 'http://www.macpeers.com/',
-//   description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
-//   siteInfo: capture.captureIQQ,
-//   classify: 'mac'
-// }, {
+  name: 'waitsun',
+  chName: '爱情守望者',
+  description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
+  url: 'http://www.waitsun.com/',
+  captureFun: capture.captureWaitsun,
+  classify: 'mac'
+}, {
+  name: 'MacPeers',
+  url: 'http://www.macpeers.com/',
+  description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
+  captureFun: capture.captureMacpeers,
+  classify: 'mac',
+  encoding: 'utf8',
+  noCheck: true
+}, {
   name: 'zd',
   url: 'http://www.zdfans.com/',
   description: '专注绿软，分享软件、传递最新软件资讯',
-  siteInfo: capture.captureZD,
+  captureFun: capture.captureZD,
   classify: 'windows'
 }, {
   name: 'ccav',
   url: 'http://www.ccav1.com/',
   description: 'Yanu - 分享优秀、纯净、绿色、实用的精品软件',
-  siteInfo: capture.captureCCAV,
+  captureFun: capture.captureCCAV,
   classify: 'windows'
 }, {
   name: 'llm',
   url: 'http://liulanmi.com/',
   description: '浏览迷(原浏览器之家)是一个关注浏览器及软件、IT的科技博客,致力于为广大浏览器爱好者提供一个关注浏览器、交流浏览器、折腾浏览器的专门网站',
-  siteInfo: capture.captureLLM,
+  captureFun: capture.captureLLM,
   classify: 'info'
 }, {
   name: 'iqq',
   url: 'http://www.iqshw.com/',
   description: '爱Q生活网 - 亮亮\'blog -关注最新QQ活动动态, 掌握QQ第一资讯',
-  siteInfo: capture.captureIQQ,
+  captureFun: capture.captureIQQ,
   classify: 'info'
 }];
 
 //// 调试
-//var allSites = [{
-//    name: 'iqq',
-//    url: 'http://www.iqshw.com/'
-//}];
+// var allSites = [{
+//   name: 'MacPeers',
+//   url: 'http://www.macpeers.com/',
+//   description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
+//   captureFun: capture.captureMacpeers,
+//   classify: 'mac',
+//   encoding: 'utf8',
+//   noCheck: true
+// }];
 
 var updateOrCreatefilter = function(list) {
   return Promise
@@ -71,8 +78,8 @@ var updateOrCreatefilter = function(list) {
           // 如果不存在此文章, 说明新建文章
           if (!docArticle) {
             return true;
-          } // 更新文章
-          else if (article.time - docArticle.time >= 23 * 60 * 60 * 1000) {
+          } // 作者文章更新时间超过23小时的记为 更新文章
+          if (article.time - docArticle.time >= 23 * 60 * 60 * 1000) {
             return true;
           }
           return false;
@@ -86,7 +93,7 @@ var updateOrCreatefilter = function(list) {
 
 var updateSiteArticles = function(siteInfo, captureFun) {
   updateTime = new Date();
-  captureFun = captureFun || siteInfo.siteInfo;
+  captureFun = captureFun || siteInfo.captureFun;
   return request({
       url: siteInfo.url,
       method: 'GET',
@@ -94,7 +101,7 @@ var updateSiteArticles = function(siteInfo, captureFun) {
       encoding: null
     })
     .spread(function(response, body) {
-      var $ = cheerio.load(utilitiesService.changeEncoding(body));
+      var $ = cheerio.load(utilitiesService.changeEncoding(body, siteInfo.encoding, siteInfo.noCheck));
       return captureFun($);
     })
     .then(function(list) {
@@ -105,6 +112,7 @@ var updateSiteArticles = function(siteInfo, captureFun) {
       return Promise
         .all(list.map(function(article) {
           article.classify = siteInfo.classify;
+          article.site = siteInfo.name;
           return articleDao
             .createOrUpdate(article);
         }))

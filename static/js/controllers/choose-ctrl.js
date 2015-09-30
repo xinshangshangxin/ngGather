@@ -6,7 +6,6 @@ angular.module('ngGather')
     $scope.contents = [];
     $scope.updateTime = 0;
     $scope.pageNu = 0;
-    $scope.isloading = true;
     $scope.chooseSite = ALL_SITES;
     $scope.ishow = false; // 站点选择
     $scope.type = true; // themes 样式
@@ -51,7 +50,6 @@ angular.module('ngGather')
     };
 
     $scope.addMore = function(isClear) {
-      $scope.isloading = true;
       var query = {
         pageNu: $scope.pageNu || 0
       };
@@ -62,7 +60,6 @@ angular.module('ngGather')
         .query(query)
         .$promise
         .then(function(arr) {
-          $scope.isloading = false;
           $scope.pageNu = ($scope.pageNu || 0) + 1;
 
           if (!arr || !arr.length) {
@@ -76,7 +73,6 @@ angular.module('ngGather')
         })
         .catch(function(e) {
           console.log(e);
-          $scope.isloading = false;
         });
     };
 
