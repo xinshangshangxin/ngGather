@@ -5,12 +5,12 @@
 angular
   .module('ngGather')
   .filter('imgUrlChange', function(SERVERURL) {
-  return function(imgUrl) {
-    if (imgUrl && imgUrl.indexOf('zdfans') !== -1) {
-      return SERVERURL + 'api/v1/getImg?imgurl=' + encodeURIComponent(imgUrl);
-    }
-    else {
-      return imgUrl;
-    }
-  };
-});
+    return function(imgUrl) {
+      if (imgUrl && (/(zdfans)|(waitsun)/i).test(imgUrl)) {
+        return SERVERURL + 'api/v1/getImg?imgurl=' + encodeURIComponent(imgUrl);
+      }
+      else {
+        return imgUrl;
+      }
+    };
+  });
