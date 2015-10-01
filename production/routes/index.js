@@ -21,7 +21,9 @@ router
   .get('/api/v1/sites', function(req, res) {
     if (req.query.force) {
       article.taskUpdate();
-      return res.json({});
+      return res.json({
+        start: true
+      });
     }
     article.getSites(req, res);
   })

@@ -8,25 +8,44 @@ angular
     ischecked: true,
     description: '专注绿软，分享软件、传递最新软件资讯',
     href: 'http://www.zdfans.com/',
-    site: 'zd'
+    site: 'zd',
+    classify: 'windows'
   }, {
     name: 'CCAV',
     ischecked: true,
     description: 'Yanu - 分享优秀、纯净、绿色、实用的精品软件',
     href: 'http://www.ccav1.com/',
-    site: 'ccav'
+    site: 'ccav',
+    classify: 'windows'
   }, {
     name: 'llm',
     ischecked: true,
     description: '浏览迷(原浏览器之家)是一个关注浏览器及软件、IT的科技博客,致力于为广大浏览器爱好者提供一个关注浏览器、交流浏览器、折腾浏览器的专门网站',
     href: 'http://liulanmi.com/',
-    site: 'llm'
+    site: 'llm',
+    classify: 'info'
   }, {
     name: '爱Q生活网',
     ischecked: true,
     description: '爱Q生活网 - 亮亮\'blog -关注最新QQ活动动态, 掌握QQ第一资讯',
     href: 'http://www.iqshw.com/',
-    site: 'iqq'
+    site: 'iqq',
+    classify: 'info'
+  }, {
+    name: 'waitsun',
+    ischecked: true,
+    chName: '爱情守望者',
+    description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
+    url: 'http://www.waitsun.com/',
+    site: 'waitsun',
+    classify: 'mac'
+  }, {
+    name: 'MacPeers',
+    ischecked: true,
+    url: 'http://www.macpeers.com/',
+    description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
+    site: 'MacPeers',
+    classify: 'mac'
   }])
   .constant('dataChooses', [{
     value: 1,
@@ -40,5 +59,4 @@ angular
   }, {
     value: 5,
     str: '5天内'
-  }])
-;
+  }]);

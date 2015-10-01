@@ -66,12 +66,17 @@ function addArr(siteArr) {
   return articleModel.collection.insert(siteArr);
 }
 
-function findLimit(perPage, pageNu) {
+function findLimit(perPage, pageNu, sites) {
   perPage = parseInt(perPage) || 20;   // 每一页多少文章
   pageNu = parseInt(pageNu) || 0;      // 查询第几页的
+  var query = {};
+  if (sites) {
+    query.site = {
+      $in: sites
+    };
+  }
   return articleModel
-    .find(
-    {}, {_id: 0}, {sort: {gatherTime: -1}})
+    .find(query, {_id: 0}, {sort: {gatherTime: -1}})
     .skip(pageNu * perPage)
     .limit(perPage);
 }

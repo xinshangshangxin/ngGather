@@ -3,16 +3,16 @@
     <div class="navbar-header">
       <a class="navbar-brand text-center btn-link moreOption" ng-click="ishide = !ishide">ngGather</a>
     </div>
-    <ul class="nav navbar-nav navbar-left" ng-hide="ishide">
+    <ul class="nav navbar-nav navbar-left" ng-class="{'mobile-hide': ishide}">
       <li>
-        <a class="btn btn-link" ng-click="changeShow()">站点选择</a>
+        <a class="btn btn-link" ng-click="changeSites()">站点选择</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li ng-hide="ishide">
+      <li ng-class="{'mobile-hide': ishide}">
         <a class="btn btn-link" ng-click="getData()">重新获取</a>
       </li>
-      <li ng-hide="ishide">
+      <li ng-class="{'mobile-hide': ishide}">
         <a class="btn btn-link" ng-click="changeTheme()">{{type ? '换黑色主题' : '换白色主题'}}</a>
       </li>
       <li>
@@ -22,16 +22,24 @@
   </nav>
   <div ng-show="ishow" id="sites">
     <table class="table table-bordered table-striped">
-      <tr ng-repeat="choose in chooseSite">
+      <tr ng-repeat="choose in oldSites">
         <td>
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="choose.ischecked" ng-change="CheckChange()" />{{choose.name}}
+              <input type="checkbox" ng-model="choose.ischecked"/>{{choose.name}}
             </label>
           </div>
         </td>
         <td>
           <a href="{{choose.href}}" target="_blank">{{choose.description}}</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td>
+        <td>
+          <a class="btn btn-primary" ng-click="saveSites()">保存</a>
+          <a class="btn btn-warning" ng-click="saveSites(true)">取消</a>
         </td>
       </tr>
     </table>

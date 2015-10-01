@@ -1,6 +1,6 @@
 {
   "name": "ngGather",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "start": "./node_modules/pm2/bin/pm2 start production/app.js --no-daemon",
     "test": "mocha --recursive --timeout 10000 -R spec --require should --harmony test/ --bail"
