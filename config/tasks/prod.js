@@ -151,7 +151,7 @@ function prodVendorJs() {
 
 function prodStyles() {
   return gulp
-    .src(['sites/public/styles/**/*.css', 'sites/public/vendor/**/*.css'])
+    .src(['sites/public/vendor/**/*.css', 'sites/public/styles/**/*.css'])
     .pipe(concat('vendor.css'))
     .pipe(minifyCSS())
     .pipe(rev())
