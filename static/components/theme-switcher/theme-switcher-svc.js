@@ -2,7 +2,7 @@
 
 angular
   .module('ngGather')
-  .service('themeService', function() {
+  .service('themeSwitcherService', function() {
     var allThemes = [];
     var ctrl = this;
     this.getThemes = function() {

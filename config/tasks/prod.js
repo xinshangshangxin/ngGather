@@ -114,7 +114,15 @@ function otherdependencies() {
     .src(
       config.otherdependencies.src,
       config.otherdependencies.opt
-    ).pipe(gulp.dest(config.otherdependencies.dest));
+    ).pipe(gulp.dest('production/public'));
+}
+
+function frameworkdependencies() {
+  return gulp
+    .src(
+      config.frameworkdependencies.src,
+      config.frameworkdependencies.opt
+    ).pipe(gulp.dest(config.frameworkdependencies.dest));
 }
 
 function injecHtmlProd() {
@@ -151,7 +159,7 @@ function prodVendorJs() {
 
 function prodStyles() {
   return gulp
-    .src(['sites/public/vendor/**/*.css', 'sites/public/styles/**/*.css'])
+    .src(['sites/public/vendor/**/*.css', 'sites/public/styles/**/*.css', 'sites/public/components/**/*.css'])
     .pipe(concat('vendor.css'))
     .pipe(minifyCSS())
     .pipe(rev())
@@ -205,6 +213,7 @@ gulp.task('prod', gulp.series(
   ),
   gulp.parallel(
     otherdependencies,
+    frameworkdependencies,
     vendorJs,
     vendorCss,
     vendorOther,

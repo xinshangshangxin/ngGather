@@ -8,11 +8,8 @@ angular
       template: '<link rel="stylesheet" ng-repeat="style in styles" ng-href="{{ style }}" />',
       replace: true,
       scope: true,
-      controller: function($scope, themeService) {
-        $scope.styles = themeService.getThemes();
-        setTimeout(function(){
-          console.log($scope.styles);
-        }, 1000);
+      controller: function($scope, themeSwitcherService) {
+        $scope.styles = themeSwitcherService.getThemes();
       }
     };
   });

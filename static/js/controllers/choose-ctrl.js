@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('ngGather')
-  .controller('chooseCtrl', function($scope, themeService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
+  .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
 
     try {
       $scope.chooseSite = JSON.parse(localStorage.getItem('shang_ngSites'));
@@ -14,11 +14,14 @@ angular.module('ngGather')
     $scope.contents = [];
     $scope.updateTime = 0;
     $scope.pageNu = 0;
+    $scope.ishide = true; // 导航栏按钮显示
     $scope.chooseSite = $scope.chooseSite || ALL_SITES;
     $scope.ishow = false; // 站点选择显示
     $scope.type = true; // themes 样式
-    $scope.addMoreInfo = '加载更多~';
-    $scope.ishide = true; // 导航栏按钮显示
+    $scope.addMoreState = 0; // 0 可以加载更多, 1 没有更多, 2重在获取中
+    $scope.canForceUpdte = true;
+
+    var addMoreStateTimer = null;
 
 
     $scope.sites = []; // 选择站点名称
@@ -37,6 +40,7 @@ angular.module('ngGather')
         })
         .catch(function(e) {
           console.log(e);
+          errorHandlingService.handleError(e);
         });
     };
 
@@ -63,6 +67,11 @@ angular.module('ngGather')
     };
 
     $scope.forceUpdate = function() {
+      $scope.canForceUpdte = false;
+      $timeout(function() {
+        $scope.canForceUpdte = true;
+      }, 10 * 1000);
+      notificationService.info('强制重新采集中~~请稍后刷新~');
       sitesInfoEntity
         .get({
           force: 1
@@ -73,6 +82,7 @@ angular.module('ngGather')
         })
         .catch(function(e) {
           console.log(e);
+          errorHandlingService.handleError(e);
         });
     };
 
@@ -83,6 +93,11 @@ angular.module('ngGather')
     };
 
     $scope.addMore = function(isClear) {
+      $timeout.cancel(addMoreStateTimer);
+      addMoreStateTimer = $timeout(function() {
+        $scope.addMoreState = 0;
+      }, 10 * 1000);
+      $scope.addMoreState = 2;
       var query = {
         pageNu: $scope.pageNu || 0
       };
@@ -100,8 +115,9 @@ angular.module('ngGather')
           $scope.pageNu = ($scope.pageNu || 0) + 1;
 
           if (!arr || !arr.length) {
-            return ($scope.addMoreInfo = '没有更多了~');
+            return ($scope.addMoreState = 1);
           }
+          $scope.addMoreState = 0;
           if (isClear) {
             $scope.contents = arr;
             return;
@@ -109,7 +125,8 @@ angular.module('ngGather')
           $scope.contents = $scope.contents.concat(arr);
         })
         .catch(function(e) {
-          console.log(e);
+          $scope.addMoreState = 0;
+          errorHandlingService.handleError(e);
         });
     };
 
@@ -122,10 +139,9 @@ angular.module('ngGather')
         // <!-- endinject -->
       }
       else {
-        themeService.clearThemes();
+        themeSwitcherService.clearThemes();
       }
       $scope.type = !$scope.type;
-      themeService.replaceThemes(themes);
+      themeSwitcherService.replaceThemes(themes);
     };
-
   });

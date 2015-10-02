@@ -120,6 +120,14 @@ function otherdependencies() {
     ).pipe(gulp.dest(config.otherdependencies.dest));
 }
 
+function frameworkdependencies(){
+  return gulp
+    .src(
+      config.frameworkdependencies.src,
+      config.frameworkdependencies.opt
+    ).pipe(gulp.dest(config.frameworkdependencies.dest));
+}
+
 function injecHtml() {
   return gulp
     .src(config.inject.src)
@@ -187,6 +195,7 @@ function watchAll() {
           gulp.parallel(
             cpThemesCss,
             otherdependencies,
+            frameworkdependencies,
             vendorJs,
             vendorCss,
             vendorOther,
@@ -205,6 +214,7 @@ gulp.task('default', gulp.series(
   clean,
   gulp.parallel(
     otherdependencies,
+    frameworkdependencies,
     vendorJs,
     vendorCss,
     vendorOther,

@@ -21,7 +21,8 @@ module.exports = {
   'less': {
     'src': [
       'styles/**/*.less',
-      'themes/**/*.less'
+      'themes/**/*.less',
+      'components/**/*.less'
     ],
     'opt': {
       'cwd': 'static',
@@ -67,7 +68,9 @@ module.exports = {
       'vendor/angular-*/**/*.min.css',
       'vendor/fontawesome/css/font-awesome.min.css',
       'styles/**/*.css',
-      'js/*.js'
+      'components/**/*.css',
+      'js/*.js',
+      'languages/**.*.json'
     ],
     'opt': {
       'cwd': 'sites/public',
@@ -101,7 +104,8 @@ module.exports = {
     'src': [
       'angular/**/*.min.js',
       'angular-*/**/*.min.js',
-      'lodash/**/*.min.js'
+      'lodash/**/*.min.js',
+      '!angular-bootstrap/ui-bootstrap.min.js'
     ],
     'opt': {
       'cwd': 'static/vendor',
@@ -121,12 +125,20 @@ module.exports = {
     },
     'dest': 'sites/public/vendor'
   },
-  'otherdependencies': {
-    'src': 'framework/paper/bootstrap.min.css',
+  'frameworkdependencies': {
+    'src': ['framework/paper/bootstrap.min.css'],
     'opt': {
       'cwd': 'static'
     },
     'dest': 'sites/public/vendor'
+  },
+  'otherdependencies': {
+    'src': ['languages/**/*.json'],
+    'opt': {
+      'cwd': 'static',
+      'base': 'static'
+    },
+    'dest': 'sites/public'
   },
   'clean': {
     'src': [

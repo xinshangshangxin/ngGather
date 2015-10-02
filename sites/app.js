@@ -35,20 +35,10 @@ app.use(function(req, res, next) {
 
 
 // err
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res) {
-    res.status(err.status || 500);
-    res.end('不存在此页面');
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
+  res.json({
+    err: err
   });
 });
 
@@ -91,4 +81,3 @@ function onListening() {
 
 server.on('error', onError);
 server.on('listening', onListening);
-

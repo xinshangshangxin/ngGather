@@ -1,7 +1,7 @@
 <div>
   <nav class="navbar navbar-default">
     <div class="navbar-header">
-      <a class="navbar-brand text-center btn-link moreOption" ng-click="ishide = !ishide">ngGather</a>
+      <a class="navbar-brand text-center btn-link more-option" ng-click="ishide = !ishide">ngGather</a>
     </div>
     <ul class="nav navbar-nav navbar-left" ng-class="{'mobile-hide': ishide}">
       <li>
@@ -10,13 +10,13 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li ng-class="{'mobile-hide': ishide}">
-        <a class="btn btn-link" ng-click="getData()">重新获取</a>
+        <a class="btn btn-link" ng-click="addMoreState !== 0 || getData()" ng-disabled="addMoreState !== 0">重新获取</a>
       </li>
       <li ng-class="{'mobile-hide': ishide}">
         <a class="btn btn-link" ng-click="changeTheme()">{{type ? '换黑色主题' : '换白色主题'}}</a>
       </li>
       <li>
-        <a class="btn btn-link" ng-click="forceUpdate()">更新时间: {{updateTime | updateTimeFilter}}</a>
+        <a class="btn btn-link" ng-click="!canForceUpdte || forceUpdate()" ng-disabled="!canForceUpdte">更新时间: {{updateTime | updateTimeFilter}}</a>
       </li>
     </ul>
   </nav>
@@ -26,7 +26,7 @@
         <td>
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="choose.ischecked"/>{{choose.name}}
+              <input type="checkbox" ng-model="choose.ischecked" />{{choose.name}}
             </label>
           </div>
         </td>
@@ -71,7 +71,7 @@
       </div>
     </div>
   </div>
-  <div class="addmore text-center" ng-click="addMore()">
-    <a class="btn btn-primary">{{addMoreInfo}}</a>
+  <div class="addmore text-center">
+    <a class="btn btn-primary" ng-click="addMoreState !== 0 || addMore()" ng-disabled="addMoreState !== 0">{{addMoreState === 1 ? '没有更多了~~' : '加载更多~'}}</a>
   </div>
 </div>
