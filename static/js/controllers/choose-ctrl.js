@@ -70,8 +70,8 @@ angular.module('ngGather')
       $scope.canForceUpdte = false;
       $timeout(function() {
         $scope.canForceUpdte = true;
-      }, 10 * 1000);
-      notificationService.info('强制重新采集中~~请稍后刷新~');
+      }, 20 * 1000);
+      notificationService.info('强制重新采集中~~请稍后刷新~', 3500);
       sitesInfoEntity
         .get({
           force: 1

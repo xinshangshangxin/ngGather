@@ -126,7 +126,8 @@ var updateSiteArticles = function(siteInfo, captureFun) {
           return Promise.resolve('更新站点' + siteInfo.name + '  ' + list.length + ' 篇文章成功 !!');
         })
         .catch(function(e) {
-          return Promise.reject('更新' + siteInfo.name + ' 文章失败: ' + e);
+          console.log(e);
+          return Promise.reject('更新' + siteInfo.name + ' 文章失败: ');
         });
     });
 };
@@ -158,8 +159,8 @@ var taskUpdate = function() {
       .then(function(data) {
         console.log(data);
       })
-      .catch(function(data) {
-        console.log(data);
+      .catch(function(e) {
+        console.log(siteInfo.name, e);
       });
   });
 };
