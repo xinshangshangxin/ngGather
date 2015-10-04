@@ -198,7 +198,7 @@ function prodInjectUserCode() {
         transform: function(filepath) {
           console.log(filepath);
           if (/\/night\//.test(filepath)) {
-            return 'themes.push(\'' + filepath + '\');';
+            return 'themes.push({href: \'' + filepath + '\',disabled: true});';
           }
         }
       }

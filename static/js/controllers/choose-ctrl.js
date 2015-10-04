@@ -1,15 +1,12 @@
 'use strict';
 
 angular.module('ngGather')
-  .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
+  .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
 
-    try {
-      $scope.chooseSite = JSON.parse(localStorage.getItem('shang_ngSites'));
-    }
-    catch (e) {
-      localStorage.removeItem('shang_ngSites');
-      $scope.chooseSite = null;
-    }
+
+    var localObj = localSaveService.get();
+    $scope.chooseSite = localObj.sites;
+    $scope.themeType = !!localObj.themeType;  // 白色 false; 黑色 true
 
     $scope.contents = [];
     $scope.updateTime = 0;
@@ -17,7 +14,6 @@ angular.module('ngGather')
     $scope.ishide = true; // 导航栏按钮显示
     $scope.chooseSite = $scope.chooseSite || ALL_SITES;
     $scope.ishow = false; // 站点选择显示
-    $scope.type = true; // themes 样式
     $scope.addMoreState = 0; // 0 可以加载更多, 1 没有更多, 2重在获取中
     $scope.canForceUpdte = true;
 
@@ -45,17 +41,18 @@ angular.module('ngGather')
     };
 
     $scope.changeSites = function() {
-      $scope.oldSites = angular.copy($scope.chooseSite);
+      $scope.showSites = angular.copy($scope.chooseSite);
       $scope.ishow = !$scope.ishow;
     };
 
     $scope.saveSites = function(isCancle) {
       $scope.ishow = !$scope.ishow;
       if (isCancle) {
+        $scope.showSites = $scope.chooseSite;
         return;
       }
-      $scope.chooseSite = $scope.oldSites;
       var sites = [];
+      $scope.chooseSite = $scope.showSites;
       _.forEach($scope.chooseSite, function(item) {
         if (item.ischecked) {
           sites.push(item.site);
@@ -63,7 +60,7 @@ angular.module('ngGather')
       });
       $scope.sites = sites;
       $scope.getData();
-      localStorage.setItem('shang_ngSites', JSON.stringify($scope.chooseSite));
+      localSaveService.set($scope.chooseSite, $scope.themeType);
     };
 
     $scope.forceUpdate = function() {
@@ -132,16 +129,28 @@ angular.module('ngGather')
 
     $scope.getData();
 
+    var themes = [];
     $scope.changeTheme = function() {
-      var themes = [];
-      if ($scope.type) {
+      if (!themes || !themes.length) {
         // <!-- inject:themes -->
+        themes.push({
+          href: '/themes/night/night.css',
+          disabled: true
+        });
         // <!-- endinject -->
+        themeSwitcherService.replaceThemes(themes);
       }
-      else {
-        themeSwitcherService.clearThemes();
-      }
-      $scope.type = !$scope.type;
-      themeSwitcherService.replaceThemes(themes);
+      themes.forEach(function(item) {
+        item.disabled = !item.disabled;
+      });
+      $scope.themeType = !$scope.themeType;
+      localSaveService.set($scope.chooseSite, $scope.themeType);
     };
+
+
+    // 切换 样式
+    if ($scope.themeType) {
+      $scope.themeType = false;
+      $scope.changeTheme();
+    }
   });

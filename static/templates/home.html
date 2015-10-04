@@ -13,7 +13,7 @@
         <a class="btn btn-link" ng-click="addMoreState !== 0 || getData()" ng-disabled="addMoreState !== 0">重新获取</a>
       </li>
       <li ng-class="{'mobile-hide': ishide}">
-        <a class="btn btn-link" ng-click="changeTheme()">{{type ? '换黑色主题' : '换白色主题'}}</a>
+        <a class="btn btn-link" ng-click="changeTheme()">{{themeType ? '换白色主题' : '换黑色主题'}}</a>
       </li>
       <li>
         <a class="btn btn-link" ng-click="!canForceUpdte || forceUpdate()" ng-disabled="!canForceUpdte">更新时间: {{updateTime | updateTimeFilter}}</a>
@@ -22,7 +22,7 @@
   </nav>
   <div ng-show="ishow" id="sites">
     <table class="table table-bordered table-striped">
-      <tr ng-repeat="choose in oldSites">
+      <tr ng-repeat="choose in (showSites || chooseSite)">
         <td>
           <div class="checkbox">
             <label>
@@ -31,7 +31,7 @@
           </div>
         </td>
         <td>
-          <a href="{{choose.href}}" target="_blank">{{choose.description}}</a>
+          <a href="{{choose.url}}" target="_blank">{{choose.description}}</a>
         </td>
       </tr>
       <tr>
