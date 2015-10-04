@@ -3,10 +3,9 @@
 angular.module('ngGather')
   .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
 
-
     var localObj = localSaveService.get();
     $scope.chooseSite = localObj.sites;
-    $scope.themeType = !!localObj.themeType;  // 白色 false; 黑色 true
+    $scope.themeType = !!localObj.themeType; // 白色 false; 黑色 true
 
     $scope.contents = [];
     $scope.updateTime = 0;
@@ -14,7 +13,7 @@ angular.module('ngGather')
     $scope.ishide = true; // 导航栏按钮显示
     $scope.chooseSite = $scope.chooseSite || ALL_SITES;
     $scope.ishow = false; // 站点选择显示
-    $scope.addMoreState = 0; // 0 可以加载更多, 1 没有更多, 2重在获取中
+    $scope.addMoreState = 0; // 0 可以加载更多, 1 没有更多, 2 正在获取中
     $scope.canForceUpdte = true;
 
     var addMoreStateTimer = null;
@@ -67,7 +66,7 @@ angular.module('ngGather')
       $scope.canForceUpdte = false;
       $timeout(function() {
         $scope.canForceUpdte = true;
-      }, 20 * 1000);
+      }, 2 * 60 * 1000);
       notificationService.info('强制重新采集中~~请稍后刷新~', 3500);
       sitesInfoEntity
         .get({
@@ -90,13 +89,18 @@ angular.module('ngGather')
     };
 
     $scope.addMore = function(isClear) {
+      if ($scope.addMoreState !== 0) {
+        console.log($scope.addMoreState === 1 ? '没有更多' : '加载中');
+        return;
+      }
       $timeout.cancel(addMoreStateTimer);
       addMoreStateTimer = $timeout(function() {
         $scope.addMoreState = 0;
-      }, 10 * 1000);
+      }, 15 * 1000);
       $scope.addMoreState = 2;
       var query = {
-        pageNu: $scope.pageNu || 0
+        pageNu: $scope.pageNu || 0,
+        updateTime: ($scope.updateTime || new Date()).getTime()
       };
       if ($scope.sites && _.isArray($scope.sites)) {
         query.sites = $scope.sites;
@@ -109,12 +113,11 @@ angular.module('ngGather')
         .query(query)
         .$promise
         .then(function(arr) {
-          $scope.pageNu = ($scope.pageNu || 0) + 1;
-
           if (!arr || !arr.length) {
             return ($scope.addMoreState = 1);
           }
           $scope.addMoreState = 0;
+          $scope.pageNu = ($scope.pageNu || 0) + 1;
           if (isClear) {
             $scope.contents = arr;
             return;
@@ -126,8 +129,6 @@ angular.module('ngGather')
           errorHandlingService.handleError(e);
         });
     };
-
-    $scope.getData();
 
     var themes = [];
     $scope.changeTheme = function() {
@@ -153,4 +154,13 @@ angular.module('ngGather')
       $scope.themeType = false;
       $scope.changeTheme();
     }
+
+    // 加载数据; 因为首次加载也会触发 load more事件, 故无法使用 $scope.getData
+    getUpdateTime();
+    $scope.$on('load more', function($evt, active, locals) {
+      if (locals.$percentage > 90) {
+        console.log($evt, active, locals);
+        $scope.addMore();
+      }
+    });
   });

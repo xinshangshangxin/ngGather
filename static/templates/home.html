@@ -45,7 +45,7 @@
     </table>
   </div>
 </div>
-<div>
+<div scroll-watch="{from: 0, to: -1}" sw-broadcast="{'load more': '$percentage > 90'}">
   <div class="row" ng-repeat="content in contents">
     <div class="contents">
       <div class="col-xs-12 col-sm-3 text-center">
@@ -72,6 +72,6 @@
     </div>
   </div>
   <div class="addmore text-center">
-    <a class="btn btn-primary" ng-click="addMoreState !== 0 || addMore()" ng-disabled="addMoreState !== 0">{{addMoreState === 1 ? '没有更多了~~' : '加载更多~'}}</a>
+    <a class="btn btn-primary" ng-click="addMoreState !== 0 || addMore()" ng-disabled="addMoreState !== 0">{{['加载更多~', '没有更多了~~', '加载中~~'][addMoreState]}}</a>
   </div>
 </div>

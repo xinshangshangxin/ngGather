@@ -9,6 +9,7 @@
     "angular-resource": "~1.4.4",
     "angular-ui-router": "~0.2.15",
     "fontawesome": "~4.4.0",
-    "lodash": "~3.10.1"
+    "lodash": "~3.10.1",
+    "angular-scroll-watch": "~0.5.5"
   }
 }

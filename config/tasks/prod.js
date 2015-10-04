@@ -178,7 +178,11 @@ function prodUserJs() {
   return gulp
     .src(['sites/public/**/*.js', '!sites/public/vendor/**/*.js'])
     .pipe(concat('production.js'))
-    .pipe(uglify())
+    .pipe(uglify({
+      compress: {
+        drop_console: true
+      }
+    }))
     .pipe(rev())
     .pipe(gulp.dest('production/public/'));
 }

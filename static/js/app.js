@@ -6,7 +6,8 @@ angular
     'ui.bootstrap',
     'ngResource',
     'angular-loading-bar',
-    'ngAnimate'
+    'ngAnimate',
+    'pc035860.scrollWatch'
   ])
   .config(function($locationProvider, $translateProvider) {
     // languages
