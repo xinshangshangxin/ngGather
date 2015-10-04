@@ -10,7 +10,7 @@
 [ccav1](http://www.ccav1.com/)  
 [liulanmi](http://liulanmi.com/)  
 [iqshw](http://www.iqshw.com/)  
-[waitsun](http://www.waitsun.com/)
+[waitsun](http://www.waitsun.com/)  
 [MacPeers](http://www.macpeers.com/)
 
 > sites 后端逻辑处理  
