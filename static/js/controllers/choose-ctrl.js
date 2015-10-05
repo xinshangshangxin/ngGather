@@ -100,7 +100,7 @@ angular.module('ngGather')
       $scope.addMoreState = 2;
       var query = {
         pageNu: $scope.pageNu || 0,
-        updateTime: ($scope.updateTime || new Date()).getTime()
+        updateTime: $scope.updateTime ? (new Date($scope.updateTime)).getTime() : (new Date()).getTime()
       };
       if ($scope.sites && _.isArray($scope.sites)) {
         query.sites = $scope.sites;

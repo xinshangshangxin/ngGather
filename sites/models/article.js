@@ -146,8 +146,11 @@ var updateSiteArticles = function(siteInfo, captureFun) {
 
 
 var getSites = function(req, res) {
+  var updateTime = req.query.updateTime;
+  // 采集时间15秒超时, 2分钟内只能采集一次, 故加上 1分钟的容错时间 
+  updateTime = updateTime ? (parseInt(updateTime) + 60 * 1000) : 0;
   articleDao
-    .findLimit(req.query.perPage || 20, req.query.pageNu || 0, req.query.sites)
+    .findLimit(req.query.perPage || 20, req.query.pageNu || 0, req.query.sites, updateTime)
     .then(function(data) {
       res.json(data);
     })
