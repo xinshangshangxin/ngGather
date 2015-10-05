@@ -210,8 +210,17 @@ function prodInjectUserCode() {
     .pipe(gulp.dest('./sites/public/'));
 }
 
+function jshintUpdates() {
+  return gulp
+    .src(['updates/**/*.js'])
+    .pipe(jshint('./config/.jshintrc_sites'))
+    .pipe(jshint.reporter('default'))
+    .pipe(myReporter());
+}
+
 gulp.task('prod', gulp.series(
   gulp.parallel(
+    jshintUpdates,
     cleanProd,
     clean
   ),

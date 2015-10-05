@@ -120,7 +120,7 @@ function otherdependencies() {
     ).pipe(gulp.dest(config.otherdependencies.dest));
 }
 
-function frameworkdependencies(){
+function frameworkdependencies() {
   return gulp
     .src(
       config.frameworkdependencies.src,
@@ -163,6 +163,14 @@ function injectUserCode() {
       }
     ))
     .pipe(gulp.dest('./sites/public/'));
+}
+
+function jshintUpdates() {
+  return gulp
+    .src(['updates/**/*.js'])
+    .pipe(jshint('./config/.jshintrc_sites'))
+    .pipe(jshint.reporter('default'))
+    .pipe(myReporter());
 }
 
 function watchAll() {
@@ -211,7 +219,7 @@ function watchAll() {
 }
 
 gulp.task('default', gulp.series(
-  clean,
+  gulp.parallel(clean, jshintUpdates),
   gulp.parallel(
     otherdependencies,
     frameworkdependencies,

@@ -127,3 +127,4 @@ exports.update = update;
 exports.findOneByHref = findOneByHref;
 exports.createOrUpdate = createOrUpdate;
 exports.findLimit = findLimit;
+exports.articleModel = articleModel;  // 为updates抛出
