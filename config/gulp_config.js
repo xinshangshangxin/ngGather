@@ -42,7 +42,9 @@ module.exports = {
   },
   'html2js': {
     'src': [
-      '**/*.html'
+      '**/*.html',
+      '!framework/**/*',
+      '!vendor/**/*'
     ],
     'opt': {
       'cwd': 'static',

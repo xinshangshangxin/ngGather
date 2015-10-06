@@ -8,6 +8,8 @@
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var cheerio = require('cheerio'); // 类jq操作DOM
+var _ = require('lodash');
+
 
 var utilitiesService = require('../service/utilitiesService.js');
 var mailSendService = require('../service/mailSendService.js');
@@ -84,6 +86,8 @@ var userAgents = [
   'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36',
   'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0; .NET4.0E; .NET4.0C; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729)'
 ];
+
+var errSites = []; // 重复出错只发送一封邮件
 
 var updateOrCreatefilter = function(list) {
   return Promise
@@ -163,6 +167,40 @@ var getSites = function(req, res) {
     });
 };
 
+var notifyErr = function(results) {
+  var errResults = [];
+  results.forEach(function(result, i) {
+    if (result.isFulfilled()) {
+      return console.log(result.value());
+    }
+    console.log(allSites[i].name + '    ' + result.reason());
+    errResults.push(allSites[i].name + '    ' + result.reason());
+  });
+  // 全部采集成功
+  if (!errResults.length) {
+    // 发送重新采集成功
+    if (errSites.length) {
+      errSites.length = 0;
+      return mailSendService.sendMail({
+        subject: '采集恢复正常',
+        html: '<p>' + (new Date().toLocaleString()) + '</p>'
+      });
+    }
+    return;
+  }
+  // 是否 已经发过通知邮件
+  var diffResults = _.difference(errResults, errSites);
+  if (!diffResults.length) {
+    return;
+  }
+  // 替换为最新的错误
+  errSites = errResults;
+  return mailSendService.sendMail({
+    subject: errResults.length + ' 采集失败',
+    html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>' + errResults.join('</p><p>') + '</p>'
+  });
+};
+
 var taskUpdate = function() {
 
   if (new Date().getTime() - new Date(updateTime).getTime() < 2 * 60 * 1000) {
@@ -174,23 +212,7 @@ var taskUpdate = function() {
     .settle(allSites.map(function(item) {
       return updateSiteArticles(item);
     }))
-    .then(function(results) {
-      var errResults = [];
-      results.forEach(function(result) {
-        if (result.isFulfilled()) {
-          return console.log(result.value());
-        }
-        console.log(result.reason());
-        errResults.push(result.reason());
-      });
-      if (!errResults.length) {
-        return;
-      }
-      return mailSendService.sendMail({
-        subject: errResults.length + ' 采集失败',
-        html: '<p>' + errResults.join('</p><p>') + '</p>'
-      });
-    })
+    .then(notifyErr)
     .then(function(data) {
       if (data) {
         console.log('发送邮件通知成功');

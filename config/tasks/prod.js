@@ -12,6 +12,7 @@ var less = require('gulp-less');
 var ngAnnotate = require('gulp-ng-annotate');
 var uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
+var RevAll = require('gulp-rev-all');
 var minifyCSS = require('gulp-minify-css');
 
 
@@ -49,10 +50,11 @@ function clean(cb) {
 }
 
 function prodThemes() {
+  var revAll = new RevAll();
   return gulp
     .src(['sites/public/themes/**/*'])
     .pipe(minifyCSS())
-    .pipe(rev())
+    .pipe(revAll.revision())
     .pipe(gulp.dest('production/public/themes'));
 }
 
@@ -149,32 +151,36 @@ function cpServer() {
 }
 
 function prodVendorJs() {
+  var revAll = new RevAll();
   return gulp
     .src(['sites/public/vendor/**/*.js'])
     .pipe(concat('vendor.js'))
     .pipe(uglify())
-    .pipe(rev())
+    .pipe(revAll.revision())
     .pipe(gulp.dest('production/public/'));
 }
 
 function prodStyles() {
+  var revAll = new RevAll();
   return gulp
     .src(['sites/public/vendor/**/*.css', 'sites/public/styles/**/*.css', 'sites/public/components/**/*.css'])
     .pipe(concat('vendor.css'))
     .pipe(minifyCSS())
-    .pipe(rev())
+    .pipe(revAll.revision())
     .pipe(gulp.dest('production/public/'));
 }
 
 function prodThemesStyle() {
+  var revAll = new RevAll();
   return gulp
     .src(['sites/public/themes/**/*.css'])
     .pipe(minifyCSS())
-    .pipe(rev())
+    .pipe(revAll.revision())
     .pipe(gulp.dest('production/public/themes/'));
 }
 
 function prodUserJs() {
+  var revAll = new RevAll();
   return gulp
     .src(['sites/public/**/*.js', '!sites/public/vendor/**/*.js'])
     .pipe(concat('production.js'))
@@ -183,7 +189,7 @@ function prodUserJs() {
         drop_console: true
       }
     }))
-    .pipe(rev())
+    .pipe(revAll.revision())
     .pipe(gulp.dest('production/public/'));
 }
 
