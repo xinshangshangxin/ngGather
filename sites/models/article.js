@@ -10,6 +10,7 @@ var request = Promise.promisify(require('request'));
 var cheerio = require('cheerio'); // 类jq操作DOM
 
 var utilitiesService = require('../service/utilitiesService.js');
+var mailSendService = require('../service/mailSendService.js');
 var articleDao = require('../daos/articleDao.js');
 var capture = require('./capture.js');
 
@@ -169,15 +170,35 @@ var taskUpdate = function() {
     return;
   }
 
-  allSites.forEach(function(siteInfo) {
-    updateSiteArticles(siteInfo)
-      .then(function(data) {
-        console.log(data);
-      })
-      .catch(function(e) {
-        console.log(siteInfo.name, e);
+  Promise
+    .settle(allSites.map(function(item) {
+      return updateSiteArticles(item);
+    }))
+    .then(function(results) {
+      var errResults = [];
+      results.forEach(function(result) {
+        if (result.isFulfilled()) {
+          return console.log(result.value());
+        }
+        console.log(result.reason());
+        errResults.push(result.reason());
       });
-  });
+      if (!errResults.length) {
+        return;
+      }
+      return mailSendService.sendMail({
+        subject: errResults.length + ' 采集失败',
+        html: '<p>' + errResults.join('</p><p>') + '</p>'
+      });
+    })
+    .then(function(data) {
+      if (data) {
+        console.log('发送邮件通知成功');
+      }
+    })
+    .catch(function(e) {
+      console.log(e);
+    });
 };
 
 exports.taskUpdate = taskUpdate;
