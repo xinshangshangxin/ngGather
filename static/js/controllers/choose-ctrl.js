@@ -89,7 +89,7 @@ angular.module('ngGather')
     };
 
     $scope.addMore = function(isClear) {
-      if ($scope.addMoreState !== 0) {
+      if ($scope.addMoreState !== 0 && !isClear) {
         console.log($scope.addMoreState === 1 ? '没有更多' : '加载中');
         return;
       }
