@@ -21,7 +21,7 @@ var nuChange = {
 };
 
 
-module.exports = {
+var ctrl = module.exports = {
   getImg: function(req, res) {
     var url = req.query.imgurl;
     if (!url) {
@@ -47,6 +47,11 @@ module.exports = {
   },
   calculateTime: function(timeStr) {
     var timeNu = 0;
+
+    if(/(\d+[-\/]\d+)/.test(timeStr)) {
+      return ctrl.calculateTimeWithNoYear(RegExp.$1);
+    }
+
     if (/秒前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * 1000);
     }
@@ -72,6 +77,9 @@ module.exports = {
       timeNu = timeStr;
     }
     return new Date(timeNu).getTime();
+  },
+  calculateTimeWithNoYear: function(timeStr){
+    return new Date( new Date().getFullYear() + '/' + timeStr).getTime()
   },
   calculateTimeWithChinese: function(timeStr) {
     // 27 九, 2015
