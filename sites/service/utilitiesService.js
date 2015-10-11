@@ -48,7 +48,10 @@ var ctrl = module.exports = {
   calculateTime: function(timeStr) {
     var timeNu = 0;
 
-    if(/(\d+[-\/]\d+)/.test(timeStr)) {
+    if(/(\d+[-\/]\d+[-\/]\d+)/.test(timeStr)) {
+      return new Date(RegExp.$1).getTime();
+    }
+    else if(/(\d+[-\/]\d+)/.test(timeStr)) {
       return ctrl.calculateTimeWithNoYear(RegExp.$1);
     }
 
@@ -79,7 +82,7 @@ var ctrl = module.exports = {
     return new Date(timeNu).getTime();
   },
   calculateTimeWithNoYear: function(timeStr){
-    return new Date( new Date().getFullYear() + '/' + timeStr).getTime()
+    return new Date( new Date().getFullYear() + '/' + timeStr).getTime();
   },
   calculateTimeWithChinese: function(timeStr) {
     // 27 九, 2015

@@ -2,7 +2,9 @@
 
 /**
  * 1001: db查询失败
- *
+ * 1002: 搜索失败
+ * 1003: 查询条件keyword缺少
+ * 
  */
 
 var Promise = require('bluebird');
@@ -101,6 +103,9 @@ var updateOrCreatefilter = function(list) {
           } // 作者文章更新时间超过23小时的记为 更新文章
           if (article.time - docArticle.time >= 23 * 60 * 60 * 1000) {
             return true;
+          } // 图片变更也算进去
+          if (article.img !== docArticle.img) {
+            return true;
           }
           return false;
         })
@@ -136,6 +141,15 @@ var updateSiteArticles = function(siteInfo, captureFun) {
         .all(list.map(function(article) {
           article.classify = siteInfo.classify;
           article.site = siteInfo.site;
+
+          // 为采集站点所有内容做特殊处理
+          if (/page\/\d+/ig.test(siteInfo.url)) {
+            if (!article.time) {
+              console.log(article);
+            }
+            article.gatherTime = article.time;
+          }
+
           return articleDao
             .createOrUpdate(article);
         }))
@@ -149,8 +163,28 @@ var updateSiteArticles = function(siteInfo, captureFun) {
     });
 };
 
+var search = function(req, res) {
+  req.query.keyword = req.query.keyword.trim();
+  articleDao
+    .search(req.query)
+    .then(function(data) {
+      res.json(data);
+    })
+    .catch(function(e) {
+      console.log(e);
+      res.json(400, {
+        err: 1002
+      });
+    });
+};
+
 
 var getSites = function(req, res) {
+
+  if (req.query.keyword) {
+    return search(req, res);
+  }
+
   var updateTime = req.query.updateTime;
   // 采集时间15秒超时, 2分钟内只能采集一次, 故加上 1分钟的容错时间 
   updateTime = updateTime ? (parseInt(updateTime) + 60 * 1000) : 0;
@@ -225,6 +259,7 @@ var taskUpdate = function() {
 
 exports.taskUpdate = taskUpdate;
 exports.getSites = getSites;
+exports.search = search;
 exports.updateTime = function() {
   return updateTime;
 };

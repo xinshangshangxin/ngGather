@@ -7,6 +7,14 @@
       <li>
         <a class="btn btn-link" ng-click="changeSites()">站点选择</a>
       </li>
+      <li ng-class="{'mobile-hide': ishide}">
+        <form class="navbar-form navbar-left search" role="search" ng-submit="search()">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="回车搜索" ng-model="keyword">
+          </div>
+          <a ng-show="!!keyword" class="btn btn-link" ng-click="search(true)">取消搜索</a>
+        </form>
+      </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li ng-class="{'mobile-hide': ishide}">

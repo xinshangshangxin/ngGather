@@ -4,29 +4,57 @@ angular.module('ngGather')
   .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
 
     var localObj = localSaveService.get();
-    $scope.chooseSite = localObj.sites;
+    $scope.chooseSite = localObj.sites || ALL_SITES;
     $scope.themeType = !!localObj.themeType; // 白色 false; 黑色 true
 
-    $scope.contents = [];
-    $scope.updateTime = 0;
-    $scope.pageNu = 0;
-    $scope.ishide = true; // 导航栏按钮显示
-    $scope.chooseSite = $scope.chooseSite || ALL_SITES;
-    $scope.ishow = false; // 站点选择显示
     $scope.addMoreState = 0; // 0 可以加载更多, 1 没有更多, 2 正在获取中
     $scope.canForceUpdte = true;
-
-    var addMoreStateTimer = null;
-
-
+    $scope.contents = [];
+    $scope.isSearch = false; // 是否在搜索模式下
+    $scope.ishide = true; // 导航栏按钮显示
+    $scope.ishow = false; // 站点选择显示
+    $scope.keyword = ''; // 搜索关键字
+    $scope.pageNu = 0;
     $scope.sites = []; // 选择站点名称
-    _.forEach($scope.chooseSite, function(item) {
-      if (item.ischecked) {
-        $scope.sites.push(item.site);
-      }
-    });
+    $scope.updateTime = 0;
 
-    var getUpdateTime = function() {
+    var addMoreStateTimer = null;     // 添加更多按钮恢复正常定时器
+    var themes = [];                  // 主题样式
+
+    $scope.addMore = addMore;
+    $scope.changeSites = changeSites;
+    $scope.changeTheme = changeTheme;
+    $scope.forceUpdate = forceUpdate;
+    $scope.getData = getData;         // 重新获取
+    $scope.saveSites = saveSites;
+    $scope.search = search;
+
+
+    return init();
+
+    function init() {
+      _.forEach($scope.chooseSite, function(item) {
+        if (item.ischecked) {
+          $scope.sites.push(item.site);
+        }
+      });
+      // 切换 样式
+      if ($scope.themeType) {
+        $scope.themeType = false;
+        $scope.changeTheme();
+      }
+
+      // 加载数据; 因为首次加载也会触发 load more事件, 故无法使用 $scope.getData
+      getUpdateTime();
+      $scope.$on('load more', function($evt, active, locals) {
+        if (locals.$percentage > 90) {
+          console.log($evt, active, locals);
+          $scope.addMore();
+        }
+      });
+    }
+
+    function getUpdateTime() {
       updateTimeEntity
         .get()
         .$promise
@@ -37,14 +65,14 @@ angular.module('ngGather')
           console.log(e);
           errorHandlingService.handleError(e);
         });
-    };
+    }
 
-    $scope.changeSites = function() {
+    function changeSites() {
       $scope.showSites = angular.copy($scope.chooseSite);
       $scope.ishow = !$scope.ishow;
-    };
+    }
 
-    $scope.saveSites = function(isCancle) {
+    function saveSites(isCancle) {
       $scope.ishow = !$scope.ishow;
       if (isCancle) {
         $scope.showSites = $scope.chooseSite;
@@ -60,9 +88,9 @@ angular.module('ngGather')
       $scope.sites = sites;
       $scope.getData();
       localSaveService.set($scope.chooseSite, $scope.themeType);
-    };
+    }
 
-    $scope.forceUpdate = function() {
+    function forceUpdate() {
       $scope.canForceUpdte = false;
       $timeout(function() {
         $scope.canForceUpdte = true;
@@ -80,15 +108,25 @@ angular.module('ngGather')
           console.log(e);
           errorHandlingService.handleError(e);
         });
-    };
+    }
 
-    $scope.getData = function() {
+    function getData() {
       $scope.pageNu = 0;
       $scope.addMore(true);
       getUpdateTime();
-    };
+    }
 
-    $scope.addMore = function(isClear) {
+    function search(clearSearch) {
+      $scope.isSearch = true;
+      if (clearSearch || !$scope.keyword) {
+        $scope.isSearch = false;
+        $scope.keyword = '';
+      }
+      $scope.pageNu = 0;
+      $scope.addMore(true);
+    }
+
+    function addMore(isClear) {
       if ($scope.addMoreState !== 0 && !isClear) {
         console.log($scope.addMoreState === 1 ? '没有更多' : '加载中');
         return;
@@ -102,6 +140,7 @@ angular.module('ngGather')
         pageNu: $scope.pageNu || 0,
         updateTime: $scope.updateTime ? (new Date($scope.updateTime)).getTime() : (new Date()).getTime()
       };
+
       if ($scope.sites && _.isArray($scope.sites)) {
         query.sites = $scope.sites;
       }
@@ -109,29 +148,32 @@ angular.module('ngGather')
       if (isClear) {
         query.times = new Date().getTime();
       }
+      if ($scope.isSearch) {
+        query.keyword = $scope.keyword;
+      }
       sitesInfoEntity
         .query(query)
         .$promise
         .then(function(arr) {
-          if (!arr || !arr.length) {
-            return ($scope.addMoreState = 1);
-          }
           $scope.addMoreState = 0;
           $scope.pageNu = ($scope.pageNu || 0) + 1;
           if (isClear) {
             $scope.contents = arr;
-            return;
           }
-          $scope.contents = $scope.contents.concat(arr);
+          else {
+            $scope.contents = $scope.contents.concat(arr);
+          }
+          if (!arr || !arr.length) {
+            $scope.addMoreState = 1;
+          }
         })
         .catch(function(e) {
           $scope.addMoreState = 0;
           errorHandlingService.handleError(e);
         });
-    };
+    }
 
-    var themes = [];
-    $scope.changeTheme = function() {
+    function changeTheme() {
       if (!themes || !themes.length) {
         // <!-- inject:themes -->
         themes.push({
@@ -146,21 +188,5 @@ angular.module('ngGather')
       });
       $scope.themeType = !$scope.themeType;
       localSaveService.set($scope.chooseSite, $scope.themeType);
-    };
-
-
-    // 切换 样式
-    if ($scope.themeType) {
-      $scope.themeType = false;
-      $scope.changeTheme();
     }
-
-    // 加载数据; 因为首次加载也会触发 load more事件, 故无法使用 $scope.getData
-    getUpdateTime();
-    $scope.$on('load more', function($evt, active, locals) {
-      if (locals.$percentage > 90) {
-        console.log($evt, active, locals);
-        $scope.addMore();
-      }
-    });
   });

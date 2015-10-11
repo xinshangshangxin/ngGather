@@ -98,8 +98,9 @@ function captureWaitsun($) {
     .each(function(i, e) {
       var temp = $(e).find('.post-thumbnail').first();
       var content = $(e).find('.post-content').first();
+      var imgEle = temp.find('a').first().find('img').first();
 
-      var img = temp.find('a').first().find('img').first().data('cfsrc');
+      var img = imgEle.data('cfsrc') || imgEle.attr('src');
       var title = temp.find('a').first().attr('title');
       var href = temp.find('a').first().attr('href');
       var timeNu = calculateTimeWithChinese(content.find('.post-date').first().text());
