@@ -47,13 +47,6 @@ var allSites = [{
   captureFun: capture.captureZD,
   classify: 'windows'
 }, {
-  name: 'ccav',
-  url: 'http://www.ccav1.com/',
-  site: 'ccav',
-  description: 'Yanu - 分享优秀、纯净、绿色、实用的精品软件',
-  captureFun: capture.captureCCAV,
-  classify: 'windows'
-}, {
   name: 'llm',
   url: 'http://liulanmi.com/',
   site: 'llm',
@@ -90,6 +83,7 @@ var userAgents = [
 ];
 
 var errSites = []; // 重复出错只发送一封邮件
+var errTime = new Date();
 
 var updateOrCreatefilter = function(list) {
   return Promise
@@ -100,11 +94,12 @@ var updateOrCreatefilter = function(list) {
           // 如果不存在此文章, 说明新建文章
           if (!docArticle) {
             return true;
-          } // 作者文章更新时间超过23小时的记为 更新文章
-          if (article.time - docArticle.time >= 23 * 60 * 60 * 1000) {
+          } // 作者文章更新时间超过23小时, 并且采集时间-文章更新时间 < 10天 的记为 更新文章
+          if (article.time - docArticle.time >= 23 * 60 * 60 * 1000 && article.gatherTime - article.time < 10 * 24 * 60 * 60 * 1000) {
             return true;
           } // 图片变更也算进去
           if (article.img !== docArticle.img) {
+            console.log('图片变更:', article);
             return true;
           }
           return false;
@@ -215,9 +210,10 @@ var notifyErr = function(results) {
     // 发送重新采集成功
     if (errSites.length) {
       errSites.length = 0;
+      var timeLen = utilitiesService.calculateTimeLen(new Date().getTime() - errTime);
       return mailSendService.sendMail({
         subject: '采集恢复正常',
-        html: '<p>' + (new Date().toLocaleString()) + '</p>'
+        html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>持续时间: ' + timeLen + '</p>'
       });
     }
     return;
@@ -227,6 +223,7 @@ var notifyErr = function(results) {
   if (!diffResults.length) {
     return;
   }
+  errTime = new Date().getTime();
   // 替换为最新的错误
   errSites = errResults;
   return mailSendService.sendMail({

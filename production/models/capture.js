@@ -50,28 +50,6 @@ function captureIQQ($) {
   return list;
 }
 
-function captureCCAV($) {
-  var list = [];
-  var now = new Date();
-
-  $('#content-list .post-list').each(function(i, e) {
-    var aItem = $(e).find('.post-title').first().find('a').first();
-    var img = $(e).find('.post-thumbnail').first().find('img').first();
-    var timeStr = $(e).find('.ptime').text();
-    var timeNu = calculateTime(timeStr);
-
-    list.push({
-      img: img.attr('src'),
-      title: aItem.attr('title'),
-      href: aItem.attr('href'),
-      time: timeNu + 1000 - i, // 通过 + i 来消除sort排序不稳定性
-      gatherTime: now.getTime() + 1000 - i,
-      intro: $(e).find('.post-excerpt').text()
-    });
-  });
-  return list;
-}
-
 function captureLLM($) {
   var list = [];
   var now = new Date();
@@ -145,7 +123,6 @@ function captureMacpeers($) {
 
 exports.captureZD = captureZD;
 exports.captureIQQ = captureIQQ;
-exports.captureCCAV = captureCCAV;
 exports.captureLLM = captureLLM;
 exports.captureWaitsun = captureWaitsun;
 exports.captureMacpeers = captureMacpeers;

@@ -20,6 +20,16 @@ var nuChange = {
   '十二': 12
 };
 
+var timeConversion = {
+  year: 365 * 24 * 60 * 60 * 1000,
+  month: 30 * 24 * 60 * 60 * 1000,
+  week: 7 * 24 * 60 * 60 * 1000,
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
+  minute: 60 * 1000,
+  second: 1000
+};
+
 
 var ctrl = module.exports = {
   getImg: function(req, res) {
@@ -56,25 +66,25 @@ var ctrl = module.exports = {
     }
 
     if (/秒前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.second);
     }
     else if (/分钟前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 60 * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.minute);
     }
     else if (/小时前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 60 * 60 * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.hour);
     }
     else if (/天前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 24 * 60 * 60 * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.day);
     }
     else if (/周前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 7 * 24 * 60 * 60 * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.week);
     }
     else if (/月前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 30 * 24 * 60 * 60 * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.month);
     }
     else if (/年前/.test(timeStr)) {
-      timeNu = new Date(new Date() - parseInt(timeStr) * 365 * 24 * 60 * 60 * 1000);
+      timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.year);
     }
     else {
       timeNu = timeStr;
@@ -92,6 +102,41 @@ var ctrl = module.exports = {
       return new Date(timeArr[3] + '/' + nuChange[timeArr[1]] + '/' + timeArr[2]).getTime();
     }
     return new Date(timeArr[2] + '/' + nuChange[timeArr[1]] + '/' + timeArr[0]).getTime();
+  },
+  calculateTimeLen: function(millisecond){
+    var arr = [];
+    var yearNu = parseInt(millisecond / timeConversion.year);
+    if(yearNu >= 1) {
+      arr.push(yearNu + ' 年');
+      millisecond -= yearNu *  timeConversion.year;
+    }
+    var monthNu = parseInt(millisecond / timeConversion.month);
+    if(monthNu >= 1) {
+      arr.push(monthNu + ' 月');
+      millisecond -= monthNu *  timeConversion.month;
+    }
+    var dayNu = parseInt(millisecond / timeConversion.day);
+    if(dayNu >= 1) {
+      arr.push(dayNu + ' 天');
+      millisecond -= dayNu *  timeConversion.day;
+    }
+    var hourNu = parseInt(millisecond / timeConversion.hour);
+    if(hourNu >= 1) {
+      arr.push(hourNu + ' 小时');
+      millisecond -= hourNu *  timeConversion.hour;
+    }
+    var minuteNu = parseInt(millisecond / timeConversion.minute);
+    if(minuteNu >= 1) {
+      arr.push(minuteNu + ' 分');
+      millisecond -= minuteNu *  timeConversion.minute;
+    }
+    var secondNu = parseInt(millisecond / timeConversion.second);
+    if(secondNu >= 1) {
+      arr.push(secondNu + ' 秒');
+      millisecond -= secondNu *  timeConversion.second;
+    }
+    arr.push(millisecond + ' 毫秒');
+    return arr.join('/');
   },
   /**
    * 转换编码

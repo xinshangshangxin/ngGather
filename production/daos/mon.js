@@ -67,6 +67,12 @@ function getMongodbUri() {
   };
 }
 
+function close() {
+  mongoose.connection.close(function() {
+    console.log('Mongoose disconnected');
+  });
+}
+
 
 var dbName = config.get('dbName');
 var mongodbUri = getMongodbUri(getCodingMongodbUri, getDockerMongo, getDaoCloudorLocalMongodbUri)(dbName);
@@ -78,5 +84,4 @@ var db = mongoose.connect(mongodbUri);
 
 exports.db = db;
 exports.mongoose = mongoose;
-
-
+exports.close = close;

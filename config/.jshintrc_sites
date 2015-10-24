@@ -47,5 +47,7 @@
     "node"          : true,
     "-W100"         : true,
 
+    "latedef": "nofunc",
+
     "predef"        : []
 }
