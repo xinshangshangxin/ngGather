@@ -51,7 +51,7 @@ articleSchema.pre('update', function() {
   this.updatedAt = Date.now();
 });
 articleSchema.pre('findOneAndUpdate', function() {
-  if (!this.createdAt) {
+  if(!this.createdAt) {
     this.findOneAndUpdate({}, {
       createdAt: Date.now()
     });
@@ -75,12 +75,12 @@ function findLimit(perPage, pageNu, sites, updateTime) {
   perPage = parseInt(perPage) || 20; // 每一页多少文章
   pageNu = parseInt(pageNu) || 0; // 查询第几页的
   var query = {};
-  if (sites) {
+  if(sites) {
     query.site = {
       $in: sites
     };
   }
-  if (updateTime) {
+  if(updateTime) {
     query.gatherTime = {
       $lte: updateTime
     };
@@ -124,14 +124,14 @@ function createOrUpdate(siteObj) {
  * @return {[type]}         [description]
  */
 function search(options) {
-  if (!options.keyword) {
+  if(!options.keyword) {
     return [];
   }
 
   var perPage = parseInt(options.perPage) || 20; // 每一页多少文章
   var pageNu = parseInt(options.pageNu) || 0; // 查询第几页的
   var keywords = options.keyword.replace(/[(\s+),]/, '.*');
-  
+
   var query = {
     $or: [{
       intro: new RegExp(keywords, 'i')
@@ -139,17 +139,17 @@ function search(options) {
       title: new RegExp(keywords, 'i')
     }]
   };
-  if (options.sites) {
+  if(options.sites) {
     query.site = {
       $in: options.sites
     };
   }
-  if (_.isDate(options.startTime)) {
+  if(_.isDate(options.startTime)) {
     query.gatherTime = {
       $gte: new Date(options.startTime).getTime()
     };
   }
-  if (_.isDate(options.endTime)) {
+  if(_.isDate(options.endTime)) {
     query.gatherTime = query.gatherTime || {};
     query.gatherTime.$lte = new Date(options.endTime).getTime();
   }

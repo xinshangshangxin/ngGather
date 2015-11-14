@@ -4,7 +4,6 @@
  * 1001: db查询失败
  * 1002: 搜索失败
  * 1003: 查询条件keyword缺少
- * 
  */
 
 var Promise = require('bluebird');
@@ -92,13 +91,13 @@ var updateOrCreatefilter = function(list) {
         .findOneByHref(article.href)
         .then(function(docArticle) {
           // 如果不存在此文章, 说明新建文章
-          if (!docArticle) {
+          if(!docArticle) {
             return true;
           } // 作者文章更新时间超过23小时, 并且采集时间-文章更新时间 < 10天 的记为 更新文章
-          if (article.time - docArticle.time >= 23 * 60 * 60 * 1000 && article.gatherTime - article.time < 10 * 24 * 60 * 60 * 1000) {
+          if(article.time - docArticle.time >= 23 * 60 * 60 * 1000 && article.gatherTime - article.time < 10 * 24 * 60 * 60 * 1000) {
             return true;
           } // 图片变更也算进去
-          if (article.img !== docArticle.img) {
+          if(article.img !== docArticle.img) {
             console.log('图片变更:', article);
             return true;
           }
@@ -115,14 +114,14 @@ var updateSiteArticles = function(siteInfo, captureFun) {
   updateTime = new Date();
   captureFun = captureFun || siteInfo.captureFun;
   return request({
-      url: siteInfo.url,
-      method: 'GET',
-      timeout: 15 * 1000,
-      encoding: null,
-      headers: {
-        'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
-      }
-    })
+    url: siteInfo.url,
+    method: 'GET',
+    timeout: 15 * 1000,
+    encoding: null,
+    headers: {
+      'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
+    }
+  })
     .spread(function(response, body) {
       var $ = cheerio.load(utilitiesService.changeEncoding(body, siteInfo.encoding, siteInfo.noCheck));
       return captureFun($);
@@ -137,9 +136,9 @@ var updateSiteArticles = function(siteInfo, captureFun) {
           article.classify = siteInfo.classify;
           article.site = siteInfo.site;
 
-          // 为采集站点所有内容做特殊处理
-          if (/page\/\d+/ig.test(siteInfo.url)) {
-            if (!article.time) {
+          // 为采集站点所有内容做特殊处理(update-0.0.2.js)
+          if(/page\/\d+/ig.test(siteInfo.url)) {
+            if(!article.time) {
               console.log(article);
             }
             article.gatherTime = article.time;
@@ -173,10 +172,9 @@ var search = function(req, res) {
     });
 };
 
-
 var getSites = function(req, res) {
 
-  if (req.query.keyword) {
+  if(req.query.keyword) {
     return search(req, res);
   }
 
@@ -199,20 +197,23 @@ var getSites = function(req, res) {
 var notifyErr = function(results) {
   var errResults = [];
   results.forEach(function(result, i) {
-    if (result.isFulfilled()) {
+    if(result.isFulfilled()) {
       return console.log(result.value());
     }
     console.log(allSites[i].name + '    ' + result.reason());
     errResults.push(allSites[i].name + '    ' + result.reason());
   });
   // 全部采集成功
-  if (!errResults.length) {
+  if(!errResults.length) {
     // 发送重新采集成功
-    if (errSites.length) {
+    if(errSites.length) {
+      var errSitesName = errSites.forEach(function(item) {
+        return item && item.name;
+      });
       errSites.length = 0;
       var timeLen = utilitiesService.calculateTimeLen(new Date().getTime() - errTime);
       return mailSendService.sendMail({
-        subject: '采集恢复正常',
+        subject: errSitesName.join(', ') + '采集恢复正常',
         html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>持续时间: ' + timeLen + '</p>'
       });
     }
@@ -220,7 +221,7 @@ var notifyErr = function(results) {
   }
   // 是否 已经发过通知邮件
   var diffResults = _.difference(errResults, errSites);
-  if (!diffResults.length) {
+  if(!diffResults.length) {
     return;
   }
   errTime = new Date().getTime();
@@ -234,7 +235,7 @@ var notifyErr = function(results) {
 
 var taskUpdate = function() {
 
-  if (new Date().getTime() - new Date(updateTime).getTime() < 2 * 60 * 1000) {
+  if(new Date().getTime() - new Date(updateTime).getTime() < 2 * 60 * 1000) {
     console.log('last update in 2 min');
     return;
   }
@@ -245,7 +246,7 @@ var taskUpdate = function() {
     }))
     .then(notifyErr)
     .then(function(data) {
-      if (data) {
+      if(data) {
         console.log('发送邮件通知成功');
       }
     })
@@ -260,6 +261,9 @@ exports.search = search;
 exports.updateTime = function() {
   return updateTime;
 };
+
+// just for test
+exports.updateSiteArticles = updateSiteArticles;
 
 
 //allSites.forEach(function(siteObj) {

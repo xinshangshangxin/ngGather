@@ -5,7 +5,6 @@ var calculateTime = utilitiesService.calculateTime;
 var calculateTimeWithChinese = utilitiesService.calculateTimeWithChinese;
 
 
-
 function captureZD($) {
   var list = [];
   var now = new Date();

@@ -20,7 +20,7 @@ router
     next();
   })
   .all(/^\/(?=api\/v\d+\/execCmds)/, function(req, res, next) {
-    if ((req.query.key || req.body.key) === (process.env.key || 'key')) {
+    if((req.query.key || req.body.key) === (process.env.key || 'key')) {
       return next();
     }
     return res.json(400, {
@@ -31,7 +31,7 @@ router
     res.render('index.html');
   })
   .get('/api/v1/sites', function(req, res) {
-    if (req.query.force) {
+    if(req.query.force) {
       article.taskUpdate();
       return res.json({
         start: true
