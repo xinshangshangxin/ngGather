@@ -31,23 +31,23 @@ var timeConversion = {
 };
 
 
-var ctrl = module.exports = {
+var svc = module.exports = {
   getImg: function(req, res) {
     var url = req.query.imgurl;
-    if (!url) {
+    if(!url) {
       res.send(404);
     }
     else {
       request({
-          url: url,
-          pool: false,
-          followRedirect: false,
-          headers: {
-            'Connection': 'close'
-          },
-          method: 'GET',
-          timeout: 10 * 1000
-        })
+        url: url,
+        pool: false,
+        followRedirect: false,
+        headers: {
+          'Connection': 'close'
+        },
+        method: 'GET',
+        timeout: 10 * 1000
+      })
         .on('error', function(err) {
           console.log('getImg err:  ', err);
           return res.send(404);
@@ -59,31 +59,31 @@ var ctrl = module.exports = {
     var timeNu = 0;
 
     if(/(\d+[-\/]\d+[-\/]\d+)/.test(timeStr)) {
-      return new Date(RegExp.$1).getTime();
+      return new Date(RegExp.$1.replace(/\-/g, '/')).getTime();
     }
     else if(/(\d+[-\/]\d+)/.test(timeStr)) {
-      return ctrl.calculateTimeWithNoYear(RegExp.$1);
+      return svc.calculateTimeWithNoYear(RegExp.$1);
     }
 
-    if (/秒前/.test(timeStr)) {
+    if(/秒前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.second);
     }
-    else if (/分钟前/.test(timeStr)) {
+    else if(/分钟前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.minute);
     }
-    else if (/小时前/.test(timeStr)) {
+    else if(/小时前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.hour);
     }
-    else if (/天前/.test(timeStr)) {
+    else if(/天前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.day);
     }
-    else if (/周前/.test(timeStr)) {
+    else if(/周前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.week);
     }
-    else if (/月前/.test(timeStr)) {
+    else if(/月前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.month);
     }
-    else if (/年前/.test(timeStr)) {
+    else if(/年前/.test(timeStr)) {
       timeNu = new Date(new Date() - parseInt(timeStr) * timeConversion.year);
     }
     else {
@@ -91,49 +91,54 @@ var ctrl = module.exports = {
     }
     return new Date(timeNu).getTime();
   },
-  calculateTimeWithNoYear: function(timeStr){
-    return new Date( new Date().getFullYear() + '/' + timeStr).getTime();
+  calculateTimeWithNoYear: function(timeStr) {
+    var today = new Date();
+    var calculateTime = new Date(today.getFullYear() + '/' + timeStr);
+    if(calculateTime && calculateTime > today) {
+      calculateTime.setFullYear(today.getFullYear() - 1);
+    }
+    return calculateTime.getTime();
   },
   calculateTimeWithChinese: function(timeStr) {
     // 27 九, 2015
     // ["On", "九", "25", "2015"]
     var timeArr = timeStr.split(/,?\s+/);
-    if (timeArr[0] === 'On') {
+    if(timeArr[0] === 'On') {
       return new Date(timeArr[3] + '/' + nuChange[timeArr[1]] + '/' + timeArr[2]).getTime();
     }
     return new Date(timeArr[2] + '/' + nuChange[timeArr[1]] + '/' + timeArr[0]).getTime();
   },
-  calculateTimeLen: function(millisecond){
+  calculateTimeLen: function(millisecond) {
     var arr = [];
     var yearNu = parseInt(millisecond / timeConversion.year);
     if(yearNu >= 1) {
       arr.push(yearNu + ' 年');
-      millisecond -= yearNu *  timeConversion.year;
+      millisecond -= yearNu * timeConversion.year;
     }
     var monthNu = parseInt(millisecond / timeConversion.month);
     if(monthNu >= 1) {
       arr.push(monthNu + ' 月');
-      millisecond -= monthNu *  timeConversion.month;
+      millisecond -= monthNu * timeConversion.month;
     }
     var dayNu = parseInt(millisecond / timeConversion.day);
     if(dayNu >= 1) {
       arr.push(dayNu + ' 天');
-      millisecond -= dayNu *  timeConversion.day;
+      millisecond -= dayNu * timeConversion.day;
     }
     var hourNu = parseInt(millisecond / timeConversion.hour);
     if(hourNu >= 1) {
       arr.push(hourNu + ' 小时');
-      millisecond -= hourNu *  timeConversion.hour;
+      millisecond -= hourNu * timeConversion.hour;
     }
     var minuteNu = parseInt(millisecond / timeConversion.minute);
     if(minuteNu >= 1) {
       arr.push(minuteNu + ' 分');
-      millisecond -= minuteNu *  timeConversion.minute;
+      millisecond -= minuteNu * timeConversion.minute;
     }
     var secondNu = parseInt(millisecond / timeConversion.second);
     if(secondNu >= 1) {
       arr.push(secondNu + ' 秒');
-      millisecond -= secondNu *  timeConversion.second;
+      millisecond -= secondNu * timeConversion.second;
     }
     arr.push(millisecond + ' 毫秒');
     return arr.join('/');
@@ -146,7 +151,7 @@ var ctrl = module.exports = {
    */
   changeEncoding: function(data, encoding, noCheck) {
     var val = iconv.decode(data, encoding || 'utf8');
-    if (!noCheck && val.indexOf('�') !== -1) {
+    if(!noCheck && val.indexOf('�') !== -1) {
       val = iconv.decode(data, 'gbk');
     }
     return val;

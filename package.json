@@ -3,7 +3,7 @@
   "version": "0.0.8",
   "scripts": {
     "start": "./node_modules/pm2/bin/pm2 start production/app.js --no-daemon",
-    "test": "mocha --recursive --timeout 10000 -R spec --require should --harmony test/ --bail"
+    "test": "mocha --recursive --timeout 10000 -R spec --require should --harmony tests/unit --bail"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
@@ -44,7 +44,7 @@
     "map-stream": "0.0.6",
     "node-notifier": "^4.2.3",
     "require-dir": "^0.3.0",
-    "should": "^6.0.1",
+    "should": "^7.1.1",
     "stream-series": "^0.1.1",
     "supertest": "^1.0.1"
   }

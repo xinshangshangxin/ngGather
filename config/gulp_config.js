@@ -3,7 +3,7 @@ module.exports = {
     'src': [
       'sites/**/*.js',
       '!sites/public/**/*',
-      '!sites/test/**/*'
+      '!sites/tests/**/*'
     ]
   },
   'js': {
@@ -62,7 +62,7 @@ module.exports = {
     'src': [
       'static/index.html'
     ],
-    'source':[
+    'source': [
       'vendor/angular/**/*.js',
       'vendor/angular-*/**/*.js',
       'vendor/lodash/**/*.js',

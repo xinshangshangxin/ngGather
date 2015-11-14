@@ -8,7 +8,7 @@ function getCodingMongodbUri() {
   try {
     return JSON.parse(process.env.VCAP_SERVICES).mongodb[0].credentials.uri;
   }
-  catch (e) {
+  catch(e) {
     return false;
   }
 }
@@ -16,16 +16,16 @@ function getCodingMongodbUri() {
 function getDockerMongo(database) {
   var mongodbUri = 'mongodb://';
 
-  if (process.env.MONGO_USERNAME) {
+  if(process.env.MONGO_USERNAME) {
     mongodbUri += process.env.MONGO_USERNAME;
 
-    if (process.env.MONGO_PASSWORD) {
+    if(process.env.MONGO_PASSWORD) {
       mongodbUri += ':' + process.env.MONGO_PASSWORD;
     }
     mongodbUri += '@';
   }
 
-  if (!process.env.MONGO_PORT_27017_TCP_ADDR) {
+  if(!process.env.MONGO_PORT_27017_TCP_ADDR) {
     return false;
   }
 
@@ -39,10 +39,10 @@ function getDaoCloudorLocalMongodbUri(database) {
   // DaoCloud链接地址
   var mongodbUri = 'mongodb://';
 
-  if (process.env.MONGODB_USERNAME) {
+  if(process.env.MONGODB_USERNAME) {
     mongodbUri += process.env.MONGODB_USERNAME;
 
-    if (process.env.MONGODB_PASSWORD) {
+    if(process.env.MONGODB_PASSWORD) {
       mongodbUri += ':' + process.env.MONGODB_PASSWORD;
     }
     mongodbUri += '@';
@@ -57,10 +57,10 @@ function getMongodbUri() {
   var _args = arguments;
   // 返回函数 为了添加参数database
   return function(database) {
-    for (var i = 0, l = _args.length; i < l; i++) {
+    for(var i = 0, l = _args.length; i < l; i++) {
       var fn = _args[i];
       var uri = fn(database);
-      if (uri !== false) {
+      if(uri !== false) {
         return uri;
       }
     }

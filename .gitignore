@@ -52,3 +52,5 @@ Temporary Items
 static/vendor/*
 sites/public/*
 sites/views/*
+config/info.log
+config/error.log

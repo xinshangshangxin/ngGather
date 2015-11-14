@@ -47,7 +47,7 @@ function execCmd(option, done) {
   var timeStr = '';
   cmd.stdout.on('data', function(data) {
     var str = data + '';
-    if (/\[\d+:\d+:\d+\]/.test(str)) {
+    if(/\[\d+:\d+:\d+\]/.test(str)) {
       timeStr = str;
     }
     else {
@@ -59,7 +59,7 @@ function execCmd(option, done) {
 
   });
   cmd.on('exit', function(code) {
-    if (code != 0) {
+    if(code != 0) {
       return done(code);
     }
     done();

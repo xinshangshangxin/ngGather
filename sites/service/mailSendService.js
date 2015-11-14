@@ -10,19 +10,19 @@ var getEnvSetting = function() {
     auth: {}
   };
 
-  if (process.env.host) {
+  if(process.env.host) {
     _transport.host = process.env.host;
   }
-  if (process.env.port) {
+  if(process.env.port) {
     _transport.port = process.env.port;
   }
-  if (process.env.user) {
+  if(process.env.user) {
     _transport.auth.user = process.env.user;
   }
-  if (process.env.pass) {
+  if(process.env.pass) {
     _transport.auth.pass = process.env.pass;
   }
-  if (process.env.service) {
+  if(process.env.service) {
     _transport.service = process.env.service;
   }
   return _transport;

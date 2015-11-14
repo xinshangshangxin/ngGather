@@ -28,12 +28,12 @@ var config = require('../gulp_config.js');
 
 var myReporter = function() {
   return map(function(file, cb) {
-    if (!file.jshint.success) {
+    if(!file.jshint.success) {
       var isFirst = true;
       file.jshint.results.forEach(function(data) {
-        if (data.error) {
+        if(data.error) {
           console.log(file.path + ': line ' + data.error.line + ', col ' + data.error.character + ', code ' + data.error.code + ', ' + data.error.reason);
-          if (isFirst) {
+          if(isFirst) {
             notifier.notify({
               'title': (data.error.line + ':' + data.error.character + ' ' + data.error.reason),
               'subtitle': file.relative.replace(/.*\//gi, ''),
@@ -136,8 +136,8 @@ function injecHtml() {
         series(gulp
           .src(config.inject.source, config.inject.opt),
           gulp
-          .src(config.inject.ngSource, config.inject.ngOpt)
-          .pipe(angularFilesort()))
+            .src(config.inject.ngSource, config.inject.ngOpt)
+            .pipe(angularFilesort()))
       ))
     .pipe(gulp.dest(config.inject.dest));
 }
@@ -156,7 +156,7 @@ function injectUserCode() {
         endtag: '// <!-- endinject -->',
         transform: function(filepath) {
           console.log(filepath);
-          if (/\/night\//.test(filepath)) {
+          if(/\/night\//.test(filepath)) {
             return 'themes.push({href: \'' + filepath + '\', disabled: true});';
           }
         }
@@ -184,7 +184,7 @@ function watchAll() {
     .on('change', function(event) {
       console.info(event.type, event.path);
 
-      if (/\/sites\//.test(event.path)) {
+      if(/\/sites\//.test(event.path)) {
         gulp
           .src(config.sitesjs.src)
           .pipe(jshint('./config/.jshintrc_sites', {
@@ -193,8 +193,8 @@ function watchAll() {
           .pipe(jshint.reporter('default'))
           .pipe(myReporter());
       }
-      else if (/\/static\//.test(event.path)) {
-        if (event.type === 'deleted') { // 如果一个文件被删除了，则将其忘记
+      else if(/\/static\//.test(event.path)) {
+        if(event.type === 'deleted') { // 如果一个文件被删除了，则将其忘记
           delete cached.caches.js[event.path]; // gulp-cached 的删除 api
           remember.forget('js', event.path); // gulp-remember 的删除 api
         }

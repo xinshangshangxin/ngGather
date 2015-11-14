@@ -15,4 +15,5 @@ start:
 test:
 	mocha --recursive --timeout 10000 -R spec --require should --harmony test/ --bail
 prod: 
-	gulp prod && node production/app.js
+	gulp prod
+	node production/app.js
