@@ -48,3 +48,9 @@ Temporary Items
 # user
 .git
 .idea
+
+static/vendor/*
+sites/public/*
+sites/views/*
+config/info.log
+config/error.log

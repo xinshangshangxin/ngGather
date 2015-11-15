@@ -9,20 +9,21 @@
 [zdfans](http://www.zdfans.com/)  
 [ccav1](http://www.ccav1.com/)  
 [liulanmi](http://liulanmi.com/)  
-[qiuquan](http://www.qiuquan.cc/)  
 [iqshw](http://www.iqshw.com/)  
+[waitsun](http://www.waitsun.com/)  
+[MacPeers](http://www.macpeers.com/)
 
-> sites 为演示文件夹(public/**/* 和 views/**/* 全部经过 `fis` 压缩处理);
-> static 为前端静态文件夹(未压缩)
+> sites 后端逻辑处理  
+> static 前端静态文件  
+> production 演示/部署文件  
 
 ## 安装
 
 1. `git clone`
-2. `cd sites `
-3. `npm install`
-4. `node app.js`
-5. 浏览器打开 `http://localhost:1337/`
-
+2. `npm install`
+3. `bower install`
+3. `make`
+4. 浏览器打开 `http://localhost:1337/`
 
 ## 许可证
 ### MIT
