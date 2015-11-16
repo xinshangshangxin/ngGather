@@ -84,6 +84,23 @@ var userAgents = [
 var errSites = []; // 重复出错只发送一封邮件
 var errTime = new Date();
 
+var gatherArticles = function(siteInfo, captureFun) {
+  return request(
+    {
+      url: siteInfo.url,
+      method: 'GET',
+      timeout: 15 * 1000,
+      encoding: null,
+      headers: {
+        'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
+      }
+    })
+    .spread(function(response, body) {
+      var $ = cheerio.load(utilitiesService.changeEncoding(body, siteInfo.encoding, siteInfo.noCheck));
+      return captureFun($);
+    });
+};
+
 var updateOrCreatefilter = function(list) {
   return Promise
     .filter(list, function(article) {
@@ -113,19 +130,7 @@ var updateOrCreatefilter = function(list) {
 var updateSiteArticles = function(siteInfo, captureFun) {
   updateTime = new Date();
   captureFun = captureFun || siteInfo.captureFun;
-  return request({
-    url: siteInfo.url,
-    method: 'GET',
-    timeout: 15 * 1000,
-    encoding: null,
-    headers: {
-      'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
-    }
-  })
-    .spread(function(response, body) {
-      var $ = cheerio.load(utilitiesService.changeEncoding(body, siteInfo.encoding, siteInfo.noCheck));
-      return captureFun($);
-    })
+  return gatherArticles(siteInfo, captureFun)
     .then(function(list) {
       return updateOrCreatefilter(list);
     })
@@ -179,7 +184,7 @@ var getSites = function(req, res) {
   }
 
   var updateTime = req.query.updateTime;
-  // 采集时间15秒超时, 2分钟内只能采集一次, 故加上 1分钟的容错时间 
+  // 采集时间15秒超时, 2分钟内只能采集一次, 故加上 1分钟的容错时间
   updateTime = updateTime ? (parseInt(updateTime) + 60 * 1000) : 0;
   articleDao
     .findLimit(req.query.perPage || 20, req.query.pageNu || 0, req.query.sites, updateTime)

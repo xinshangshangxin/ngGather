@@ -3,7 +3,7 @@
   "version": "0.0.8",
   "scripts": {
     "start": "./node_modules/pm2/bin/pm2 start production/app.js --no-daemon",
-    "test": "mocha --recursive --timeout 10000 -R spec --require should --harmony tests/unit --bail"
+    "test": "mocha --recursive --timeout 10000 --require chai --harmony test --bail"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
@@ -25,6 +25,7 @@
     "request": "^2.62.0"
   },
   "devDependencies": {
+    "chai": "^3.4.0",
     "del": "^2.0.1",
     "gulp": "git://github.com/gulpjs/gulp#4.0",
     "gulp-angular-filesort": "^1.1.1",
@@ -44,7 +45,6 @@
     "map-stream": "0.0.6",
     "node-notifier": "^4.2.3",
     "require-dir": "^0.3.0",
-    "should": "^7.1.1",
     "stream-series": "^0.1.1",
     "supertest": "^1.0.1"
   }

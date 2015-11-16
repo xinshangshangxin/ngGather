@@ -1,5 +1,6 @@
 'use strict';
-var assert = require('assert');
+var chai = require('chai');
+var should = chai.should();
 
 var article = require('../../sites/models/article.js');
 var capture = require('../../sites/models/capture.js');
@@ -15,7 +16,7 @@ describe('The article', function() {
   });
 
   describe('When call updateSiteArticles', function() {
-    it('should update failed because the article too old', function(done) {
+    it('should update 0 data', function(done) {
       article
         .updateSiteArticles({
           name: 'llm',
@@ -29,7 +30,7 @@ describe('The article', function() {
           data.should.match(/更新站点llm\s*0\s*篇文章成功 !!/gi);
         })
         .catch(function(e) {
-          console.log(e);
+          throw e;
         })
         .finally(function() {
           done();
