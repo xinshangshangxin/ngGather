@@ -56,12 +56,4 @@ var sendMail = function(mailOtions) {
     .sendMailAsync(_.assign({}, defaultMailOptions, mailOtions));
 };
 
-// sendMail()
-//   .then(function(data) {
-//     console.log(data);
-//   })
-//   .catch(function(e) {
-//     console.log(e);
-//   });
-
 exports.sendMail = sendMail;

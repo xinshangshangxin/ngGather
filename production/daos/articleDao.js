@@ -4,6 +4,7 @@ var _ = require('lodash');
 var mon = require('./mon');
 var db = mon.db;
 var mongoose = mon.mongoose;
+var Promise = require('bluebird');
 
 var articleSchema = new mongoose.Schema({
   img: {
@@ -47,9 +48,11 @@ var articleSchema = new mongoose.Schema({
 articleSchema.pre('save', function() {
   this.updatedAt = Date.now();
 });
+
 articleSchema.pre('update', function() {
   this.updatedAt = Date.now();
 });
+
 articleSchema.pre('findOneAndUpdate', function() {
   if(!this.createdAt) {
     this.findOneAndUpdate({}, {
@@ -125,7 +128,7 @@ function createOrUpdate(siteObj) {
  */
 function search(options) {
   if(!options.keyword) {
-    return [];
+    return Promise.resolve([]);
   }
 
   var perPage = parseInt(options.perPage) || 20; // 每一页多少文章
