@@ -3,33 +3,12 @@
 var iconv = require('iconv-lite');
 var request = require('request');
 
+var constants = require('./constants.js');
+
 // 中文数字 和 阿拉伯数字 对象
-var nuChange = {
-  '零': 0,
-  '一': 1,
-  '二': 2,
-  '三': 3,
-  '四': 4,
-  '五': 5,
-  '六': 6,
-  '七': 7,
-  '八': 8,
-  '九': 9,
-  '十': 10,
-  '十一': 11,
-  '十二': 12
-};
-
-var timeConversion = {
-  year: 365 * 24 * 60 * 60 * 1000,
-  month: 30 * 24 * 60 * 60 * 1000,
-  week: 7 * 24 * 60 * 60 * 1000,
-  day: 24 * 60 * 60 * 1000,
-  hour: 60 * 60 * 1000,
-  minute: 60 * 1000,
-  second: 1000
-};
-
+var nuChange = constants.nuChange;
+var userAgents = constants.userAgents;
+var timeConversion = constants.timeConversion;
 
 var svc = module.exports = {
   getImg: function(req, res) {
@@ -43,7 +22,8 @@ var svc = module.exports = {
         pool: false,
         followRedirect: false,
         headers: {
-          'Connection': 'close'
+          'Connection': 'close',
+          'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
         },
         method: 'GET',
         timeout: 10 * 1000
@@ -155,5 +135,5 @@ var svc = module.exports = {
       val = iconv.decode(data, 'gbk');
     }
     return val;
-  }
+  },
 };
