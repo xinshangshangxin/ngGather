@@ -14,10 +14,10 @@ var html2js = require('gulp-html2js');
 var less = require('gulp-less');
 var angularFilesort = require('gulp-angular-filesort');
 var ngAnnotate = require('gulp-ng-annotate');
+var watch = require('gulp-watch');
 
 
 //var emmitter = new events.EventEmitter();
-//var watch = require('gulp-watch');
 //var batch = require('gulp-batch');
 //var plumber = require('gulp-plumber');
 //var rev = require('gulp-rev');
@@ -174,17 +174,22 @@ function jshintUpdates() {
 }
 
 function watchAll() {
-  var watcher = gulp.watch([
+  var watcher = watch([
     'static/**/*',
     'sites/**/*.js',
     '!sites/public/**/*',
     '!sites/test/**/*'
   ]);
   watcher
-    .on('change', function(event) {
-      console.info(event.type, event.path);
+    .on('unlink', function(path) {
+      if(/\/static\//.test(path)) {
+        delete cached.caches.js[path]; // gulp-cached 的删除 api
+        remember.forget('js', path); // gulp-remember 的删除 api
+      }
+    })
+    .on('change', function(path) {
 
-      if(/\/sites\//.test(event.path)) {
+      if(/\/sites\//.test(path)) {
         gulp
           .src(config.sitesjs.src)
           .pipe(jshint('./config/.jshintrc_sites', {
@@ -193,11 +198,7 @@ function watchAll() {
           .pipe(jshint.reporter('default'))
           .pipe(myReporter());
       }
-      else if(/\/static\//.test(event.path)) {
-        if(event.type === 'deleted') { // 如果一个文件被删除了，则将其忘记
-          delete cached.caches.js[event.path]; // gulp-cached 的删除 api
-          remember.forget('js', event.path); // gulp-remember 的删除 api
-        }
+      else if(/\/static\//.test(path)) {
         gulp.series(
           clean,
           gulp.parallel(

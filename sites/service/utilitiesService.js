@@ -136,4 +136,23 @@ var svc = module.exports = {
     }
     return val;
   },
+  getFewDaysAgo: function(n, startDay) {
+    startDay = svc.getZeroDay(startDay);
+
+    if(!n) {
+      return startDay;
+    }
+
+    var fewDaysAgo = new Date(startDay);
+    fewDaysAgo.setDate(startDay.getDate() - n);
+    return fewDaysAgo;
+  },
+  getZeroDay: function(date) {
+    date = date ? (new Date(date)) : (new Date());
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
+  }
 };

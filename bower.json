@@ -10,6 +10,8 @@
     "angular-ui-router": "~0.2.15",
     "fontawesome": "~4.4.0",
     "lodash": "~3.10.1",
-    "angular-scroll-watch": "~0.5.5"
+    "angular-scroll-watch": "~0.5.5",
+    "angular-translate": "~2.8.1",
+    "angular-translate-loader-static-files": "~2.8.1"
   }
 }

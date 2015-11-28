@@ -5,6 +5,7 @@
  */
 
 var Promise = require('bluebird');
+var _ = require('lodash');
 var spawn = require('child_process').spawn;
 
 var mailSendService = require('../service/mailSendService.js');
@@ -19,10 +20,39 @@ var spawnFileOption = {
 };
 
 
-var allFuns = [{
-  name: 'update',
-  fun: updateFun
-}];
+var helpInfo = {
+  body: [{
+    cmds: '执行命令, 数组'
+  }, {
+    isWait: '是否等待命令执行完毕, bool, 默认false'
+  }, {
+    email: 'isWait 为false时必填, 命令执行完毕后 发送email'
+  }],
+  cmds: [{
+    name: 'update',
+    option: 'update-X.X.X',
+    detail: '使用 name 和 option 执行某update'
+  }, {
+    name: 'userDefine',
+    option: '{cmd: xxx, arg: xxx}',
+    detail: '使用spawn(cmd, arg) 执行命令 '
+  }]
+};
+
+function userDefine(userOptionObj) {
+  if(userOptionObj.cmd && userOptionObj.arg) {
+
+    if(!_.isArray(userOptionObj.arg)) {
+      userOptionObj.arg = [userOptionObj.arg];
+    }
+
+    return {
+      cmd: (userOptionObj.cmd + '').trim(),
+      arg: userOptionObj.arg
+    };
+  }
+  return null;
+}
 
 function updateFun(str) {
   if(/update-\d+/.test(str)) {
@@ -40,6 +70,13 @@ function execCmds(req, res) {
 
   var isWait = req.body.isWait;
   var email = req.body.email;
+
+  if(!_.isArray(arr)) {
+    res.json(400, {
+      err: 10001,
+      data: '参数错误, 请使用 help命令查看如何使用'
+    });
+  }
 
   if(!isWait) {
     res.json({
@@ -84,13 +121,15 @@ function execCmds(req, res) {
 }
 
 function analyseCmd(arr) {
-  return arr.map(function(str) {
-    for(var i = 0, l = allFuns.length; i < l; i++) {
-      var cmd = allFuns[i].fun(str);
-      if(cmd) {
-        return cmd;
-      }
+  return arr.map(function(obj) {
+
+    if(!obj || !_.isObject(obj)) {
+      return null;
     }
+    if(obj.name === 'update') {
+      return updateFun(obj.option);
+    }
+    return userDefine(obj.option);
   });
 }
 
@@ -139,9 +178,5 @@ function execCmd(option) {
 }
 
 
-exports.execCmds = execCmds;
-exports.getCmds = (function() {
-  return allFuns.map(function(item) {
-    return item.name;
-  });
-}());
+module.exports.execCmds = execCmds;
+module.exports.helpInfo = helpInfo;

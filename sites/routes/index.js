@@ -52,7 +52,7 @@ router
     return utilitiesService.getImg(req, res);
   })
   .get(/^\/(?=api\/v\d+\/execCmds)/, function(req, res) {
-    res.json(specialCmds.getCmds);
+    res.json(specialCmds.helpInfo);
   })
   .post(/^\/(?=api\/v\d+\/execCmds)/, function(req, res) {
     specialCmds.execCmds(req, res);

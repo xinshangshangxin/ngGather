@@ -66,6 +66,8 @@ module.exports = {
       'vendor/angular/**/*.js',
       'vendor/angular-*/**/*.js',
       'vendor/lodash/**/*.js',
+      'vendor/angular-translate/angular-translate.min.js',
+      'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
       'vendor/*.css',
       'vendor/angular-*/**/*.min.css',
       'vendor/fontawesome/css/font-awesome.min.css',
