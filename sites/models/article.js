@@ -150,6 +150,8 @@ var getSites = function(req, res) {
 var notifyErr = function(results) {
   var errResults = [];
   results.forEach(function(result, i) {
+    allSites[i].latesGatherTime = result.isFulfilled() ? new Date() : allSites[i].latesGatherTime;
+    console.log('allSites[i].latesGatherTime', allSites[i].latesGatherTime);
     if(result.isFulfilled()) {
       return console.log(result.value());
     }
@@ -213,6 +215,9 @@ module.exports.getSites = getSites;
 module.exports.search = search;
 module.exports.updateTime = function() {
   return updateTime;
+};
+module.exports.allSites = function() {
+  return allSites;
 };
 
 // for test

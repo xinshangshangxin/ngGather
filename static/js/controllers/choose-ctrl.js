@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('ngGather')
-  .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, ALL_SITES) {
+  .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, allSitesEntity, ALL_SITES) {
 
     var localObj = localSaveService.get();
     $scope.chooseSite = localObj.sites || ALL_SITES;
@@ -34,12 +34,12 @@ angular.module('ngGather')
 
     function init() {
       _.forEach($scope.chooseSite, function(item) {
-        if (item.ischecked) {
+        if(item.ischecked) {
           $scope.sites.push(item.site);
         }
       });
       // 切换 样式
-      if ($scope.themeType) {
+      if($scope.themeType) {
         $scope.themeType = false;
         $scope.changeTheme();
       }
@@ -47,11 +47,28 @@ angular.module('ngGather')
       // 加载数据; 因为首次加载也会触发 load more事件, 故无法使用 $scope.getData
       getUpdateTime();
       $scope.$on('load more', function($evt, active, locals) {
-        if (locals.$percentage > 90) {
+        if(locals.$percentage > 90) {
           console.log($evt, active, locals);
           $scope.addMore();
         }
       });
+
+
+      allSitesEntity
+        .get()
+        .$promise
+        .then(function(sites) {
+          sites = sites.allSites || [];
+          sites.forEach(function(site) {
+            var index = _.findIndex($scope.chooseSite, function(item) {
+              return item.site === site.site;
+            });
+            ($scope.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
+          });
+        })
+        .catch(function(e) {
+          console.log(e);
+        });
     }
 
     function getUpdateTime() {
@@ -67,21 +84,44 @@ angular.module('ngGather')
         });
     }
 
+    function getSitesUpdateTime() {
+      return allSitesEntity
+        .get()
+        .$promise
+        .then(function(sites) {
+          sites = sites.allSites || [];
+          sites.forEach(function(site) {
+            var index = _.findIndex($scope.chooseSite, function(item) {
+              return item.site === site.site;
+            });
+            ($scope.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
+          });
+        })
+        .catch(function(e) {
+          console.log(e);
+        });
+    }
+
     function changeSites() {
-      $scope.showSites = angular.copy($scope.chooseSite);
       $scope.ishow = !$scope.ishow;
+      if($scope.ishow) {
+        getSitesUpdateTime()
+          .then(function() {
+            $scope.showSites = angular.copy($scope.chooseSite);
+          });
+      }
     }
 
     function saveSites(isCancle) {
       $scope.ishow = !$scope.ishow;
-      if (isCancle) {
+      if(isCancle) {
         $scope.showSites = $scope.chooseSite;
         return;
       }
       var sites = [];
       $scope.chooseSite = $scope.showSites;
       _.forEach($scope.chooseSite, function(item) {
-        if (item.ischecked) {
+        if(item.ischecked) {
           sites.push(item.site);
         }
       });
@@ -118,7 +158,7 @@ angular.module('ngGather')
 
     function search(clearSearch) {
       $scope.isSearch = true;
-      if (clearSearch || !$scope.keyword) {
+      if(clearSearch || !$scope.keyword) {
         $scope.isSearch = false;
         $scope.keyword = '';
       }
@@ -127,7 +167,7 @@ angular.module('ngGather')
     }
 
     function addMore(isClear) {
-      if ($scope.addMoreState !== 0 && !isClear) {
+      if($scope.addMoreState !== 0 && !isClear) {
         console.log($scope.addMoreState === 1 ? '没有更多' : '加载中');
         return;
       }
@@ -141,14 +181,14 @@ angular.module('ngGather')
         updateTime: $scope.updateTime ? (new Date($scope.updateTime)).getTime() : (new Date()).getTime()
       };
 
-      if ($scope.sites && _.isArray($scope.sites)) {
+      if($scope.sites && _.isArray($scope.sites)) {
         query.sites = $scope.sites;
       }
 
-      if (isClear) {
+      if(isClear) {
         query.times = new Date().getTime();
       }
-      if ($scope.isSearch) {
+      if($scope.isSearch) {
         query.keyword = $scope.keyword;
       }
       sitesInfoEntity
@@ -157,13 +197,13 @@ angular.module('ngGather')
         .then(function(arr) {
           $scope.addMoreState = 0;
           $scope.pageNu = ($scope.pageNu || 0) + 1;
-          if (isClear) {
+          if(isClear) {
             $scope.contents = arr;
           }
           else {
             $scope.contents = $scope.contents.concat(arr);
           }
-          if (!arr || !arr.length) {
+          if(!arr || !arr.length) {
             $scope.addMoreState = 1;
           }
         })
@@ -174,7 +214,7 @@ angular.module('ngGather')
     }
 
     function changeTheme() {
-      if (!themes || !themes.length) {
+      if(!themes || !themes.length) {
         // <!-- inject:themes -->
         themes.push({
           href: '/themes/night/night.css',

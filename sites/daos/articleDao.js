@@ -167,11 +167,11 @@ function search(options) {
     .limit(perPage);
 }
 
-exports.search = search;
-exports.add = add;
-exports.addArr = addArr;
-exports.update = update;
-exports.findOneByHref = findOneByHref;
-exports.createOrUpdate = createOrUpdate;
-exports.findLimit = findLimit;
-exports.articleModel = articleModel; // 为updates抛出
+module.exports.search = search;
+module.exports.add = add;
+module.exports.addArr = addArr;
+module.exports.update = update;
+module.exports.findOneByHref = findOneByHref;
+module.exports.createOrUpdate = createOrUpdate;
+module.exports.findLimit = findLimit;
+module.exports.articleModel = articleModel; // 为updates抛出

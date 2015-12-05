@@ -17,4 +17,11 @@ angular
       {update: {method: 'PUT'}}
     );
   })
+  .factory('allSitesEntity', function($resource, SERVERURL) {
+    return $resource(
+      SERVERURL + '/api/v1/allSites',
+      {},
+      {update: {method: 'PUT'}}
+    );
+  })
 ;
