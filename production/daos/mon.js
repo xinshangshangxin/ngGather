@@ -82,6 +82,6 @@ var mongodbUri = getMongodbUri(getCodingMongodbUri, getDockerMongo, getDaoCloudo
 // 链接数据库
 var db = mongoose.connect(mongodbUri);
 
-exports.db = db;
-exports.mongoose = mongoose;
-exports.close = close;
+module.exports.db = db;
+module.exports.mongoose = mongoose;
+module.exports.close = close;
