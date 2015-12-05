@@ -2,7 +2,7 @@
   "name": "ngGather",
   "version": "0.0.10",
   "engines": {
-    "node": "0.12.x"
+    "node": "0.12.8"
   },
   "scripts": {
     "start": "./node_modules/pm2/bin/pm2 start production/app.js --no-daemon",
