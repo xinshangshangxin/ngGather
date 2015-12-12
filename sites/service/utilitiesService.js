@@ -25,12 +25,11 @@ var svc = module.exports = {
           'Connection': 'close',
           'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
         },
-        method: 'GET',
-        timeout: 10 * 1000
+        method: 'GET'
       })
         .on('error', function(err) {
           console.log('getImg err:  ', err);
-          return res.send(404);
+          return res.end(404);
         })
         .pipe(res);
     }

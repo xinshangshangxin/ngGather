@@ -79,7 +79,7 @@ function captureWaitsun($) {
       var img = imgEle.data('cfsrc') || imgEle.attr('src');
       var title = temp.find('a').first().attr('title');
       var href = temp.find('a').first().attr('href');
-      var timeNu = calculateTimeWithChinese(content.find('.post-date').first().text()) || now.getTime();
+      var timeNu = calculateTimeWithChinese(content.find('.post-date').first().text());
       var intro = $(e).find('.excerpt').first().find('p').first().text();
 
       list.push({
