@@ -27,7 +27,7 @@ var userAgents = constants.userAgents;
 var allSites = capture.allSites;
 
 // 调试
-//var allSites = [allSites[1]];
+//allSites = [allSites[0]];
 
 var errSites = []; // 重复出错只发送一封邮件
 var errTime = new Date();
