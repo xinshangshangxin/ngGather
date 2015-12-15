@@ -85,7 +85,7 @@ var svc = module.exports = {
     if(timeArr[0] === 'On') {
       return new Date(timeArr[3] + '/' + nuChange[timeArr[1]] + '/' + timeArr[2]).getTime();
     }
-    return new Date(timeArr[2] + '/' + nuChange[timeArr[1]] + '/' + timeArr[0]).getTime();
+    return new Date(timeArr[2] + '/' + nuChange[timeArr[1].replace(/\s*月\s*/, '')] + '/' + timeArr[0]).getTime();
   },
   calculateTimeLen: function(millisecond) {
     var arr = [];
