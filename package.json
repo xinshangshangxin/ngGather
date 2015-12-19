@@ -5,7 +5,7 @@
     "node": "0.12.8"
   },
   "scripts": {
-    "start": "./node_modules/pm2/bin/pm2 start production/app.js --no-daemon",
+    "start": "./node_modules/pm2/bin/pm2 start production/app.js --no-daemon --max-memory-restart 200M",
     "test": "mocha --recursive --timeout 10000 --require chai --harmony test --bail"
   },
   "dependencies": {
