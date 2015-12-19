@@ -2,6 +2,7 @@
 
 var iconv = require('iconv-lite');
 var request = require('request');
+var Promise = require('bluebird');
 
 var constants = require('./constants.js');
 
@@ -12,27 +13,34 @@ var timeConversion = constants.timeConversion;
 
 var svc = module.exports = {
   getImg: function(req, res) {
-    var url = req.query.imgurl;
-    if(!url) {
-      res.send(404);
-    }
-    else {
-      request({
-        url: url,
-        pool: false,
-        followRedirect: false,
-        headers: {
-          'Connection': 'close',
-          'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
-        },
-        method: 'GET'
+    // promise just for catch err
+    Promise.resolve()
+      .then(function() {
+        var url = req.query.imgurl;
+        if(!url) {
+          return res.status(404).end();
+        }
+        request(
+          {
+            url: url,
+            pool: false,
+            followRedirect: false,
+            timeout: 15 * 1000,
+            headers: {
+              'Connection': 'close',
+              'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
+            },
+            method: 'GET'
+          })
+          .on('error', function(err) {
+            console.log('getImg err:  ', err);
+            return res.status(404).end();
+          })
+          .pipe(res);
       })
-        .on('error', function(err) {
-          console.log('getImg err:  ', err);
-          return res.end(404);
-        })
-        .pipe(res);
-    }
+      .catch(function(e) {
+        console.log(e.stack);
+      });
   },
   calculateTime: function(timeStr) {
     var timeNu = 0;

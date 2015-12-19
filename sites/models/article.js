@@ -147,44 +147,66 @@ var getSites = function(req, res) {
     });
 };
 
+var simpleDiffSites = function(oldErrSites, newErrSites) {
+  if(oldErrSites.length !== newErrSites.length) {
+    return true;
+  }
+  return _.some(newErrSites, function(site) {
+    return _.findIndex(oldErrSites, function(oldSite) {
+        return oldSite.name === site.name;
+      }) === -1;
+  });
+};
+
 var notifyErr = function(results) {
+  var errSitesName = [];
   var errResults = [];
   results.forEach(function(result, i) {
+    // 最新采集时间
     allSites[i].latesGatherTime = result.isFulfilled() ? new Date() : allSites[i].latesGatherTime;
-    console.log('allSites[i].latesGatherTime', allSites[i].latesGatherTime);
+
+    // 采集成功
     if(result.isFulfilled()) {
       return console.log(result.value());
     }
-    console.log(allSites[i].name + '    ' + result.reason());
-    errResults.push(allSites[i].name + '    ' + result.reason());
+
+    errSitesName.push(allSites[i].name);
+    errResults.push({
+      name: allSites[i].name,
+      reason: result.reason().toString(),
+      time: new Date().toLocaleString()
+    });
   });
+
+  console.log('errResults: ', errResults);
   // 全部采集成功
   if(!errResults.length) {
     // 发送重新采集成功
     if(errSites.length) {
-      var errSitesName = errSites.map(function(item) {
-        return item && item.name;
-      });
       errSites.length = 0;
       var timeLen = utilitiesService.calculateTimeLen(new Date().getTime() - errTime);
-      return mailSendService.sendMail({
-        subject: errSitesName.join(', ') + '采集恢复正常',
-        html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>持续时间: ' + timeLen + '</p>'
-      });
+      return mailSendService
+        .sendMail({
+          subject: errSitesName.join(', ') + '采集恢复正常',
+          html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>持续时间: ' + timeLen + '</p>'
+        });
     }
     return;
   }
   // 是否 已经发过通知邮件
-  var diffResults = _.difference(errResults, errSites);
-  if(!diffResults.length) {
+  var isDiff = simpleDiffSites(errSites, errResults);
+  if(!isDiff) {
     return;
   }
   errTime = new Date().getTime();
   // 替换为最新的错误
   errSites = errResults;
   return mailSendService.sendMail({
-    subject: errResults.length + ' 采集失败',
-    html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>' + errResults.join('</p><p>') + '</p>'
+    subject: errSitesName.join(', ') + '  ' + errResults.length + ' 采集失败',
+    html: '<p>' + (new Date().toLocaleString()) + '</p>' + '<p>' +
+    errResults.map(function(item) {
+      return item.name + '   ' + item.reason;
+    }).join('</p><p>') + '</p>'
   });
 };
 
