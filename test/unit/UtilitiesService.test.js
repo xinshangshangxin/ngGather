@@ -2,7 +2,7 @@
 var chai = require('chai');
 var should = chai.should();
 
-var utilFuns = require('../../sites/service/utilitiesService.js');
+var utilFuns = require('.././service/utilitiesService.js');
 
 describe('The UtilitiesService', function() {
   before(function(done) {

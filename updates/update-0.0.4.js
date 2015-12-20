@@ -4,8 +4,8 @@
  * LLM早期采集有问题,删除之
  */
 
-var utilService = require('../sites/service/utilitiesService.js');
-var articleDao = require('../sites/daos/articleDao.js');
+var utilService = require('./service/utilitiesService.js');
+var articleDao = require('./daos/articleDao.js');
 var articleModel = articleDao.articleModel;
 
 
@@ -27,5 +27,5 @@ articleModel
   });
 
 function closeConnection() {
-  require('../sites/daos/mon').close();
+  require('./daos/mon').close();
 }
