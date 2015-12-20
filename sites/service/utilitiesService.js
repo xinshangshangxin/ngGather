@@ -22,7 +22,7 @@ var svc = module.exports = {
         }
         request(
           {
-            url: url,
+            url: encodeURI(url),
             pool: false,
             followRedirect: false,
             timeout: 15 * 1000,
