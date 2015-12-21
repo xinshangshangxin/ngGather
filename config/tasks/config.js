@@ -99,8 +99,8 @@ var config = {
     },
     filters: [{
       src: [],
-      subStr: '/crm',
-      newStr: '/api/v1'
+      subStr: '',
+      newStr: ''
     }],
     dest: path.join(publicPath, 'js')        // userJs在prod环境下才需要 输出, 故dest为 prod环境的dest
   },
@@ -129,8 +129,9 @@ var config = {
     ],
     injectSource: [
       path.join(publicPath, 'css/**/*.css'),
-      path.join(publicPath, 'js/lib.min*.js'),
-      path.join(publicPath, 'js/user.min*.js')
+      path.join(publicPath, 'js/lib*.min*.js'),
+      path.join(publicPath, 'js/user*.min*.js'),
+      path.join('!' + publicPath, 'css/night/**/*.css')
     ],
     cssDest: path.join(publicPath, 'css'),
     dest: viewPath,
@@ -170,6 +171,19 @@ var config = {
     },
     dest: basePath
   },
+  revAll: {
+    src: [
+      '**/*',
+      '!imagas/**/*',
+      '!fonts/**/*',
+      '!index.html'
+    ],
+    opt: {
+      'cwd': publicPath,
+      'base': publicPath
+    },
+    dest: publicPath
+  },
   minifyCssConfig: {                        // 压缩css配置
     keepSpecialComments: 0
   },
@@ -182,6 +196,47 @@ var config = {
 };
 
 /****** end: 用户配置***********/
+
+
+var specConfig = {
+  minifyCssConfig: config.minifyCssConfig,
+  theme: {
+    src: 'css/night/**/*.css',
+    opt: {
+      cwd: 'www/public',
+      base: 'www/public'
+    },
+    dest: publicPath
+  },
+  injectUserCode: {
+    src: 'js/controllers/choose-ctrl.js',
+    opt: {
+      cwd: 'www/public',
+      base: 'www/public'
+    },
+    sourceSrc: ['css/night/**/*.css'],
+    sourceOpt: {
+      read: false,
+      cwd: 'www/public/'
+    },
+    prodSourceSrc: ['css/night/**/*.css'],
+    prodSourceOpt: {
+      read: false,
+      cwd: publicPath
+    },
+    injectOpt: {
+      starttag: '// <!-- inject:themes -->',
+      endtag: '// <!-- endinject -->',
+      transform: function(filepath) {
+        console.log(filepath);
+        if(/\/night\//.test(filepath)) {
+          return 'themes.push({href: \'' + filepath + '\',disabled: true});';
+        }
+      }
+    },
+    dest: 'www/public/'
+  }
+};
 
 module.exports = {
   commonConfig: config,

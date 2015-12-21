@@ -12,9 +12,18 @@ var gulpCmd = {
 };
 var serverCmd = {
   cmd: 'supervisor',
-  arg: ['-n', 'error', '-i', 'sites/public/,sites/views/,static/', 'sites/app.js']
+  arg: ['-n', 'error', '-i', 'www/public/,www/views/, config/tasks/', 'www/app.js']
 };
 
+gulpStart();
+
+cmdPromise(serverCmd)
+  .then(function(data) {
+    console.log(data);
+  })
+  .catch(function(e) {
+    console.log(e);
+  });
 
 function gulpStart() {
   cmdPromise(gulpCmd)
@@ -30,17 +39,6 @@ function gulpStart() {
       gulpStart();
     });
 }
-
-
-gulpStart();
-
-cmdPromise(serverCmd)
-  .then(function(data) {
-    console.log(data);
-  })
-  .catch(function(e) {
-    console.log(e);
-  });
 
 function execCmd(option, done) {
   var cmd = spawn(option.cmd, option.arg);

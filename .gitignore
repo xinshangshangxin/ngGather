@@ -53,4 +53,3 @@ www/public/vendor/*
 www/public/css/*
 config/info.log
 config/error.log
-production/

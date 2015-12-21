@@ -38,6 +38,39 @@ var specConfig = require('./config.js').specConfig;
  *
  */
 
+gulp.task('injectUserCode', function() {
+  if(isBuild) {
+    specConfig.injectUserCode.sourceSrc = specConfig.injectUserCode.prodSourceSrc;
+    specConfig.injectUserCode.sourceOpt = specConfig.injectUserCode.prodSourceOpt;
+  }
+  return gulp.src(specConfig.injectUserCode.src, specConfig.injectUserCode.opt)
+    .pipe($.inject(
+      gulp.src(specConfig.injectUserCode.sourceSrc,
+        specConfig.injectUserCode.sourceOpt
+      ),
+      specConfig.injectUserCode.injectOpt)
+    )
+    .pipe(gulp.dest(specConfig.injectUserCode.dest));
+});
+
+gulp.task('theme', function(done) {
+  if(!isBuild) {
+    return done();
+  }
+  return gulp.src(specConfig.theme.src, specConfig.theme.opt)
+    .pipe($.minifyCss(specConfig.minifyCssConfig))
+    .pipe($.rev())
+    .pipe($.rename({extname: '.min.css'}))
+    .pipe(gulp.dest(specConfig.theme.dest));
+
+});
+
+gulp.task('userTask', gulp.series('theme', 'injectUserCode'));
+
+
+/**
+ * end: 特殊需求
+ */
 
 // no-op = empty function
 gulp.task('noop', function() {
@@ -121,10 +154,12 @@ gulp.task('fonts', function(done) {
 
 
 gulp.task('css', function() {
+
   return gulp.src(config.injectHtmlProd.cssSoruce)
     .pipe($.concat(config.injectHtmlProd.prodCssName))
-    .pipe($.rename({extname: '.min.css'}))
     .pipe($.minifyCss(config.minifyCssConfig))
+    .pipe($.rev())
+    .pipe($.rename({extname: '.min.css'}))
     .pipe(gulp.dest(config.injectHtmlProd.cssDest));
 });
 
@@ -136,7 +171,6 @@ gulp.task('js', function() {
       .pipe($.jshint(config.jshintPath))
       .pipe($.jshint.reporter('default'));
   }
-
   var specStream = gulp.src(config.specJs.src);
 
   var templateStream = gulp
@@ -167,17 +201,20 @@ gulp.task('js', function() {
 
   return $.streamqueue({objectMode: true}, specStream, scriptStream, templateStream)
     .pipe($.concat(config.injectHtmlProd.prodUserJsName))
-    .pipe($.rename({extname: '.min.js'}))
     .pipe($.uglify(config.uglifyConfig))
+    .pipe($.rev())
+    .pipe($.rename({extname: '.min.js'}))
     .on('error', errorHandler)
     .pipe(gulp.dest(config.js.dest));
 });
 
 gulp.task('libJs', function() {
+
   return gulp.src(config.libJs.src, config.libJs.opt)
     .pipe($.concat(config.injectHtmlProd.prodLibJsName))
-    .pipe($.rename({extname: '.min.js'}))
     .pipe($.uglify(config.uglifyConfig))
+    .pipe($.rev())
+    .pipe($.rename({extname: '.min.js'}))
     .on('error', errorHandler)
     .pipe(gulp.dest(config.libJs.dest));
 });
@@ -201,7 +238,6 @@ gulp.task('server', function(done) {
     .pipe(gulp.dest(config.server.dest))
 });
 
-
 // start watchers
 gulp.task('watchers', function(done) {
   gulp.watch(config.sass.watcherPath, ['sass']);
@@ -218,9 +254,10 @@ gulp.task('build', function() {
   isBuild = true;
   gulp.series(
     'clean',
+    'less',
+    'userTask',
     gulp.parallel(
       'libCss',
-      'less',
       'js',
       'images',
       'fonts',
@@ -241,6 +278,6 @@ gulp.task('default', gulp.series(
     'less',
     'js'
   ),
+  'userTask',
   'injectHtml:dev'
 ));
-
