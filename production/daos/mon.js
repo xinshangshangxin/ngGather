@@ -1,6 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var path = require('path');
+process.env.NODE_CONFIG_DIR = path.join(__dirname, '../../config');
 var config = require('config');
 
 
