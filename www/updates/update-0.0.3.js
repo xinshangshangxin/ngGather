@@ -4,7 +4,7 @@
  * 据说 ccav软件有后台刷网址, 故删除之
  */
 
-var articleDao = require('./daos/articleDao.js');
+var articleDao = require('../daos/articleDao.js');
 var articleModel = articleDao.articleModel;
 
 
@@ -27,5 +27,5 @@ articleModel
   });
 
 function closeConnection() {
-  require('./daos/mon').close();
+  require('../daos/mon').close();
 }

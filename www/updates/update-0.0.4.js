@@ -1,17 +1,16 @@
 'use strict';
 
 /**
- * LLM早期采集有问题,删除之
+ * 早期采集有问题,删除之,今天的重新采集
  */
 
-var utilService = require('./service/utilitiesService.js');
-var articleDao = require('./daos/articleDao.js');
+var utilService = require('../service/utilitiesService.js');
+var articleDao = require('../daos/articleDao.js');
 var articleModel = articleDao.articleModel;
 
 
 articleModel
   .remove({
-    site: /llm/i,
     gatherTime: {
       $gte: utilService.getFewDaysAgo(0).getTime()
     }
@@ -27,5 +26,5 @@ articleModel
   });
 
 function closeConnection() {
-  require('./daos/mon').close();
+  require('../daos/mon').close();
 }

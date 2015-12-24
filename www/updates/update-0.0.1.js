@@ -5,7 +5,7 @@
  * 删除相同href文章, 保留最新更新的
  */
 
-var articleDao = require('./daos/articleDao.js');
+var articleDao = require('../daos/articleDao.js');
 var articleModel = articleDao.articleModel;
 var Promise = require('bluebird');
 var _ = require('lodash');

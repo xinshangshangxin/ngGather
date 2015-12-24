@@ -4,13 +4,13 @@
  * 10001: 执行命令失败
  */
 
+var fs = require('fs');
 var Promise = require('bluebird');
 var _ = require('lodash');
 var spawn = require('child_process').spawn;
 
 var mailSendService = require('../service/mailSendService.js');
 
-var fs = require('fs');
 var outFile = fs.openSync('./config/info.log', 'a');
 var errFile = fs.openSync('./config/error.log', 'a');
 
@@ -21,13 +21,6 @@ var spawnFileOption = {
 
 
 var helpInfo = {
-  body: [{
-    cmds: '执行命令, 数组'
-  }, {
-    isWait: '是否等待命令执行完毕, bool, 默认false'
-  }, {
-    email: 'isWait 为false时必填, 命令执行完毕后 发送email'
-  }],
   cmds: [{
     name: 'update',
     option: 'update-X.X.X',
@@ -36,7 +29,9 @@ var helpInfo = {
     name: 'userDefine',
     option: '{cmd: xxx, arg: xxx}',
     detail: '使用spawn(cmd, arg) 执行命令 '
-  }]
+  }],
+  isWait: '是否等待命令执行完毕, bool, 默认false',
+  email: 'isWait 为false时必填, 命令执行完毕后 发送email'
 };
 
 function userDefine(userOptionObj) {
@@ -59,7 +54,7 @@ function updateFun(str) {
     return {
       name: str,
       cmd: 'node',
-      arg: ['./updates/' + str]
+      arg: ['./www/updates/' + str]
     };
   }
   return null;
@@ -92,7 +87,6 @@ function execCmds(req, res) {
         })
     )
     .then(function(data) {
-      console.log(data);
       if(isWait) {
         res.json(data);
       }
