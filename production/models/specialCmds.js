@@ -54,7 +54,7 @@ function updateFun(str) {
     return {
       name: str,
       cmd: 'node',
-      arg: ['./www/updates/' + str]
+      arg: ['./app/updates/' + str]
     };
   }
   return null;
