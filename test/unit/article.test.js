@@ -2,8 +2,8 @@
 var chai = require('chai');
 var should = chai.should();
 
-var article = require('../../sites/models/article.js');
-var capture = require('../../sites/models/capture.js');
+var article = require('.././models/article.js');
+var capture = require('.././models/capture.js');
 
 
 describe('The article', function() {

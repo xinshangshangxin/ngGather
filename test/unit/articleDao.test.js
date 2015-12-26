@@ -1,7 +1,7 @@
 var chai = require('chai');
 var should = chai.should();
 
-var articleDao = require('../../sites/daos/articleDao.js');
+var articleDao = require('.././daos/articleDao.js');
 
 describe('articleDao', function() {
   before(function(done) {

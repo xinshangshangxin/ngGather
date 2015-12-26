@@ -12,17 +12,25 @@ var gulpCmd = {
 };
 var serverCmd = {
   cmd: 'supervisor',
-  arg: ['-n', 'error', '-i', 'sites/public/,sites/views/,static/', 'sites/app.js']
+  arg: ['-n', 'error', '-i', 'app/public/,app/views/,config/tasks/', 'app/app.js']
 };
 
+gulpStart();
+
+cmdPromise(serverCmd)
+  .then(function(data) {
+    console.log('cmdPromise(serverCmd): ', data);
+  })
+  .catch(function(e) {
+    console.log('cmdPromise(serverCmd) err: ', e);
+  });
 
 function gulpStart() {
   cmdPromise(gulpCmd)
-    .then(function(data) {
-      console.log(data);
+    .then(function() {
     })
     .catch(function(e) {
-      console.log(e);
+      console.log('cmdPromise(gulpCmd) err: ', e);
       notifier.notify({
         title: 'gulp error',
         message: 'restarting'
@@ -30,17 +38,6 @@ function gulpStart() {
       gulpStart();
     });
 }
-
-
-gulpStart();
-
-cmdPromise(serverCmd)
-  .then(function(data) {
-    console.log(data);
-  })
-  .catch(function(e) {
-    console.log(e);
-  });
 
 function execCmd(option, done) {
   var cmd = spawn(option.cmd, option.arg);

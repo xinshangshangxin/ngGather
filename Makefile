@@ -2,7 +2,7 @@
 dev:
 	node config/dev_start.js
 supervisor:
-	supervisor -n error -i 'sites/public/,sites/views/,static/' sites/app.js
+	supervisor -n error -i 'app/public/,app/views/,config/tasks/' app/app.js
 push:
 	git add -A
 	git commit -m "$(m)"

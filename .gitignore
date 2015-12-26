@@ -49,8 +49,7 @@ Temporary Items
 .git
 .idea
 
-static/vendor/*
-sites/public/*
-sites/views/*
+app/public/vendor/*
+app/public/css/*
 config/info.log
 config/error.log
