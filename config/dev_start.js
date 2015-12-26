@@ -12,26 +12,25 @@ var gulpCmd = {
 };
 var serverCmd = {
   cmd: 'supervisor',
-  arg: ['-n', 'error', '-i', 'www/public/,www/views/, config/tasks/', 'www/app.js']
+  arg: ['-n', 'error', '-i', 'app/public/,app/views/,config/tasks/', 'app/app.js']
 };
 
 gulpStart();
 
 cmdPromise(serverCmd)
   .then(function(data) {
-    console.log(data);
+    console.log('cmdPromise(serverCmd): ', data);
   })
   .catch(function(e) {
-    console.log(e);
+    console.log('cmdPromise(serverCmd) err: ', e);
   });
 
 function gulpStart() {
   cmdPromise(gulpCmd)
-    .then(function(data) {
-      console.log(data);
+    .then(function() {
     })
     .catch(function(e) {
-      console.log(e);
+      console.log('cmdPromise(gulpCmd) err: ', e);
       notifier.notify({
         title: 'gulp error',
         message: 'restarting'

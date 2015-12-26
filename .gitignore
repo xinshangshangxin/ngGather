@@ -49,7 +49,7 @@ Temporary Items
 .git
 .idea
 
-www/public/vendor/*
-www/public/css/*
+app/public/vendor/*
+app/public/css/*
 config/info.log
 config/error.log

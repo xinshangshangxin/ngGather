@@ -10,7 +10,7 @@ var config = {
   clean: {                   // 清除生成文件的路径
     src: [
       basePath,
-      'www/public/css/'
+      'app/public/css/'
     ]
   },
   sass: {
@@ -21,7 +21,7 @@ var config = {
     opt: {},
     subStr: '../lib/ionic/fonts',   // prod环境下 需要替换的fonts路径 scss/ionic.app.scss:19
     newStr: './fonts',            // prod环境下 替换fonts后的路径
-    dest: 'www/css'
+    dest: 'app/css'
   },
   less: {
     'src': [
@@ -32,36 +32,36 @@ var config = {
     'opt': {
       'cwd': 'less'
     },
-    'dest': 'www/public/css'
+    'dest': 'app/public/css'
   },
   injectHtmlDev: {            // development环境
     src: 'index.html',
     opt: {
-      cwd: 'www/views',
-      base: 'www/views'
+      cwd: 'app/views',
+      base: 'app/views'
     },
     cssSoruce: [                    // 需要引入的cs
-      'www/public/css/bootstrap.min.css',
-      'www/public/css/**/*.css',
-      '!www/public/css/night/**/*.css'
+      'app/public/css/bootstrap.min.css',
+      'app/public/css/**/*.css',
+      '!app/public/css/night/**/*.css'
     ],
     jsSource: [         // 需要引入的js, config.specJs会加载在其上面
-      'www/public/**/*.js',
-      '!www/public/vendor/**/*',
-      '!www/public/framework/**/*'
+      'app/public/**/*.js',
+      '!app/public/vendor/**/*',
+      '!app/public/framework/**/*'
     ],
-    libJsPrefix: 'www/public/vendor',  // libJS  依赖于 config.libJs.src; 需要加上前缀
-    ignorePath: 'www/public/',       // 路径去除, 相当于 base
-    dest: 'www/views'
+    libJsPrefix: 'app/public/vendor',  // libJS  依赖于 config.libJs.src; 需要加上前缀
+    ignorePath: 'app/public/',       // 路径去除, 相当于 base
+    dest: 'app/views'
   },
   libCss: {             // lib css 需要引入的的css
     src: [              // src 可以为空数组
       'paper/bootstrap.min.css'
     ],
     opt: {
-      cwd: 'www/public/framework/'
+      cwd: 'app/public/framework/'
     },
-    dest: 'www/public/css'
+    dest: 'app/public/css'
   },
   libJs: {              // lib js, 需要按照顺序书写
     'src': [
@@ -78,14 +78,14 @@ var config = {
       'lodash/lodash.min.js'
     ],
     'opt': {
-      'cwd': 'www/public/vendor',
-      'base': 'www/public/vendor'
+      'cwd': 'app/public/vendor',
+      'base': 'app/public/vendor'
     },
     dest: path.join(publicPath, 'js')          // libJs在prod环境下才需要 输出, 故dest为 prod环境的dest
   },
   specJs: {
     src: [                 // 需要引入的且没有依赖项的js,如i18n,  [可以为空数组]
-      'www/public/language/**/*.js'
+      'app/public/language/**/*.js'
     ]
   },
   js: {                                   // 用户写的 js
@@ -94,8 +94,8 @@ var config = {
       '!vendor/**/*'
     ],
     opt: {
-      cwd: 'www/public/',
-      base: 'www/public/'
+      cwd: 'app/public/',
+      base: 'app/public/'
     },
     filters: [{
       src: [],
@@ -107,8 +107,8 @@ var config = {
   images: {
     src: [],
     opt: {
-      cwd: 'www/public/imgs',
-      base: 'www/public'
+      cwd: 'app/public/imgs',
+      base: 'app/public'
     },
     dest: publicPath
   },
@@ -119,13 +119,13 @@ var config = {
   injectHtmlProd: {
     src: 'index.html',
     opt: {
-      cwd: 'www/views',
-      base: 'www/views'
+      cwd: 'app/views',
+      base: 'app/views'
     },
     cssSoruce: [                    // 需要引入的cs
-      'www/public/css/bootstrap.min.css',
-      'www/public/css/**/*.css',
-      '!www/public/css/night/**/*.css'
+      'app/public/css/bootstrap.min.css',
+      'app/public/css/**/*.css',
+      '!app/public/css/night/**/*.css'
     ],
     injectSource: [
       path.join(publicPath, 'css/**/*.css'),
@@ -146,8 +146,8 @@ var config = {
       '!index.html'
     ],
     opt: {
-      'cwd': 'www/public/',
-      'base': 'www'
+      'cwd': 'app/public/',
+      'base': 'app/'
     },
     config: {
       module: 'ngGather',
@@ -166,8 +166,8 @@ var config = {
       '!index.html'
     ],
     opt: {
-      'cwd': 'www/',
-      'base': 'www'
+      'cwd': 'app/',
+      'base': 'app/'
     },
     dest: basePath
   },
@@ -203,21 +203,21 @@ var specConfig = {
   theme: {
     src: 'css/night/**/*.css',
     opt: {
-      cwd: 'www/public',
-      base: 'www/public'
+      cwd: 'app/public',
+      base: 'app/public'
     },
     dest: publicPath
   },
   injectUserCode: {
     src: 'js/controllers/choose-ctrl.js',
     opt: {
-      cwd: 'www/public',
-      base: 'www/public'
+      cwd: 'app/public',
+      base: 'app/public'
     },
     sourceSrc: ['css/night/**/*.css'],
     sourceOpt: {
       read: false,
-      cwd: 'www/public/'
+      cwd: 'app/public/'
     },
     prodSourceSrc: ['css/night/**/*.css'],
     prodSourceOpt: {
@@ -234,7 +234,7 @@ var specConfig = {
         }
       }
     },
-    dest: 'www/public/'
+    dest: 'app/public/'
   }
 };
 

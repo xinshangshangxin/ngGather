@@ -216,10 +216,7 @@ angular.module('ngGather')
     function changeTheme() {
       if(!themes || !themes.length) {
         // <!-- inject:themes -->
-        themes.push({
-          href: '/themes/night/night.css',
-          disabled: true
-        });
+        themes.push({href: '/css/night/night.css',disabled: true});
         // <!-- endinject -->
         themeSwitcherService.replaceThemes(themes);
       }
