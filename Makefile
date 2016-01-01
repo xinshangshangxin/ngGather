@@ -25,3 +25,6 @@ test:
 prod:
 	gulp prod
 	node production/app.js
+static:
+	gulp static
+	cd production && hs

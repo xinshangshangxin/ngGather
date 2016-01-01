@@ -4,14 +4,14 @@ var gulp = require('gulp');
 var path = require('path');
 var $ = require('gulp-load-plugins')(
   {
-    pattern: ['gulp-*', 'run-sequence', 'del', 'streamqueue']
+    pattern: ['gulp-*', 'del', 'streamqueue']
     //,lazy: false
   });
 
 
 function changeSrc(src) {
   if(typeof src === 'string') {
-    return path.join('**/*', config.js.filter.src);
+    return path.join('**/*', src);
   }
   else {
     return src.map(function(value) {
@@ -27,16 +27,27 @@ function errorHandler(error) {
 }
 
 
-var config = require('./config.js').commonConfig;
+var gulpConfig = require('./config.js');
+var specConfig = null;       // 在环境初始化之后再读取配置
+var config = null;
 var isBuild = false;         // 是否为 build/prod 环境
+var isStatic = false;
 
-var specConfig = require('./config.js').specConfig;
 
 /**
  *
  * 特殊需求, 每个项目不同
  *
  */
+
+gulp.task('languages', function(done) {
+  if(!isBuild) {
+    return done();
+  }
+  return gulp.src(specConfig.languageJsons.src, specConfig.languageJsons.opt)
+    .pipe(gulp.dest(specConfig.languageJsons.dest));
+});
+
 
 gulp.task('injectUserCode', function() {
   if(isBuild) {
@@ -58,14 +69,14 @@ gulp.task('theme', function(done) {
     return done();
   }
   return gulp.src(specConfig.theme.src, specConfig.theme.opt)
-    .pipe($.minifyCss(specConfig.minifyCssConfig))
+    .pipe($.cssnano())
     .pipe($.rev())
     .pipe($.rename({extname: '.min.css'}))
     .pipe(gulp.dest(specConfig.theme.dest));
 
 });
 
-gulp.task('userTask', gulp.series('theme', 'injectUserCode'));
+gulp.task('userTask', gulp.series('theme', 'injectUserCode', 'languages'));
 
 
 /**
@@ -157,7 +168,7 @@ gulp.task('css', function() {
 
   return gulp.src(config.injectHtmlProd.cssSoruce)
     .pipe($.concat(config.injectHtmlProd.prodCssName))
-    .pipe($.minifyCss(config.minifyCssConfig))
+    .pipe($.cssnano())
     .pipe($.rev())
     .pipe($.rename({extname: '.min.css'}))
     .pipe(gulp.dest(config.injectHtmlProd.cssDest));
@@ -175,6 +186,7 @@ gulp.task('js', function() {
 
   var templateStream = gulp
     .src(config.html2js.src, config.html2js.opt)
+    .pipe($.if(config.html2js.isHtmlmin, $.htmlmin(config.htmlminConfig)))
     .pipe($.angularTemplatecache(config.html2js.name, config.html2js.config));
 
 
@@ -226,10 +238,14 @@ gulp.task('injectHtml:prod', function() {
     .pipe($.inject(injectSource, {
       ignorePath: config.injectHtmlProd.injectIgnorePath
     }))
+    .pipe($.if(config.injectHtmlProd.isHtmlmin, $.htmlmin(config.htmlminConfig)))
     .pipe(gulp.dest(config.injectHtmlProd.dest));
 });
 
 gulp.task('server', function(done) {
+  if(isStatic) {
+    return done();
+  }
   if(!config.server.src || !config.server.src.length) {
     return done();
   }
@@ -240,9 +256,9 @@ gulp.task('server', function(done) {
 
 // start watchers
 gulp.task('watchers', function(done) {
-  gulp.watch(config.sass.watcherPath, ['sass']);
-  gulp.watch(config.images.src, config.images.opt, ['images']);
-  gulp.watch(config.js.src, config.js.opt, ['js', 'injectHtml:dev']);
+  gulp.watch(config.less.watcherPath, gulp.series('less'));
+  //gulp.watch(config.images.src, config.images.opt, ['images']);
+  //gulp.watch(config.js.src, config.js.opt, ['js', 'injectHtml:dev']);
   done();
 });
 
@@ -250,13 +266,18 @@ gulp.task('watchers:sass', function() {
   gulp.watch(config.sass.watcherPath, ['sass']);
 });
 
-gulp.task('build', function() {
-  isBuild = true;
-  gulp.series(
-    'clean',
-    'less',
-    'userTask',
-    gulp.parallel(
+gulp.task('build', gulp.series(
+  function setBuildEnv(done) {
+    config = gulpConfig.getCommonConfig();
+    specConfig = gulpConfig.getSpecConfig();
+    isBuild = true;
+    return done();
+  },
+  'clean',
+  'less',
+  'userTask',
+  gulp
+    .parallel(
       'libCss',
       'js',
       'images',
@@ -264,14 +285,18 @@ gulp.task('build', function() {
       'libJs',
       'server'
     ),
-    'css',
-    'injectHtml:prod'
-  )();
-});
+  'css',
+  'injectHtml:prod'
+));
 
 gulp.task('prod', gulp.series('build'));
 
 gulp.task('default', gulp.series(
+  function setDevEnv(done) {
+    config = gulpConfig.getCommonConfig();
+    specConfig = gulpConfig.getSpecConfig();
+    return done();
+  },
   'clean',
   gulp.parallel(
     'libCss',
@@ -279,5 +304,18 @@ gulp.task('default', gulp.series(
     'js'
   ),
   'userTask',
-  'injectHtml:dev'
+  'injectHtml:dev',
+  'watchers'
+));
+
+gulp.task('static', gulp.series(
+  function setStaticEnv(done) {
+    isStatic = true;
+    gulpConfig.alterableSetting.publicPath = gulpConfig.alterableSetting.basePath;
+    gulpConfig.alterableSetting.viewPath = gulpConfig.alterableSetting.basePath;
+    gulpConfig.alterableSetting.noHtml5Mode = true;
+    gulpConfig.alterableSetting.noServer = true;
+    return done();
+  },
+  'build'
 ));

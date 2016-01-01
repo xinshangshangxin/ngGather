@@ -12,8 +12,10 @@
           <div class="form-group">
             <input type="text" class="form-control" placeholder="回车搜索" ng-model="keyword">
           </div>
-          <a ng-show="!!keyword" class="btn btn-link" ng-click="search(true)">取消搜索</a>
         </form>
+      </li>
+      <li ng-show="!!keyword">
+        <a class="btn btn-link" ng-click="search(true)">取消搜索</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -24,7 +26,8 @@
         <a class="btn btn-link" ng-click="changeTheme()">{{themeType ? '换白色主题' : '换黑色主题'}}</a>
       </li>
       <li>
-        <a class="btn btn-link" ng-click="!canForceUpdte || forceUpdate()" ng-disabled="!canForceUpdte">更新时间: {{updateTime | updateTimeFilter}}</a>
+        <a class="btn btn-link" ng-click="!canForceUpdte || forceUpdate()" ng-disabled="!canForceUpdte">更新时间:
+          {{updateTime | updateTimeFilter}}</a>
       </li>
     </ul>
   </nav>
@@ -34,7 +37,7 @@
         <td>
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="choose.ischecked" />{{choose.name}}
+              <input type="checkbox" ng-model="choose.ischecked"/>{{choose.name}}
             </label>
           </div>
         </td>
@@ -83,6 +86,7 @@
     </div>
   </div>
   <div class="addmore text-center">
-    <a class="btn btn-primary" ng-click="addMoreState !== 0 || addMore()" ng-disabled="addMoreState !== 0">{{['加载更多~', '没有更多了~~', '加载中~~'][addMoreState]}}</a>
+    <a class="btn btn-primary" ng-click="addMoreState !== 0 || addMore()" ng-disabled="addMoreState !== 0">{{['加载更多~',
+      '没有更多了~~', '加载中~~'][addMoreState]}}</a>
   </div>
 </div>

@@ -13,5 +13,9 @@ angular
         url: '',
         templateUrl: 'templates/home.html',
         controller: 'chooseCtrl'
+      })
+      .state('home.contents', {
+        url: '/contents',
+        controller: 'contentsCtrl'
       });
   });
