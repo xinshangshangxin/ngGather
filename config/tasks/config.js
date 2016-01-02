@@ -14,8 +14,10 @@ function getCommonConfig() {
   return {
     clean: {                   // 清除生成文件的路径
       src: [
-        alterableSetting.basePath,
-        'app/public/css/'
+        alterableSetting.basePath + '**/*',
+        'app/public/css/',
+        '!' + alterableSetting.basePath + '/.git/',
+        '!' + alterableSetting.basePath + '/CNAME'
       ]
     },
     sass: {

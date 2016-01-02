@@ -311,6 +311,7 @@ gulp.task('default', gulp.series(
 gulp.task('static', gulp.series(
   function setStaticEnv(done) {
     isStatic = true;
+    gulpConfig.alterableSetting.basePath = 'static';
     gulpConfig.alterableSetting.publicPath = gulpConfig.alterableSetting.basePath;
     gulpConfig.alterableSetting.viewPath = gulpConfig.alterableSetting.basePath;
     gulpConfig.alterableSetting.noHtml5Mode = true;

@@ -1,4 +1,4 @@
-.PHONY: all test clean
+.PHONY: all test clean static
 dev:
 	node config/dev_start.js
 supervisor:
@@ -27,4 +27,4 @@ prod:
 	node production/app.js
 static:
 	gulp static
-	cd production && hs
+	cd static && hs
