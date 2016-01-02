@@ -17,7 +17,8 @@ function getCommonConfig() {
         alterableSetting.basePath + '**/*',
         'app/public/css/',
         '!' + alterableSetting.basePath + '/.git/',
-        '!' + alterableSetting.basePath + '/CNAME'
+        '!' + alterableSetting.basePath + '/CNAME',
+        '!' + alterableSetting.basePath + '/Makefile'
       ]
     },
     sass: {
@@ -64,10 +65,11 @@ function getCommonConfig() {
     },
     libCss: {             // lib css 需要引入的的css
       src: [              // src 可以为空数组
-        'paper/bootstrap.min.css'
+        'framework/paper/bootstrap.min.css',
+        'vendor/angular-aside/dist/css/angular-aside.min.css'
       ],
       opt: {
-        cwd: 'app/public/framework/'
+        cwd: 'app/public/'
       },
       dest: 'app/public/css'
     },
@@ -76,13 +78,13 @@ function getCommonConfig() {
         'angular/angular.min.js',
         'angular-animate/angular-animate.min.js',
         'angular-resource/angular-resource.min.js',
+        'angular-ui-router/release/angular-ui-router.min.js',
         'angular-translate/angular-translate.min.js',
         'angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
-        'angular-bootstrap/ui-bootstrap.min.js',
         'angular-bootstrap/ui-bootstrap-tpls.min.js',
         'angular-loading-bar/build/loading-bar.min.js',
         'angular-scroll-watch/build/angular-scroll-watch.min.js',
-        'angular-ui-router/release/angular-ui-router.min.js',
+        'angular-aside/dist/js/angular-aside.min.js',
         'lodash/lodash.min.js'
       ],
       'opt': {

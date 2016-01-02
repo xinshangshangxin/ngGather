@@ -5,7 +5,7 @@
     </div>
     <ul class="nav navbar-nav navbar-left" ng-class="{'mobile-hide': ishide}">
       <li>
-        <a class="btn btn-link" ng-click="changeSites()">站点选择</a>
+        <a class="btn btn-link" ng-click="openAside('left', true)">站点选择</a>
       </li>
       <li ng-class="{'mobile-hide': ishide}">
         <form class="navbar-form navbar-left search" role="search" ng-submit="search()">
@@ -31,33 +31,6 @@
       </li>
     </ul>
   </nav>
-  <div ng-show="ishow" id="sites">
-    <table class="table table-bordered table-striped">
-      <tr ng-repeat="choose in (showSites || chooseSite)">
-        <td>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="choose.ischecked"/>{{choose.name}}
-            </label>
-          </div>
-        </td>
-        <td>
-          <a href="{{choose.url}}" target="_blank">{{choose.description}}</a>
-        </td>
-        <td>
-          <span>{{choose.latesGatherTime | updateTimeFilter}}</span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-        </td>
-        <td>
-          <a class="btn btn-primary" ng-click="saveSites()">保存</a>
-          <a class="btn btn-warning" ng-click="saveSites(true)">取消</a>
-        </td>
-      </tr>
-    </table>
-  </div>
 </div>
 <div scroll-watch="{from: 0, to: -1}" sw-broadcast="{'load more': '$percentage > 90'}">
   <div class="row" ng-repeat="content in contents">

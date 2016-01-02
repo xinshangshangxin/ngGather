@@ -2,6 +2,7 @@
 
 ## 演示
 [coding.io](http://nggather.coding.io)
+[nggather](http://nggather.xinshangshangxin.com)
 
 ## 说明
 > 采集以下站点首页
@@ -12,9 +13,7 @@
 [waitsun](http://www.waitsun.com/)  
 [MacPeers](http://www.macpeers.com/)
 
-> sites 后端逻辑处理  
-> static 前端静态文件  
-> production 演示/部署文件  
+> production 为演示/部署文件
 
 ## 安装
 

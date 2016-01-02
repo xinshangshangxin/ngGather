@@ -7,7 +7,8 @@ angular
     'ngResource',
     'angular-loading-bar',
     'ngAnimate',
-    'pc035860.scrollWatch'
+    'pc035860.scrollWatch',
+    'ngAside'
   ])
   .config(function($locationProvider, $translateProvider) {
     // languages

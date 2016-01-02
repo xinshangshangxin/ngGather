@@ -1,10 +1,14 @@
 'use strict';
 
-angular.module('ngGather')
-  .controller('chooseCtrl', function($scope, $timeout, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, allSitesEntity, ALL_SITES) {
+angular
+  .module('ngGather')
+  .controller('chooseCtrl', function($scope, $timeout, $aside, themeSwitcherService, toastService, notificationService, errorHandlingService, localSaveService, sitesInfoEntity, updateTimeEntity, allSitesEntity, ALL_SITES) {
 
     var localObj = localSaveService.get();
-    $scope.chooseSite = localObj.sites || ALL_SITES;
+    // TODO 需要优化写法
+    var ngModel = {};
+    $scope.ngModel = ngModel;
+    ngModel.chooseSite = localObj.sites || ALL_SITES;
     $scope.themeType = !!localObj.themeType; // 白色 false; 黑色 true
 
     $scope.addMoreState = 0; // 0 可以加载更多, 1 没有更多, 2 正在获取中
@@ -28,12 +32,12 @@ angular.module('ngGather')
     $scope.getData = getData;         // 重新获取
     $scope.saveSites = saveSites;
     $scope.search = search;
-
+    $scope.openAside = openAside;
 
     return init();
 
     function init() {
-      _.forEach($scope.chooseSite, function(item) {
+      _.forEach(ngModel.chooseSite, function(item) {
         if(item.ischecked) {
           $scope.sites.push(item.site);
         }
@@ -60,10 +64,10 @@ angular.module('ngGather')
         .then(function(sites) {
           sites = sites.allSites || [];
           sites.forEach(function(site) {
-            var index = _.findIndex($scope.chooseSite, function(item) {
+            var index = _.findIndex(ngModel.chooseSite, function(item) {
               return item.site === site.site;
             });
-            ($scope.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
+            ( ngModel.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
           });
         })
         .catch(function(e) {
@@ -91,10 +95,10 @@ angular.module('ngGather')
         .then(function(sites) {
           sites = sites.allSites || [];
           sites.forEach(function(site) {
-            var index = _.findIndex($scope.chooseSite, function(item) {
+            var index = _.findIndex(ngModel.chooseSite, function(item) {
               return item.site === site.site;
             });
-            ($scope.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
+            ( ngModel.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
           });
         })
         .catch(function(e) {
@@ -107,7 +111,7 @@ angular.module('ngGather')
       if($scope.ishow) {
         getSitesUpdateTime()
           .then(function() {
-            $scope.showSites = angular.copy($scope.chooseSite);
+            ngModel.showSites = angular.copy(ngModel.chooseSite);
           });
       }
     }
@@ -115,19 +119,19 @@ angular.module('ngGather')
     function saveSites(isCancle) {
       $scope.ishow = !$scope.ishow;
       if(isCancle) {
-        $scope.showSites = $scope.chooseSite;
+        ngModel.showSites = ngModel.chooseSite;
         return;
       }
       var sites = [];
-      $scope.chooseSite = $scope.showSites;
-      _.forEach($scope.chooseSite, function(item) {
+      ngModel.chooseSite = ngModel.showSites;
+      _.forEach(ngModel.chooseSite, function(item) {
         if(item.ischecked) {
           sites.push(item.site);
         }
       });
       $scope.sites = sites;
       $scope.getData();
-      localSaveService.set($scope.chooseSite, $scope.themeType);
+      localSaveService.set(ngModel.chooseSite, $scope.themeType);
     }
 
     function forceUpdate() {
@@ -224,6 +228,41 @@ angular.module('ngGather')
         item.disabled = !item.disabled;
       });
       $scope.themeType = !$scope.themeType;
-      localSaveService.set($scope.chooseSite, $scope.themeType);
+      localSaveService.set(ngModel.chooseSite, $scope.themeType);
+    }
+
+    function openAside(position, backdrop) {
+      getSitesUpdateTime()
+        .then(function() {
+          ngModel.showSites = angular.copy(ngModel.chooseSite);
+
+          $aside
+            .open({
+              templateUrl: 'templates/choose-site.html',
+              placement: position,
+              size: 'lg',
+              backdrop: backdrop,
+              controller: ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+
+                $scope.chooseSite = ngModel.chooseSite;
+                $scope.showSites = ngModel.showSites;
+
+                $scope.ok = function(e) {
+                  $uibModalInstance.close();
+                  e.stopPropagation();
+                };
+                $scope.cancel = function(e) {
+                  $uibModalInstance.dismiss();
+                  e.stopPropagation();
+                };
+              }]
+            })
+            .result
+            .then(function ok() {
+              saveSites();
+            }, function cancel() {
+              saveSites(true);
+            });
+        });
     }
   });
