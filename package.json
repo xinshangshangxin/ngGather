@@ -28,6 +28,7 @@
     "request": "^2.62.0"
   },
   "devDependencies": {
+    "browser-sync": "^2.11.0",
     "chai": "^3.4.0",
     "del": "^2.0.1",
     "gulp": "git://github.com/gulpjs/gulp#4.0",

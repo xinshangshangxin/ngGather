@@ -2,6 +2,8 @@
 
 var gulp = require('gulp');
 var path = require('path');
+var browserSync = require('browser-sync').create();
+
 var $ = require('gulp-load-plugins')(
   {
     pattern: ['gulp-*', 'del', 'streamqueue']
@@ -82,6 +84,12 @@ gulp.task('userTask', gulp.series('theme', 'injectUserCode', 'languages'));
 /**
  * end: 特殊需求
  */
+
+
+gulp.task('browser-sync', function(done) {
+  browserSync.init(config.browsersync.development);
+  return done();
+});
 
 // no-op = empty function
 gulp.task('noop', function() {
@@ -305,6 +313,7 @@ gulp.task('default', gulp.series(
   ),
   'userTask',
   'injectHtml:dev',
+  'browser-sync',
   'watchers'
 ));
 

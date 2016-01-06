@@ -201,6 +201,15 @@ function getCommonConfig() {
       },
       dest: alterableSetting.publicPath
     },
+    browsersync: {
+      development: {
+        proxy: 'http://127.0.0.1:1337',
+        files: [
+          'app/public/**/*',
+          'app/views/**/*'
+        ]
+      }
+    },
     minifyCssConfig: {                        // 压缩css配置
       keepSpecialComments: 0
     },
