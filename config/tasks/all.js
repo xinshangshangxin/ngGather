@@ -312,9 +312,7 @@ gulp.task('default', gulp.series(
     'js'
   ),
   'userTask',
-  'injectHtml:dev',
-  'browser-sync',
-  'watchers'
+  'injectHtml:dev'
 ));
 
 gulp.task('static', gulp.series(
@@ -328,4 +326,33 @@ gulp.task('static', gulp.series(
     return done();
   },
   'build'
+));
+
+
+gulp.task('dev', gulp.series(
+  function setDevEnv(done) {
+    config = gulpConfig.getCommonConfig();
+    specConfig = gulpConfig.getSpecConfig();
+    return done();
+  },
+  'clean',
+  gulp.parallel(
+    'libCss',
+    'less',
+    'js'
+  ),
+  'userTask',
+  'injectHtml:dev',
+  'browser-sync',
+  'watchers'
+));
+
+gulp.task('quickStart', gulp.series(
+  function setDevEnv(done) {
+    config = gulpConfig.getCommonConfig();
+    specConfig = gulpConfig.getSpecConfig();
+    return done();
+  },
+  'browser-sync',
+  'watchers'
 ));

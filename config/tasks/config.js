@@ -204,6 +204,7 @@ function getCommonConfig() {
     browsersync: {
       development: {
         proxy: 'http://127.0.0.1:1337',
+        port: 8888,
         files: [
           'app/public/**/*',
           'app/views/**/*'
