@@ -3,9 +3,7 @@
 var mongoose = require('mongoose');
 var path = require('path');
 
-process.env.NODE_CONFIG_DIR = path.join(__dirname, '../../config');
-var config = require('config');
-
+var dbName = 'ngGather';
 
 function getCodingMongodbUri() {
   try {
@@ -77,7 +75,6 @@ function close() {
 }
 
 
-var dbName = config.get('dbName');
 var mongodbUri = getMongodbUri(getCodingMongodbUri, getDockerMongo, getDaoCloudorLocalMongodbUri)(dbName);
 
 //console.log(mongodbUri);

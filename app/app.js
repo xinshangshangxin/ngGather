@@ -6,7 +6,6 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var config = require('config');
 
 var routes = require('./routes/index');
 
@@ -42,7 +41,7 @@ app.use(function(err, req, res) {
   });
 });
 
-var port = process.env.VCAP_APP_PORT || config.get('port');
+var port = process.env.VCAP_APP_PORT || '1337';
 app.set('port', port);
 
 var server = http.createServer(app);

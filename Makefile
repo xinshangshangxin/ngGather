@@ -4,15 +4,7 @@ dev:
 supervisor:
 	supervisor -n error -i 'app/public/,app/views/,config/tasks/' app/app.js
 push:
-	git add -A
-	git commit -m "$(m)"
-	git push origin master
-one:
-	git add -A
-	git commit -m "$(m)"
-	git push $(r) master
-start:
-	./node_modules/pm2/bin/pm2 start production/app.js --no-daemon
+	git push origin v2
 test:
 	@ if [ -n "$(g)" ]; \
 	then \
@@ -28,3 +20,8 @@ prod:
 static:
 	gulp static
 	cd static && hs
+pushProd:
+	cp ./package.json ./production
+	cd ./production && git add -A && git commit -m "auto" && git push origin master:production
+pushStatic:
+	cd ./static && git add -A && git commit -m "auto" && git push origin gh-pages

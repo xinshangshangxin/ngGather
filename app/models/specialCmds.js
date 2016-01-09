@@ -11,15 +11,6 @@ var spawn = require('child_process').spawn;
 
 var mailSendService = require('../service/mailSendService.js');
 
-var outFile = fs.openSync('./config/info.log', 'a');
-var errFile = fs.openSync('./config/error.log', 'a');
-
-var spawnFileOption = {
-  detached: true,
-  stdio: ['pipe', outFile, errFile]
-};
-
-
 var helpInfo = {
   cmds: [{
     name: 'update',
@@ -134,7 +125,7 @@ function execCmd(option) {
       return resolve('no cmd exec');
     }
 
-    var cmd = spawn(option.cmd, option.arg, option.fileOut ? spawnFileOption : undefined);
+    var cmd = spawn(option.cmd, option.arg);
     var logStr = '[' + option.name + ']  ';
 
     cmd.on('exit', function(code) {
