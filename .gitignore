@@ -54,3 +54,4 @@ app/public/css/*
 config/info.log
 config/error.log
 static
+production
