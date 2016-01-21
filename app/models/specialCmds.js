@@ -141,10 +141,12 @@ function execCmd(option) {
       });
     });
 
-    // 日志输出
-    if(option.fileOut) {
-      return;
-    }
+    cmd.on('error', function(err) {
+      return reject({
+        err: err,
+        cmdOption: option
+      });
+    });
 
     cmd.stdout.on('data', function(data) {
       var str = data + '';
@@ -156,9 +158,7 @@ function execCmd(option) {
         logStr = '[' + option.name + ']    ';
       }
     });
-    cmd.stdout.on('end', function() {
 
-    });
   });
 }
 
