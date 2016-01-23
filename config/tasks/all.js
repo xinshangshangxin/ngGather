@@ -4,12 +4,32 @@ var gulp = require('gulp');
 var path = require('path');
 var browserSync = require('browser-sync').create();
 
+var gulpConfig = require('./config.js');
+var specConfig = null;       // 在环境初始化之后再读取配置
+var config = null;
+
 var $ = require('gulp-load-plugins')(
   {
     pattern: ['gulp-*', 'del', 'streamqueue']
     //,lazy: false
   });
+$.storeFileName = require('./storeFileName.js');
+$.isBuild = false;
+$.isStatic = false;
+$.specConfig = specConfig;
+$.config = config;
 
+function getConfig() {
+  config = gulpConfig.getCommonConfig();
+  specConfig = gulpConfig.getSpecConfig();
+  $.config = config;
+  $.specConfig = specConfig;
+}
+
+function setDevEnv(done) {
+  getConfig();
+  return done();
+}
 
 function changeSrc(src) {
   if(typeof src === 'string') {
@@ -29,13 +49,6 @@ function errorHandler(error) {
 }
 
 
-var gulpConfig = require('./config.js');
-var specConfig = null;       // 在环境初始化之后再读取配置
-var config = null;
-var isBuild = false;         // 是否为 build/prod 环境
-var isStatic = false;
-
-
 /**
  *
  * 特殊需求, 每个项目不同
@@ -43,42 +56,27 @@ var isStatic = false;
  */
 
 gulp.task('languages', function(done) {
-  if(!isBuild) {
+  if(!$.isBuild) {
     return done();
   }
   return gulp.src(specConfig.languageJsons.src, specConfig.languageJsons.opt)
     .pipe(gulp.dest(specConfig.languageJsons.dest));
 });
 
-
-gulp.task('injectUserCode', function() {
-  if(isBuild) {
-    specConfig.injectUserCode.sourceSrc = specConfig.injectUserCode.prodSourceSrc;
-    specConfig.injectUserCode.sourceOpt = specConfig.injectUserCode.prodSourceOpt;
-  }
-  return gulp.src(specConfig.injectUserCode.src, specConfig.injectUserCode.opt)
-    .pipe($.inject(
-      gulp.src(specConfig.injectUserCode.sourceSrc,
-        specConfig.injectUserCode.sourceOpt
-      ),
-      specConfig.injectUserCode.injectOpt)
-    )
-    .pipe(gulp.dest(specConfig.injectUserCode.dest));
-});
-
 gulp.task('theme', function(done) {
-  if(!isBuild) {
+  if(!$.isBuild) {
     return done();
   }
   return gulp.src(specConfig.theme.src, specConfig.theme.opt)
     .pipe($.cssnano())
     .pipe($.rev())
     .pipe($.rename({extname: '.min.css'}))
+    .pipe($.storeFileName(specConfig.theme.storeFileNameSpaceName))
     .pipe(gulp.dest(specConfig.theme.dest));
 
 });
 
-gulp.task('userTask', gulp.series('theme', 'injectUserCode', 'languages'));
+gulp.task('userTask', gulp.series('theme', 'languages'));
 
 
 /**
@@ -108,7 +106,7 @@ gulp.task('libCss', function(done) {
 
 gulp.task('sass', function() {
   return gulp.src(config.sass.src, config.sass.opt)
-    .pipe($.if(isBuild, $.replace(config.sass.subStr, config.sass.newStr)))
+    .pipe($.if($.isBuild, $.replace(config.sass.subStr, config.sass.newStr)))
     .pipe($.sass())
     .on('error', $.sass.logError)
     .pipe(gulp.dest(config.sass.dest));
@@ -185,11 +183,16 @@ gulp.task('css', function() {
 
 // jshint 用户的js
 gulp.task('js', function() {
-  if(!isBuild) {
+  if(!$.isBuild) {
     return gulp.src(config.js.src, config.js.opt)
       .pipe($.jshint(config.jshintPath))
       .pipe($.jshint.reporter('default'));
   }
+
+  var jssStreamQueue = [{
+    objectMode: true
+  }];
+
   var specStream = gulp.src(config.specJs.src);
 
   var templateStream = gulp
@@ -206,20 +209,27 @@ gulp.task('js', function() {
       continue;
     }
     f = $.filter(changeSrc(filters[i].src), {restore: true});
+
+    if(typeof filters[i].newStr === 'function') {
+      filters[i].newStr = filters[i].newStr($);
+    }
+
     stream = stream
       .pipe(f)
       .pipe($.replace(filters[i].subStr, filters[i].newStr))
       .pipe(f.restore);
   }
 
-  //var scriptStream = gulp.src(config.js.src, config.js.opt)
   var scriptStream = stream.pipe($.jshint(config.jshintPath))
     .pipe($.jshint.reporter('default'))
     .pipe($.ngAnnotate())
     .pipe($.angularFilesort())
     .on('error', errorHandler);
 
-  return $.streamqueue({objectMode: true}, specStream, scriptStream, templateStream)
+
+  jssStreamQueue.push.apply(jssStreamQueue, [specStream, scriptStream, templateStream])
+
+  return $.streamqueue.apply(null, jssStreamQueue)
     .pipe($.concat(config.injectHtmlProd.prodUserJsName))
     .pipe($.uglify(config.uglifyConfig))
     .pipe($.rev())
@@ -251,7 +261,7 @@ gulp.task('injectHtml:prod', function() {
 });
 
 gulp.task('server', function(done) {
-  if(isStatic) {
+  if($.isStatic) {
     return done();
   }
   if(!config.server.src || !config.server.src.length) {
@@ -276,9 +286,8 @@ gulp.task('watchers:sass', function() {
 
 gulp.task('build', gulp.series(
   function setBuildEnv(done) {
-    config = gulpConfig.getCommonConfig();
-    specConfig = gulpConfig.getSpecConfig();
-    isBuild = true;
+    getConfig();
+    $.isBuild = true;
     return done();
   },
   'clean',
@@ -300,11 +309,7 @@ gulp.task('build', gulp.series(
 gulp.task('prod', gulp.series('build'));
 
 gulp.task('default', gulp.series(
-  function setDevEnv(done) {
-    config = gulpConfig.getCommonConfig();
-    specConfig = gulpConfig.getSpecConfig();
-    return done();
-  },
+  setDevEnv,
   'clean',
   gulp.parallel(
     'libCss',
@@ -317,7 +322,7 @@ gulp.task('default', gulp.series(
 
 gulp.task('static', gulp.series(
   function setStaticEnv(done) {
-    isStatic = true;
+    $.isStatic = true;
     gulpConfig.alterableSetting.basePath = 'static';
     gulpConfig.alterableSetting.publicPath = gulpConfig.alterableSetting.basePath;
     gulpConfig.alterableSetting.viewPath = gulpConfig.alterableSetting.basePath;
@@ -330,29 +335,20 @@ gulp.task('static', gulp.series(
 
 
 gulp.task('dev', gulp.series(
-  function setDevEnv(done) {
-    config = gulpConfig.getCommonConfig();
-    specConfig = gulpConfig.getSpecConfig();
-    return done();
-  },
+  setDevEnv,
   'clean',
   gulp.parallel(
     'libCss',
     'less',
     'js'
   ),
-  'userTask',
   'injectHtml:dev',
   'browser-sync',
   'watchers'
 ));
 
 gulp.task('quickStart', gulp.series(
-  function setDevEnv(done) {
-    config = gulpConfig.getCommonConfig();
-    specConfig = gulpConfig.getSpecConfig();
-    return done();
-  },
+  setDevEnv,
   'browser-sync',
   'watchers'
 ));

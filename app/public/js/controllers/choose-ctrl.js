@@ -219,9 +219,7 @@ angular
 
     function changeTheme() {
       if(!themes || !themes.length) {
-        // <!-- inject:themes -->
-        themes.push({href: '/css/night/night.css',disabled: true});
-        // <!-- endinject -->
+        themes.push({href: '/css/night/night.css', disabled: true});
         themeSwitcherService.replaceThemes(themes);
       }
       themes.forEach(function(item) {

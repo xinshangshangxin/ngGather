@@ -1,7 +1,7 @@
 'use strict';
 
 
-// ZD图片无法直接获取
+// 图片无法直接获取
 angular
   .module('ngGather')
   .filter('imgUrlChange', function(SERVERURL) {

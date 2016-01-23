@@ -115,6 +115,13 @@ function getCommonConfig() {
         src: ['common/services/constants.js'],
         subStr: '.constant(\'SERVERURL\', \'\')',
         newStr: '.constant(\'SERVERURL\', \'' + (alterableSetting.noServer ? 'http://nggather.coding.io' : '') + '\')'
+      }, {
+        src: ['controllers/choose-ctrl.js'],
+        subStr: /\/css\/night\/night.*?\.css/,
+        newStr: function($) {
+          var filepath = $.storeFileName.get($.specConfig.theme.storeFileNameSpaceName, 'relative') || [];
+          return filepath[0];
+        }
       }],
       dest: path.join(alterableSetting.publicPath, 'js')        // userJs在prod环境下才需要 输出, 故dest为 prod环境的dest
     },
@@ -246,35 +253,8 @@ function getSpecConfig() {
         cwd: 'app/public',
         base: 'app/public'
       },
-      dest: alterableSetting.publicPath
-    },
-    injectUserCode: {
-      src: 'js/controllers/choose-ctrl.js',
-      opt: {
-        cwd: 'app/public',
-        base: 'app/public'
-      },
-      sourceSrc: ['css/night/**/*.css'],
-      sourceOpt: {
-        read: false,
-        cwd: 'app/public/'
-      },
-      prodSourceSrc: ['css/night/**/*.css'],
-      prodSourceOpt: {
-        read: false,
-        cwd: alterableSetting.publicPath
-      },
-      injectOpt: {
-        starttag: '// <!-- inject:themes -->',
-        endtag: '// <!-- endinject -->',
-        transform: function(filepath) {
-          console.log(filepath);
-          if(/\/night\//.test(filepath)) {
-            return 'themes.push({href: \'' + filepath + '\',disabled: true});';
-          }
-        }
-      },
-      dest: 'app/public/'
+      dest: alterableSetting.publicPath,
+      storeFileNameSpaceName: 'nightTheme'
     }
   };
 }
