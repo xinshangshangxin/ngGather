@@ -127,44 +127,51 @@ function createOrUpdate(siteObj) {
  * @return {[type]}         [description]
  */
 function search(options) {
-  if(!options.keyword) {
-    return Promise.resolve([]);
-  }
 
-  var perPage = parseInt(options.perPage) || 20; // 每一页多少文章
-  var pageNu = parseInt(options.pageNu) || 0; // 查询第几页的
-  var keywords = options.keyword.replace(/[(\s+),]/, '.*');
-
-  var query = {
-    $or: [{
-      intro: new RegExp(keywords, 'i')
-    }, {
-      title: new RegExp(keywords, 'i')
-    }]
-  };
-  if(options.sites) {
-    query.site = {
-      $in: options.sites
-    };
-  }
-  if(_.isDate(options.startTime)) {
-    query.gatherTime = {
-      $gte: new Date(options.startTime).getTime()
-    };
-  }
-  if(_.isDate(options.endTime)) {
-    query.gatherTime = query.gatherTime || {};
-    query.gatherTime.$lte = new Date(options.endTime).getTime();
-  }
-  return articleModel.find(query, {
-      _id: 0
-    }, {
-      sort: {
-        gatherTime: -1
+  return Promise
+    .resolve()
+    .then(function() {
+      if(!options.keyword) {
+        return [];
       }
-    })
-    .skip(pageNu * perPage)
-    .limit(perPage);
+
+      var perPage = parseInt(options.perPage) || 20; // 每一页多少文章
+      var pageNu = parseInt(options.pageNu) || 0; // 查询第几页的
+      var keywords = options.keyword.replace(/[(\s+),]/, '.*');
+
+      var query = {
+        $or: [{
+          intro: new RegExp(keywords, 'i')
+        }, {
+          title: new RegExp(keywords, 'i')
+        }]
+      };
+      if(options.sites) {
+        query.site = {
+          $in: options.sites
+        };
+      }
+      if(options.startTime && _.isDate(new Date(options.startTime))) {
+        query.gatherTime = {
+          $gte: new Date(options.startTime).getTime()
+        };
+      }
+      if(options.endTime && _.isDate(new Date(options.endTime))) {
+        query.gatherTime = query.gatherTime || {};
+        query.gatherTime.$lte = new Date(options.endTime).getTime();
+      }
+
+      return articleModel.find(query, {
+          _id: 0
+        }, {
+          sort: {
+            gatherTime: -1
+          }
+        })
+        .skip(pageNu * perPage)
+        .limit(perPage);
+
+    });
 }
 
 module.exports.search = search;
