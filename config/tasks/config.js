@@ -166,7 +166,8 @@ function getCommonConfig() {
       src: [
         '**/*.html',
         '!index.html',
-        '!framework/**/*'
+        '!framework/**/*',
+        '!vendor/**/*'
       ],
       opt: {
         'cwd': 'app/public/',
