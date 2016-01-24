@@ -25,3 +25,15 @@ pushProd:
 	cd ./production && git add -A && git commit -m "auto" && git push origin master:production
 pushStatic:
 	cd ./static && git add -A && git commit -m "auto" && git push origin gh-pages
+pushAll:
+	gulp prod; \
+	cp ./package.json ./production; \
+	cd ./production; \
+	git add -A; \
+	git commit -m "auto"; \
+	git push origin master:production;
+	gulp static; \
+	cd ./static; \
+	git add -A; \
+	git commit -m "auto"; \
+	git push origin gh-pages;
