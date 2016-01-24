@@ -1,6 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+
 var path = require('path');
 
 var dbName = 'ngGather';

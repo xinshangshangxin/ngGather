@@ -1,9 +1,12 @@
 'use strict';
+var path = require('path');
 var chai = require('chai');
-var should = chai.should();
+chai.should();
 
-var article = require('.././models/article.js');
-var capture = require('.././models/capture.js');
+
+var appPath = __filename.replace(/ngGather.*/, 'ngGather/app');
+var article = require(path.join(appPath, 'models/article.js'));
+var capture = require(path.join(appPath, 'models/capture.js'));
 
 
 describe('The article', function() {
@@ -16,7 +19,7 @@ describe('The article', function() {
   });
 
   describe('When call updateSiteArticles', function() {
-    it('should update 0 data', function(done) {
+    it('should update some data', function(done) {
       article
         .updateSiteArticles({
           name: 'llm',
@@ -27,13 +30,12 @@ describe('The article', function() {
           classify: 'info'
         })
         .then(function(data) {
-          data.should.match(/更新站点llm\s*0\s*篇文章成功 !!/gi);
+          data.should.match(/更新站点llm\s*\d+\s*篇文章成功 !!/gi);
+          done();
         })
         .catch(function(e) {
-          throw e;
-        })
-        .finally(function() {
-          done();
+          console.log(e.stack);
+          done(e);
         });
     });
   });

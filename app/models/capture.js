@@ -119,6 +119,8 @@ function captureMacpeers($) {
   return list;
 }
 
+
+module.exports.captureLLM = captureLLM;
 module.exports.allSites = [{
   name: 'waitsun',
   chName: '爱情守望者',

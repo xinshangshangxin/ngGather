@@ -45,15 +45,17 @@ var articleSchema = new mongoose.Schema({
 });
 
 // 更新 updatedAt
-articleSchema.pre('save', function() {
+articleSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
+  next();
 });
 
-articleSchema.pre('update', function() {
+articleSchema.pre('update', function(next) {
   this.updatedAt = Date.now();
+  next();
 });
 
-articleSchema.pre('findOneAndUpdate', function() {
+articleSchema.pre('findOneAndUpdate', function(next) {
   if(!this.createdAt) {
     this.findOneAndUpdate({}, {
       createdAt: Date.now()
@@ -62,6 +64,7 @@ articleSchema.pre('findOneAndUpdate', function() {
   this.findOneAndUpdate({}, {
     updatedAt: Date.now()
   });
+  next();
 });
 
 var articleModel = db.model('article', articleSchema);
@@ -174,6 +177,12 @@ function search(options) {
     });
 }
 
+function remove(title) {
+  return articleModel.remove({
+    title: title
+  });
+}
+
 module.exports.search = search;
 module.exports.add = add;
 module.exports.addArr = addArr;
@@ -181,4 +190,5 @@ module.exports.update = update;
 module.exports.findOneByHref = findOneByHref;
 module.exports.createOrUpdate = createOrUpdate;
 module.exports.findLimit = findLimit;
+module.exports.remove = remove;
 module.exports.articleModel = articleModel; // 为updates抛出
