@@ -6,7 +6,7 @@
   },
   "scripts": {
     "start": "./node_modules/pm2/bin/pm2 start app.js --no-daemon",
-    "test": "mocha --recursive --timeout 10000 --require chai --harmony test --bail"
+    "test": "mocha --recursive --timeout 10000 --require chai --harmony --bail test"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
