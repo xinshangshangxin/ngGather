@@ -6,9 +6,7 @@ var _ = require('lodash');
 
 // 从环境变量中获取账号
 var getEnvSetting = function() {
-  var _transport = {
-    auth: {}
-  };
+  var _transport = {};
 
   if(process.env.host) {
     _transport.host = process.env.host;
@@ -17,14 +15,17 @@ var getEnvSetting = function() {
     _transport.port = process.env.port;
   }
   if(process.env.user) {
+    _transport.auth = _transport.auth || {};
     _transport.auth.user = process.env.user;
   }
   if(process.env.pass) {
+    _transport.auth = _transport.auth || {};
     _transport.auth.pass = process.env.pass;
   }
   if(process.env.service) {
     _transport.service = process.env.service;
   }
+
   return _transport;
 };
 
@@ -43,12 +44,16 @@ var defaultTransport = {
   auth: {
     user: 'test4code@sina.com',
     pass: 'Test4code;'
+  },
+  secure: false,
+  tls: {
+    rejectUnauthorized: false
   }
 };
 
 var transporter = Promise
-  .promisifyAll(nodemailer
-    .createTransport(_.assign({}, getEnvSetting(), defaultTransport))
+  .promisifyAll(
+    nodemailer.createTransport(_.assign(defaultTransport, getEnvSetting()))
   );
 
 var sendMail = function(mailOtions) {
@@ -56,4 +61,4 @@ var sendMail = function(mailOtions) {
     .sendMailAsync(_.assign({}, defaultMailOptions, mailOtions));
 };
 
-exports.sendMail = sendMail;
+module.exports.sendMail = sendMail;
