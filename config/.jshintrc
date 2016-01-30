@@ -9,7 +9,6 @@
   "forin": false,
   "immed": false,
   "indent": 2,
-  "latedef": true,
   "newcap": false,
   "noarg": true,
   "noempty": false,
@@ -52,7 +51,6 @@
 
   "predef": [
     "angular",
-    "_",
-    "d3"
+    "_"
   ]
 }

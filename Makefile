@@ -1,19 +1,39 @@
+.PHONY: all test clean static
 dev:
 	node config/dev_start.js
 supervisor:
-	supervisor -n error -i 'sites/public/,sites/views/,static/' sites/app.js
+	supervisor -n error -i 'app/public/,app/views/,config/tasks/' app/app.js
 push:
-	git add -A \
-	git commit -m "$(m)" \
-	git push origin master
-one:
-	git add -A \
-	git commit -m "$(m)" \
-	git push $(r) master
-start:
-	./node_modules/pm2/bin/pm2 start production/app.js --no-daemon
+	git push origin v2
 test:
-	mocha --recursive --timeout 10000 -R spec --require should --harmony test/ --bail
-prod: 
+	@ if [ -n "$(g)" ]; \
+	then \
+		echo 'mocha --recursive --timeout 10000 --require chai --harmony --bail -g $(g) test'; \
+		mocha --recursive --timeout 10000 --require chai --harmony --bail -g $(g) test; \
+	else \
+		echo 'mocha --recursive --timeout 10000 --require chai --harmony --bail test'; \
+		mocha --recursive --timeout 10000 --require chai --harmony --bail test; \
+	fi
+prod:
 	gulp prod
 	node production/app.js
+static:
+	gulp static
+	cd static && hs
+pushProd:
+	cp ./package.json ./production
+	cd ./production && git add -A && git commit -m "auto" && git push origin master:production
+pushStatic:
+	cd ./static && git add -A && git commit -m "auto" && git push origin gh-pages
+pushAll:
+	gulp prod; \
+	cp ./package.json ./production; \
+	cd ./production; \
+	git add -A; \
+	git commit -m "auto"; \
+	git push origin master:production;
+	gulp static; \
+	cd ./static; \
+	git add -A; \
+	git commit -m "auto"; \
+	git push origin gh-pages;

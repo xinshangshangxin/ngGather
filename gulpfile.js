@@ -1,3 +1,1 @@
-var requireDir = require('require-dir');
-requireDir('./config/tasks');
-
+require('./config/tasks/all.js');
