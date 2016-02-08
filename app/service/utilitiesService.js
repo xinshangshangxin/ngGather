@@ -41,7 +41,7 @@ var svc = module.exports = {
             if(nu >= 2) {
               return res.send(400);
             }
-            return svc.getImg(req, res, nu++);
+            return svc.getImg(req, res, nu + 1);
           })
           .pipe(res);
       })
