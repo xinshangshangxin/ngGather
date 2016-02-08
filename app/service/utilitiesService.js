@@ -5,6 +5,7 @@ var request = require('request');
 var Promise = require('bluebird');
 
 var constants = require('./constants.js');
+var proxyService = require('./proxyService.js');
 
 // 中文数字 和 阿拉伯数字 对象
 var nuChange = constants.nuChange;
@@ -12,19 +13,22 @@ var userAgents = constants.userAgents;
 var timeConversion = constants.timeConversion;
 
 var svc = module.exports = {
-  getImg: function(req, res) {
+  getImg: function(req, res, nu) {
+    nu = nu || 0;
+    var url = req.query.imgurl;
+
     // promise just for catch err
     Promise.resolve()
       .then(function() {
-        var url = req.query.imgurl;
         if(!url) {
-          return res.status(404).end();
+          return res.send(404);
         }
-        request(
+        return request(
           {
             url: encodeURI(url),
             pool: false,
             followRedirect: false,
+            proxy: proxyService.getProxyUrl(nu),
             timeout: 15 * 1000,
             headers: {
               'Connection': 'close',
@@ -33,8 +37,11 @@ var svc = module.exports = {
             method: 'GET'
           })
           .on('error', function(err) {
-            console.log('getImg err:  ', err);
-            return res.status(404).end();
+            console.log('getImg err:  ', err, 'error type: ', nu);
+            if(nu >= 2) {
+              return res.send(400);
+            }
+            return svc.getImg(req, res, nu++);
           })
           .pipe(res);
       })
