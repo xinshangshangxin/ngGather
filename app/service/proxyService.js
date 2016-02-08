@@ -11,7 +11,7 @@ getProxies();
 function getProxies() {
   request(
     {
-      url: 'http://proxy.coding.io/api/v1/proxy?type=nn',
+      url: 'http://proxy.coding.io/api/v1/proxy?type=nn&perPage=3',
       method: 'GET',
       json: true
     })
@@ -21,7 +21,7 @@ function getProxies() {
 
   request(
     {
-      url: 'http://proxy.coding.io/api/v1/proxy?type=nt',
+      url: 'http://proxy.coding.io/api/v1/proxy?type=nt&perPage=3',
       method: 'GET',
       json: true
     })

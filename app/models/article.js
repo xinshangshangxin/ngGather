@@ -17,6 +17,7 @@ var articleDao = require('../daos/articleDao.js');
 var capture = require('../models/capture.js');
 var constants = require('../service/constants.js');
 var utilitiesService = require('../service/utilitiesService.js');
+var proxyService = require('../service/proxyService.js');
 
 
 // 服务器最新采集时间
@@ -32,21 +33,53 @@ var allSites = capture.allSites;
 var errSites = []; // 重复出错只发送一封邮件
 var errTime = new Date();
 
-var gatherArticles = function(siteInfo, captureFun) {
-  return request(
+
+function defer() {
+  var resolve, reject;
+  var promise = new Promise(function() {
+    resolve = arguments[0];
+    reject = arguments[1];
+  });
+  return {
+    resolve: resolve,
+    reject: reject,
+    promise: promise
+  };
+}
+
+var gatherArticles = function(siteInfo, captureFun, deferred) {
+
+  deferred = deferred || defer();
+  deferred.nu = deferred.nu || 0;
+
+  request(
     {
       url: siteInfo.url,
       method: 'GET',
       timeout: 15 * 1000,
       encoding: null,
+      followRedirect: false,
+      proxy: proxyService.getProxyUrl(deferred.nu),
       headers: {
         'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
       }
     })
     .spread(function(response, body) {
       var $ = cheerio.load(utilitiesService.changeEncoding(body, siteInfo.encoding, siteInfo.noCheck));
-      return captureFun($);
+
+      return deferred.resolve(captureFun($));
+    })
+    .catch(function(e) {
+      console.log('gather site:', siteInfo.name, 'error times:', deferred.nu, e && e.stack || e);
+
+      if(deferred.nu >= 2) {
+        return deferred.reject(e);
+      }
+      deferred.nu += 1;
+      return gatherArticles(siteInfo, captureFun, deferred);
     });
+
+  return deferred.promise;
 };
 
 var updateOrCreatefilter = function(list) {
