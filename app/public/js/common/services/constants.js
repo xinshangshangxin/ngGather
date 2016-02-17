@@ -39,6 +39,13 @@ angular
     description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
     site: 'MacPeers',
     classify: 'mac'
+  }, {
+    name: 'xclient',
+    ischecked: true,
+    url: 'http://xclient.info/s/',
+    site: 'xclient',
+    description: '精品MAC应用分享，每天分享大量mac软件，为您提供优质的mac破解软件,免费软件下载服务',
+    classify: 'mac'
   }])
   .constant('dataChooses', [{
     value: 1,

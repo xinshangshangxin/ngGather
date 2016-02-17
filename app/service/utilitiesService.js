@@ -3,9 +3,12 @@
 var iconv = require('iconv-lite');
 var request = require('request');
 var Promise = require('bluebird');
+var gather = require('gather-site');
 
 var constants = require('./constants.js');
-var proxyService = require('./proxyService.js');
+
+var proxy = new gather.Proxy();
+proxy.init();
 
 // 中文数字 和 阿拉伯数字 对象
 var nuChange = constants.nuChange;
@@ -28,7 +31,7 @@ var svc = module.exports = {
             url: encodeURI(url),
             pool: false,
             followRedirect: false,
-            proxy: proxyService.getProxyUrl(nu),
+            proxy: proxy.getOne(nu),
             timeout: 15 * 1000,
             headers: {
               'Connection': 'close',
@@ -38,7 +41,7 @@ var svc = module.exports = {
           })
           .on('error', function(err) {
             console.log('getImg err:  ', err, 'error type: ', nu);
-            if(nu >= 2) {
+            if(nu >= proxy.tryRange[1]) {
               return res.send(400);
             }
             return svc.getImg(req, res, nu + 1);

@@ -7,86 +7,32 @@
  */
 
 var Promise = require('bluebird');
-var request = Promise.promisify(require('request'));
-var cheerio = require('cheerio'); // 类jq操作DOM
 var _ = require('lodash');
-
+var gather = require('gather-site');
 
 var mailSendService = require('../service/mailSendService.js');
 var articleDao = require('../daos/articleDao.js');
 var capture = require('../models/capture.js');
 var constants = require('../service/constants.js');
 var utilitiesService = require('../service/utilitiesService.js');
-var proxyService = require('../service/proxyService.js');
-
 
 // 服务器最新采集时间
 var updateTime = 0;
 
-var userAgents = constants.userAgents;
 // 服务器采集站点
 var allSites = capture.allSites;
 
 // 调试
-//allSites = [allSites[0]];
+allSites = [allSites[5]];
 
 var errSites = []; // 重复出错只发送一封邮件
 var errTime = new Date();
-
-
-function defer() {
-  var resolve, reject;
-  var promise = new Promise(function() {
-    resolve = arguments[0];
-    reject = arguments[1];
-  });
-  return {
-    resolve: resolve,
-    reject: reject,
-    promise: promise
-  };
-}
-
-var gatherArticles = function(siteInfo, captureFun, deferred) {
-
-  deferred = deferred || defer();
-  deferred.nu = deferred.nu || 0;
-
-  request(
-    {
-      url: siteInfo.url,
-      method: 'GET',
-      timeout: 15 * 1000,
-      encoding: null,
-      followRedirect: false,
-      proxy: proxyService.getProxyUrl(deferred.nu),
-      headers: {
-        'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)]
-      }
-    })
-    .spread(function(response, body) {
-      var $ = cheerio.load(utilitiesService.changeEncoding(body, siteInfo.encoding, siteInfo.noCheck));
-
-      return deferred.resolve(captureFun($));
-    })
-    .catch(function(e) {
-      console.log('gather site:', siteInfo.name, 'error times:', deferred.nu, e && e.stack || e);
-
-      if(deferred.nu >= 2) {
-        return deferred.reject(e);
-      }
-      deferred.nu += 1;
-      return gatherArticles(siteInfo, captureFun, deferred);
-    });
-
-  return deferred.promise;
-};
 
 var updateOrCreatefilter = function(list) {
   return Promise
     .filter(list, function(article) {
       return articleDao
-        .findOneByHref(article.href)
+        .findOneByHref(article.href || '')
         .then(function(docArticle) {
           // 如果不存在此文章, 说明新建文章
           if(!docArticle) {
@@ -102,17 +48,21 @@ var updateOrCreatefilter = function(list) {
           return false;
         })
         .catch(function(e) {
-          console.log(e);
+          console.log(e && e.stack || e);
           return false;
         });
     });
 };
 
-var updateSiteArticles = function(siteInfo, captureFun) {
+var updateSiteArticles = function(siteInfo) {
   updateTime = new Date();
-  captureFun = captureFun || siteInfo.captureFun;
-  return gatherArticles(siteInfo, captureFun)
-    .then(function(list) {
+
+  return gather(siteInfo, {proxy: true})
+    .then(function(data) {
+      var list = data.articleList || [];
+      if(!list.length) {
+        return Promise.reject(new Error('no article gather'));
+      }
       return updateOrCreatefilter(list);
     })
     .then(function(list) {
@@ -129,17 +79,15 @@ var updateSiteArticles = function(siteInfo, captureFun) {
             }
             article.gatherTime = article.time;
           }
-
-          return articleDao
-            .createOrUpdate(article);
-        }))
-        .then(function() {
-          return Promise.resolve('更新站点' + siteInfo.name + '  ' + list.length + ' 篇文章成功 !!');
-        })
-        .catch(function(e) {
-          console.log(e);
-          return Promise.reject('更新' + siteInfo.name + ' 文章失败: ');
-        });
+          return articleDao.createOrUpdate(article);
+        }));
+    })
+    .then(function(list) {
+      return Promise.resolve('更新站点' + siteInfo.name + '  ' + list.length + ' 篇文章成功 !!');
+    })
+    .catch(function(e) {
+      console.log(e && e.stack || e);
+      return Promise.reject('更新' + siteInfo.name + ' 文章失败: ');
     });
 };
 
@@ -151,7 +99,7 @@ var search = function(req, res) {
       res.json(data);
     })
     .catch(function(e) {
-      console.log(e);
+      console.log(e && e.stack || e);
       res.json(400, {
         err: 1002
       });
@@ -173,7 +121,7 @@ var getSites = function(req, res) {
       res.json(data);
     })
     .catch(function(e) {
-      console.log(e);
+      console.log(e && e.stack || e);
       res.send(400, {
         err: 1001
       });
@@ -251,8 +199,8 @@ var taskUpdate = function() {
   }
 
   Promise
-    .settle(allSites.map(function(item) {
-      return updateSiteArticles(item);
+    .all(allSites.map(function(item) {
+      return updateSiteArticles(item).reflect();
     }))
     .then(notifyErr)
     .then(function(data) {
@@ -261,7 +209,7 @@ var taskUpdate = function() {
       }
     })
     .catch(function(e) {
-      console.log(e);
+      console.log(e && e.stack || e);
     });
 };
 

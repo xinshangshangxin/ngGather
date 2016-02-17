@@ -119,6 +119,29 @@ function captureMacpeers($) {
   return list;
 }
 
+function captureXclient($) {
+  var list = [];
+  var now = new Date();
+  $('#main')
+    .find('.list-soft')
+    .each(function(i, e) {
+      var img = $(e).find('.list-item-icon').first().attr('src');
+      var listItemMeta = $(e).find('.list-item-meta').first();
+      var title = listItemMeta.find('a').first().text();
+      var href = listItemMeta.find('a').first().attr('href');
+      var timeNu = new Date($(e).find('.list-item-date').first().text()).getTime();
+      var intro = $(e).find('.list-item-summary').first().text();
+      list.push({
+        img: img,
+        title: title,
+        href: href,
+        time: timeNu + 1000 - i,
+        gatherTime: now.getTime() + 1000 - i,
+        intro: intro
+      });
+    });
+  return list;
+}
 
 module.exports.captureLLM = captureLLM;
 module.exports.allSites = [{
@@ -127,6 +150,11 @@ module.exports.allSites = [{
   site: 'waitsun',
   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
   url: 'http://www.waitsun.com/',
+  mode: 'css',
+  extract_rules:[{
+    name: 'articleList',
+    expression: captureWaitsun
+  }],
   captureFun: captureWaitsun,
   classify: 'mac'
 }, {
@@ -137,26 +165,58 @@ module.exports.allSites = [{
   captureFun: captureMacpeers,
   classify: 'mac',
   encoding: 'utf8',
-  noCheck: true
+  noCheck: true,
+  mode: 'css',
+  extract_rules:[{
+    name: 'articleList',
+    expression: captureMacpeers
+  }]
 }, {
   name: 'zd',
   url: 'http://www.zdfans.com/',
   site: 'zd',
   description: '专注绿软，分享软件、传递最新软件资讯',
   captureFun: captureZD,
-  classify: 'windows'
+  classify: 'windows',
+  mode: 'css',
+  extract_rules:[{
+    name: 'articleList',
+    expression: captureZD
+  }]
 }, {
   name: 'llm',
   url: 'http://liulanmi.com/',
   site: 'llm',
   description: '浏览迷(原浏览器之家)是一个关注浏览器及软件、IT的科技博客,致力于为广大浏览器爱好者提供一个关注浏览器、交流浏览器、折腾浏览器的专门网站',
   captureFun: captureLLM,
-  classify: 'info'
+  classify: 'info',
+  mode: 'css',
+  extract_rules:[{
+    name: 'articleList',
+    expression: captureLLM
+  }]
 }, {
   name: 'iqq',
   url: 'http://www.iqshw.com/',
   site: 'iqq',
   description: '爱Q生活网 - 亮亮\'blog -关注最新QQ活动动态, 掌握QQ第一资讯',
   captureFun: captureIQQ,
-  classify: 'info'
+  classify: 'info',
+  mode: 'css',
+  extract_rules:[{
+    name: 'articleList',
+    expression: captureIQQ
+  }]
+}, {
+  name: 'xclient',
+  url: 'http://xclient.info/s/',
+  site: 'xclient',
+  description: '精品MAC应用分享，每天分享大量mac软件，为您提供优质的mac破解软件,免费软件下载服务',
+  captureFun: captureXclient,
+  classify: 'mac',
+  mode: 'css',
+  extract_rules:[{
+    name: 'articleList',
+    expression: captureXclient
+  }]
 }];
