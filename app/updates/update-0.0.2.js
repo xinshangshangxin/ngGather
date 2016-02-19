@@ -1,100 +1,109 @@
 'use strict';
 
 /**
- * 采集所有页面, 未封装成update
- * 
+ * 采集所有页面
+ *
  */
 
+var _ = require('lodash');
+
+var article = require('../models/article.js');
+var capture = require('../models/capture.js');
+var gather = require('gather-site');
+
+var sites = capture.allSites;
+var updateSiteArticles = article.updateSiteArticles;
+
+var sitesConfig = parseArgs(process.argv.slice(2));
 
 
-// var p = 1;
-// var isErr = false;
-// var canErrNu = 3;
-// var sites = [{
-//   name: 'waitsun',
-//   chName: '爱情守望者',
-//   site: 'waitsun',
-//   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
-//   url: 'http://www.waitsun.com/',
-//   captureFun: capture.captureWaitsun,
-//   classify: 'mac',
-//   final: 125
-// }, {
-//   name: 'MacPeers',
-//   url: 'http://www.macpeers.com/',
-//   site: 'MacPeers',
-//   description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
-//   captureFun: capture.captureMacpeers,
-//   classify: 'mac',
-//   encoding: 'utf8',
-//   noCheck: true,
-//   final: 251
-// }, {
-//   name: 'zd',
-//   url: 'http://www.zdfans.com/',
-//   site: 'zd',
-//   description: '专注绿软，分享软件、传递最新软件资讯',
-//   captureFun: capture.captureZD,
-//   classify: 'windows',
-//   final: 40
-// }, {
-//   name: 'ccav',
-//   url: 'http://www.ccav1.com/',
-//   site: 'ccav',
-//   description: 'Yanu - 分享优秀、纯净、绿色、实用的精品软件',
-//   captureFun: capture.captureCCAV,
-//   classify: 'windows',
-//   final: 80
-// }, {
-//   name: 'llm',
-//   url: 'http://liulanmi.com/',
-//   site: 'llm',
-//   description: '浏览迷(原浏览器之家)是一个关注浏览器及软件、IT的科技博客,致力于为广大浏览器爱好者提供一个关注浏览器、交流浏览器、折腾浏览器的专门网站',
-//   captureFun: capture.captureLLM,
-//   classify: 'info',
-//   final: 203
-// }];
-// // 采集所有页面
-// function captureAll() {
-//   sites.forEach(function(item) {
-//     item.url = item.url.replace(/(page\/\d+)+/, '');
-//     item.url = item.url + 'page/' + p;
-//   });
-//   Promise
-//     .settle(sites.map(function(item) {
-//       return updateSiteArticles(item);
-//     }))
-//     .then(function(results) {
-//       _.forEachRight(results, function(result, i) {
-//         if (result.isRejected()) {
-//           console.log(sites[i].name + '    ' + sites[i].url + '    ' + result.reason());
-//           // sites.splice(i, 1);
-//           isErr = true;
-//         }
-//         else {
-//           console.log(sites[i].name + '    ' + sites[i].url + '    采集成功');
-//           if (sites[i].final <= p) {
-//             sites.splice(i, 1);
-//           }
-//         }
-//       });
-//       console.log('---------------------------');
-//       console.log('---------------------------');
-//       if(isErr ) {
-//         canErrNu--;
-//         p--;
-//       }
-//       else {
-//         canErrNu = 3;
-//       }
-//       if (sites.length > 0 && canErrNu > 0) {
-//         p++;
-//         captureAll();
-//       }
-//     })
-//     .catch(function(e) {
-//       console.log(e);
-//     });
+//sites = [sites[5]];
 
-// }
-// captureAll();
+_.forEachRight(sites, function(item, i) {
+
+  var siteConfig = sitesConfig[item.site];
+  if(!siteConfig || siteConfig.disabled) {
+    sites.splice(i, 1);
+    return;
+  }
+
+  item.curPage = siteConfig.curPage || 1;
+  item.canErrNu = siteConfig.canErrNu || 3;
+
+  item.isUpdate = true;
+  item.isErr = false;
+});
+
+captureAll();
+
+function parseArgs(args) {
+  var defaultConfig = {};
+  _.forEach(sites, function(item) {
+    defaultConfig[item.site] = {};
+  });
+
+  var config;
+  try {
+    config = JSON.parse(args[0]);
+  }
+  catch(e) {
+  }
+  
+  if(_.isObject(config)) {
+    _.assign(defaultConfig, config);
+  }
+  return defaultConfig;
+}
+
+function closeConnection() {
+  require('../daos/mon').close();
+  gather.proxyPool.clearUpdateInterval();
+}
+
+// 采集所有页面
+function captureAll() {
+  sites.forEach(function(item) {
+    if(item.pageFun) {
+      item.url = item.pageFun(item.curPage);
+    }
+    else {
+      item.url = item.url.replace(/(page\/\d+)+/, '');
+      item.url = item.url + 'page/' + item.curPage;
+    }
+  });
+
+  Promise
+    .all(sites.map(function(item) {
+      return updateSiteArticles(item).reflect();
+    }))
+    .then(function(results) {
+      _.forEachRight(results, function(result, i) {
+        if(result.isRejected()) {
+          console.log(sites[i].name + '    ' + sites[i].url + '    ' + result.reason());
+
+          sites[i].canErrNu--;
+        }
+        else {
+          console.log(sites[i].name + '    ' + sites[i].url + '    采集成功');
+
+          sites[i].canErrNu = 3;
+          sites[i].curPage++;
+        }
+
+        if(sites[i].canErrNu < 0) {
+          sites.splice(i, 1);
+        }
+      });
+      console.log('---------------------------');
+
+      if(sites.length > 0) {
+        captureAll();
+      }
+      else {
+        closeConnection();
+      }
+    })
+    .catch(function(e) {
+      console.log(e);
+    });
+}

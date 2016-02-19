@@ -15,6 +15,7 @@ var helpInfo = {
   cmds: [{
     name: 'update',
     option: 'update-X.X.X',
+    argStr: '参数',
     detail: '使用 name 和 option 执行某update'
   }, {
     name: 'userDefine',
@@ -40,12 +41,16 @@ function userDefine(userOptionObj) {
   return null;
 }
 
-function updateFun(str) {
+function updateFun(str, argStr) {
+  var arg = ['./app/updates/' + str];
+  if(argStr) {
+    arg.push(argStr);
+  }
   if(/update-\d+/.test(str)) {
     return {
       name: str,
       cmd: 'node',
-      arg: ['./app/updates/' + str]
+      arg: arg
     };
   }
   return null;
@@ -112,7 +117,7 @@ function analyseCmd(arr) {
       return null;
     }
     if(obj.name === 'update') {
-      return updateFun(obj.option);
+      return updateFun(obj.option, obj.argStr);
     }
     return userDefine(obj.option);
   });
