@@ -5,6 +5,7 @@
  */
 
 var fs = require('fs');
+var path = require('path');
 var Promise = require('bluebird');
 var _ = require('lodash');
 var spawn = require('child_process').spawn;
@@ -42,7 +43,7 @@ function userDefine(userOptionObj) {
 }
 
 function updateFun(str, argStr) {
-  var arg = ['./app/updates/' + str];
+  var arg = [path.resolve(__dirname, '../updates/', str)];
   if(argStr) {
     arg.push(argStr);
   }
