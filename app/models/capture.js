@@ -129,7 +129,7 @@ function captureXclient($) {
       var listItemMeta = $(e).find('.list-item-meta').first();
       var title = listItemMeta.find('a').first().text();
       var href = listItemMeta.find('a').first().attr('href');
-      var timeNu = new Date($(e).find('.list-item-date').first().text()).getTime();
+      var timeNu = utilitiesService.calculateTime($(e).find('.list-item-date').first().text());
       var intro = $(e).find('.list-item-summary').first().text();
       list.push({
         img: img,
@@ -218,5 +218,8 @@ module.exports.allSites = [{
   extract_rules:[{
     name: 'articleList',
     expression: captureXclient
-  }]
+  }],
+  pageFun: function(i) {
+    return 'http://xclient.info/s/' + i + '/';
+  }
 }];

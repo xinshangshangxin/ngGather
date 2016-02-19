@@ -13,7 +13,6 @@ var gather = require('gather-site');
 var mailSendService = require('../service/mailSendService.js');
 var articleDao = require('../daos/articleDao.js');
 var capture = require('../models/capture.js');
-var constants = require('../service/constants.js');
 var utilitiesService = require('../service/utilitiesService.js');
 
 // 服务器最新采集时间
@@ -23,7 +22,7 @@ var updateTime = 0;
 var allSites = capture.allSites;
 
 // 调试
-allSites = [allSites[5]];
+//allSites = [allSites[5]];
 
 var errSites = []; // 重复出错只发送一封邮件
 var errTime = new Date();
@@ -42,6 +41,7 @@ var updateOrCreatefilter = function(list) {
             return true;
           } // 图片变更也算进去
           if(article.img !== docArticle.img) {
+            article.gatherTime = docArticle.gatherTime;
             console.log('图片变更:', article);
             return true;
           }
@@ -71,9 +71,9 @@ var updateSiteArticles = function(siteInfo) {
         .all(list.map(function(article) {
           article.classify = siteInfo.classify;
           article.site = siteInfo.site;
-
+          
           // 为采集站点所有内容做特殊处理(update-0.0.2.js)
-          if(/page\/\d+/ig.test(siteInfo.url)) {
+          if(siteInfo.isUpdate) {
             if(!article.time) {
               console.log(article);
             }

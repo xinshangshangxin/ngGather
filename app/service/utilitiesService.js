@@ -7,8 +7,14 @@ var gather = require('gather-site');
 
 var constants = require('./constants.js');
 
-var proxy = new gather.Proxy();
-proxy.init();
+var proxy;
+gather
+  .proxyPool
+  .getProxy()
+  .then(function(_proxy) {
+    proxy = _proxy;
+  });
+
 
 // 中文数字 和 阿拉伯数字 对象
 var nuChange = constants.nuChange;

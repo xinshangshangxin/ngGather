@@ -19,7 +19,7 @@ angular
     classify: 'info'
   }, {
     name: '爱Q生活网',
-    ischecked: true,
+    ischecked: false,
     description: '爱Q生活网 - 亮亮\'blog -关注最新QQ活动动态, 掌握QQ第一资讯',
     url: 'http://www.iqshw.com/',
     site: 'iqq',
@@ -34,7 +34,7 @@ angular
     classify: 'mac'
   }, {
     name: 'MacPeers',
-    ischecked: true,
+    ischecked: false,
     url: 'http://www.macpeers.com/',
     description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
     site: 'MacPeers',

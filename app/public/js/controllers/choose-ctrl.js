@@ -69,6 +69,7 @@ angular
             });
             ( ngModel.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
           });
+          ngModel.chooseSite = _.assign({}, ALL_SITES, ngModel.chooseSite);
         })
         .catch(function(e) {
           console.log(e);
