@@ -176,7 +176,7 @@ function getCommonConfig() {
       config: {
         module: 'ngGather',
         transformUrl: function(url) {
-          return url.replace(/.*\/public\//, '');
+          return url.replace(/.*[\/\\]public[\/\\]/, '');
         }
       },
       isHtmlmin: true,

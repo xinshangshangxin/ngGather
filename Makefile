@@ -37,3 +37,13 @@ pushAll:
 	git add -A; \
 	git commit -m "auto"; \
 	git push origin gh-pages;
+startOpenShift:
+	HOME=$OPENSHIFT_REPO_DIR ./node_modules/pm2/bin/pm2 start app.js --no-daemon
+pushOpenShift:
+	cp .git/config production/.git; \
+	cp ./package.json ./production; \
+	cp Makefile ./production/Makefile; \
+	cd ./production; \
+	git add -A; \
+	git commit -m "auto"; \
+	git push openshift master -f;

@@ -58,7 +58,6 @@ function getCodingMongodbUri() {
 }
 
 function resolveEnvUrl(config) {
-  console.log(config.condition, config[config.condition], process.env[config[config.condition]]);
   if(config.condition && !process.env[config[config.condition]]) {
     return false;
   }
