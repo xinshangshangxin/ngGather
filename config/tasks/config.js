@@ -114,7 +114,7 @@ function getCommonConfig() {
       }, {
         src: ['common/services/constants.js'],
         subStr: '.constant(\'SERVERURL\', \'\')',
-        newStr: '.constant(\'SERVERURL\', \'' + (alterableSetting.noServer ? 'http://nggather.coding.io' : '') + '\')'
+        newStr: '.constant(\'SERVERURL\', \'' + (alterableSetting.noServer ? 'http://gather-server.xinshangshangxin.com' : '') + '\')'
       }, {
         src: ['controllers/choose-ctrl.js'],
         subStr: /\/css\/night\/night.*?\.css/,

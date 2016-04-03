@@ -15,6 +15,18 @@ var articleDao = require('../daos/articleDao.js');
 var capture = require('../models/capture.js');
 var utilitiesService = require('../service/utilitiesService.js');
 
+
+var myGather = gather.defaults(null, null, {
+  urls: [
+    null,
+    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
+    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
+    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
+    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0}))
+  ],
+  time: 60 * 60 * 1000
+});
+
 // 服务器最新采集时间
 var updateTime = 0;
 
@@ -57,7 +69,7 @@ var updateOrCreatefilter = function(list) {
 var updateSiteArticles = function(siteInfo) {
   updateTime = new Date();
 
-  return gather(siteInfo, {proxy: true})
+  return myGather(siteInfo.requestConfig, siteInfo.parseConfig)
     .then(function(data) {
       var list = data.articleList || [];
       if(!list.length) {

@@ -1,8 +1,7 @@
 # ngGather
 
 ## 演示
-[coding.io](http://nggather.coding.io)
-[gh-pages](http://nggather.xinshangshangxin.com)
+[http://gather-server.xinshangshangxin.com](http://gather-server.xinshangshangxin.com)
 
 ## 说明
 > 采集以下站点首页

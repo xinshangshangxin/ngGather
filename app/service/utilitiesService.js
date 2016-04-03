@@ -10,7 +10,16 @@ var constants = require('./constants.js');
 var proxy;
 gather
   .proxyPool
-  .getProxy()
+  .getProxy({
+    urls: [
+      null,
+      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
+      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
+      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
+      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0}))
+    ],
+    time: 60 * 60 * 1000
+  })
   .then(function(_proxy) {
     proxy = _proxy;
   });
@@ -48,6 +57,10 @@ var svc = module.exports = {
           .on('error', function(err) {
             console.log('getImg err:  ', err, 'error type: ', nu);
             if(nu >= proxy.tryRange[1]) {
+              if(res.headersSent) {
+                console.log('res.headersSent!!!!');
+                return;
+              }
               return res.send(400);
             }
             return svc.getImg(req, res, nu + 1);
