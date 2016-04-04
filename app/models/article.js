@@ -271,6 +271,7 @@ module.exports.getSitesStatus = function(req, res) {
           return {
             name: siteInfo.name,
             chName: siteInfo.chName,
+            url: siteInfo.requestConfig.url,
             site: siteInfo.site,
             description: siteInfo.description,
             latesGatherTime: time,
