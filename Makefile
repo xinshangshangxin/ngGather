@@ -24,7 +24,7 @@ pushProd:
 	cp ./package.json ./production
 	cd ./production && git add -A && git commit -m "auto" && git push origin master:production
 pushStatic:
-	cd ./static && git add -A && git commit -m "auto" && git push origin gh-pages
+	cd ./static && git add -A && git commit -m "auto" && git push origin master:gh-pages -f
 pushAll:
 	gulp prod; \
 	cp ./package.json ./production; \
@@ -36,7 +36,7 @@ pushAll:
 	cd ./static; \
 	git add -A; \
 	git commit -m "auto"; \
-	git push origin gh-pages;
+	git push origin master:gh-pages -f;
 startOpenShift:
 	HOME=$OPENSHIFT_REPO_DIR ./node_modules/pm2/bin/pm2 start app.js --no-daemon
 pushOpenShift:
