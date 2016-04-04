@@ -18,8 +18,8 @@ var gatherRecordSchema = new mongoose.Schema({
     type: mon.Types.String
   },
   createdAt: {
-    type: Date,
-    default: Date.now()
+    type: mon.Types.Date,
+    default: new Date()
   },
   updatedAt: {
     type: Date
@@ -27,23 +27,23 @@ var gatherRecordSchema = new mongoose.Schema({
 });
 
 gatherRecordSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
+  this.updatedAt = new Date();
   next();
 });
 
 gatherRecordSchema.pre('update', function(next) {
-  this.updatedAt = Date.now();
+  this.updatedAt = new Date();
   next();
 });
 
 gatherRecordSchema.pre('findOneAndUpdate', function(next) {
   if(!this.createdAt) {
     this.findOneAndUpdate({}, {
-      createdAt: Date.now()
+      createdAt: new Date()
     });
   }
   this.findOneAndUpdate({}, {
-    updatedAt: Date.now()
+    updatedAt: new Date()
   });
   next();
 });
@@ -58,11 +58,14 @@ function find(conditions, projection, options) {
   if(options === false) {
     options = null;
   }
-  options = options || {};
-  options.limit = options.limit || 20;
-  options.sort = options.sort || {
-      'createdAt': -1
-    };
+  else {
+    options = _.assign({
+      limit: 20,
+      sort: {
+        createdAt: -1
+      }
+    }, options);
+  }
 
   return gatherRecordModel.find(conditions, projection, options);
 }
@@ -77,7 +80,10 @@ function findLatestStatus(site, type) {
     limit: 1
   };
 
-  return find(conditions, null, options);
+  return find(conditions, null, options)
+    .then(function(data) {
+      return data[0];
+    });
 }
 
 function findSitesStatus(sites, type) {

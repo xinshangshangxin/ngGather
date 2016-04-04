@@ -52,6 +52,7 @@ router
     return utilitiesService.getImg(req, res);
   })
   .get('/api/v1/allSites', article.getSitesStatus)
+  .get('/api/v1/status', article.getStatus)
   .get(/^\/(?=api\/v\d+\/execCmds)/, function(req, res) {
     res.json(specialCmds.helpInfo);
   })

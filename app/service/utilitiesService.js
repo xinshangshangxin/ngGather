@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var iconv = require('iconv-lite');
 var request = require('request');
 var Promise = require('bluebird');
@@ -190,5 +191,16 @@ var svc = module.exports = {
     date.setSeconds(0);
     date.setMilliseconds(0);
     return date;
+  },
+  parseJson: function(str) {
+    if(!_.isString(str)) {
+      return str;
+    }
+    try{
+      return JSON.parse(str);
+    }
+    catch(e) {
+      return null;
+    }
   }
 };

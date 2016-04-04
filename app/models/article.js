@@ -267,7 +267,7 @@ module.exports.getSitesStatus = function(req, res) {
     .map(allSites, function(siteInfo) {
       return gatherRecordDao.findLatestStatus(siteInfo.site, 1)
         .then(function(data) {
-          var time = data && data[0] && data[0].createdAt;
+          var time = data && data.createdAt;
           return {
             name: siteInfo.name,
             chName: siteInfo.chName,
@@ -286,5 +286,25 @@ module.exports.getSitesStatus = function(req, res) {
     });
 };
 
+module.exports.getStatus = function(req, res) {
+  var conditions = utilitiesService.parseJson(req.query.conditions);
+  var projection = utilitiesService.parseJson(req.query.projection);
+  var options = utilitiesService.parseJson(req.query.options);
+
+  gatherRecordDao
+    .find(conditions, projection, options)
+    .then(function(data) {
+      return res.json(data);
+    })
+    .catch(function(e) {
+      console.log(e && e.stack || e);
+      return res.json(400, {
+        err: 1001
+      });
+    });
+};
+
+
 // for test
 module.exports.updateSiteArticles = updateSiteArticles;
+
