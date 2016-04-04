@@ -51,11 +51,7 @@ router
   .get('/api/v1/getImg', function(req, res) {
     return utilitiesService.getImg(req, res);
   })
-  .get('/api/v1/allSites', function(req, res) {
-    return res.json({
-      allSites: article.allSites()
-    });
-  })
+  .get('/api/v1/allSites', article.getSitesStatus)
   .get(/^\/(?=api\/v\d+\/execCmds)/, function(req, res) {
     res.json(specialCmds.helpInfo);
   })

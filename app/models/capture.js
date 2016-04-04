@@ -145,6 +145,7 @@ function captureXclient($) {
 
 module.exports.captureLLM = captureLLM;
 module.exports.allSites = [{
+  ischecked: true,
   name: 'waitsun',
   chName: '爱情守望者',
   site: 'waitsun',
@@ -176,8 +177,8 @@ module.exports.allSites = [{
       expression: captureMacpeers
     }]
   }
-
 }, {
+  ischecked: true,
   name: 'zd',
   site: 'zd',
   description: '专注绿软，分享软件、传递最新软件资讯',
@@ -193,6 +194,7 @@ module.exports.allSites = [{
     }]
   }
 }, {
+  ischecked: true,
   name: 'llm',
   site: 'llm',
   description: '浏览迷(原浏览器之家)是一个关注浏览器及软件、IT的科技博客,致力于为广大浏览器爱好者提供一个关注浏览器、交流浏览器、折腾浏览器的专门网站',
@@ -224,6 +226,7 @@ module.exports.allSites = [{
     }]
   }
 }, {
+  ischecked: true,
   name: 'xclient',
   site: 'xclient',
   description: '精品MAC应用分享，每天分享大量mac软件，为您提供优质的mac破解软件,免费软件下载服务',

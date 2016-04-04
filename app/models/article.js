@@ -13,6 +13,7 @@ var gather = require('gather-site');
 var mailSendService = require('../service/mailSendService.js');
 var articleDao = require('../daos/articleDao.js');
 var capture = require('../models/capture.js');
+var gatherRecordDao = require('../daos/gatherRecordDao.js');
 var utilitiesService = require('../service/utilitiesService.js');
 
 
@@ -83,7 +84,7 @@ var updateSiteArticles = function(siteInfo) {
         .all(list.map(function(article) {
           article.classify = siteInfo.classify;
           article.site = siteInfo.site;
-          
+
           // 为采集站点所有内容做特殊处理(update-0.0.2.js)
           if(siteInfo.isUpdate) {
             if(!article.time) {
@@ -95,11 +96,17 @@ var updateSiteArticles = function(siteInfo) {
         }));
     })
     .then(function(list) {
-      return Promise.resolve('更新站点' + siteInfo.name + '  ' + list.length + ' 篇文章成功 !!');
+      return Promise.resolve({
+        site: siteInfo.site,
+        info: list.length
+      });
     })
     .catch(function(e) {
-      console.log(e && e.stack || e);
-      return Promise.reject('更新' + siteInfo.name + ' 文章失败: ');
+      //console.log(e && e.stack || e);
+      return Promise.reject([{
+        site: siteInfo.site,
+        info: e
+      }]);
     });
 };
 
@@ -148,6 +155,30 @@ var simpleDiffSites = function(oldErrSites, newErrSites) {
     return _.findIndex(oldErrSites, function(oldSite) {
         return oldSite.name === site.name;
       }) === -1;
+  });
+};
+
+var record = function(results) {
+  results.forEach(function(result) {
+    var data;
+    // 采集成功
+    if(result.isFulfilled()) {
+      data = result.value();
+      console.log(data.site + ' 采集 ' + data.info);
+      return gatherRecordDao.add({
+        type: 1,
+        site: data.site,
+        info: data.info
+      });
+    }
+
+    data = result.reason();
+    console.error(data.site + ' 失败 ', data.info);
+    return gatherRecordDao.add({
+      type: 2,
+      site: data.site,
+      info: data.info
+    });
   });
 };
 
@@ -214,7 +245,7 @@ var taskUpdate = function() {
     .all(allSites.map(function(item) {
       return updateSiteArticles(item).reflect();
     }))
-    .then(notifyErr)
+    .then(record)
     .then(function(data) {
       if(data) {
         console.log('发送邮件通知成功');
@@ -231,8 +262,27 @@ module.exports.search = search;
 module.exports.updateTime = function() {
   return updateTime;
 };
-module.exports.allSites = function() {
-  return allSites;
+module.exports.getSitesStatus = function(req, res) {
+  return Promise
+    .map(allSites, function(siteInfo) {
+      return gatherRecordDao.findLatestStatus(siteInfo.site, 1)
+        .then(function(data) {
+          var time = data && data[0] && data[0].createdAt;
+          return {
+            name: siteInfo.name,
+            chName: siteInfo.chName,
+            site: siteInfo.site,
+            description: siteInfo.description,
+            latesGatherTime: time,
+            ischecked: siteInfo.ischecked
+          };
+        });
+    })
+    .then(function(data) {
+      res.json({
+        allSites: data
+      });
+    });
 };
 
 // for test

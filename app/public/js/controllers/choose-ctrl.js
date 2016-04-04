@@ -63,13 +63,36 @@ angular
         .$promise
         .then(function(sites) {
           sites = sites.allSites || [];
-          sites.forEach(function(site) {
-            var index = _.findIndex(ngModel.chooseSite, function(item) {
-              return item.site === site.site;
+
+          var querySites = [];
+
+          _.forEach(ngModel.chooseSite || [], function(localSite) {
+            _.forEach(sites, function(remoteSite) {
+              if(remoteSite.site !== localSite.site) {
+                return;
+              }
+              // 用本地的代替
+              remoteSite.ischecked = localSite.ischecked;
+
+              // 放入 querySites
+              if(remoteSite.ischecked) {
+                querySites.push(remoteSite.site);
+              }
             });
-            ( ngModel.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
           });
-          ngModel.chooseSite = _.assign({}, ALL_SITES, ngModel.chooseSite);
+
+
+          // 和首次选取有不一样的, 从新获取
+          var arr = _.difference(querySites, $scope.sites);
+          if(arr && arr.length || ngModel.chooseSite.length !== sites.length)  {
+            console.log('和首次选取有不一样的, 从新获取!');
+            ngModel.chooseSite = sites;
+            localSaveService.set(sites, $scope.themeType);
+          }
+          else {
+            ngModel.chooseSite = sites;
+          }
+
         })
         .catch(function(e) {
           console.log(e);
@@ -95,12 +118,17 @@ angular
         .$promise
         .then(function(sites) {
           sites = sites.allSites || [];
-          sites.forEach(function(site) {
-            var index = _.findIndex(ngModel.chooseSite, function(item) {
-              return item.site === site.site;
+          _.forEach(ngModel.chooseSite || [], function(localSite) {
+            _.forEach(sites, function(remoteSite) {
+              if(remoteSite.site !== localSite.site) {
+                return;
+              }
+              // 用本地的代替
+              remoteSite.ischecked = localSite.ischecked;
             });
-            ( ngModel.chooseSite[index] || {}).latesGatherTime = site.latesGatherTime;
           });
+
+          ngModel.chooseSite = sites;
         })
         .catch(function(e) {
           console.log(e);
