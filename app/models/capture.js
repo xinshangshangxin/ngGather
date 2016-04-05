@@ -15,6 +15,10 @@ function captureZD($) {
     var time = now.getFullYear() + '-' + $(e).children('.info').last().children('.time').last().text();
     var note = $(e).children('.note').last().text();
 
+    if(!title || !link) {
+      return;
+    }
+
     list.push({
       img: img,
       title: title,

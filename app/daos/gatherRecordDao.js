@@ -12,17 +12,17 @@ var gatherRecordSchema = new mongoose.Schema({
     default: 1
   },
   site: {
-    type: mon.Types.String
+    type: mon.Types.Mixed
   },
   info: {
-    type: mon.Types.String
+    type: mon.Types.Mixed
   },
   createdAt: {
     type: mon.Types.Date,
     default: new Date()
   },
   updatedAt: {
-    type: Date
+    type: mon.Types.Date
   }
 });
 
