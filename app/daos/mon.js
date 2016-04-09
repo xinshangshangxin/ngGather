@@ -6,7 +6,7 @@ var path = require('path');
 
 mongoose.Promise = require('bluebird');
 
-var dbName = process.env.dbName || 'noDbName';
+var dbName = process.env.dbName || 'ngGather';
 
 var optionConfig = {
   coding: {
@@ -34,11 +34,9 @@ var optionConfig = {
   openshift: {
     type: 'env',
     condition: 'host',
-    username: 'OPENSHIFT_MONGODB_DB_USERNAME',
-    password: 'OPENSHIFT_MONGODB_DB_PASSWORD',
-    host: 'OPENSHIFT_MONGODB_DB_HOST',
-    post: 'OPENSHIFT_MONGODB_DB_PORT',
-    name: 'OPENSHIFT_APP_NAME'
+    host: 'OPENSHIFT_DIY_IP',
+    post: 27017,
+    name: 'ngGather'
   }
 };
 

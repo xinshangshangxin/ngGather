@@ -5,7 +5,7 @@
     "node": "0.12.7"
   },
   "scripts": {
-    "start": "make startOpenShift",
+    "start": "pm2 start app.js",
     "test": "mocha --recursive --timeout 10000 --require chai --harmony --bail test"
   },
   "dependencies": {

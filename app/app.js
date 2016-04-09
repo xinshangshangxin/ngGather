@@ -41,8 +41,8 @@ app.use(function(err, req, res) {
   });
 });
 
-var port = process.env.VCAP_APP_PORT || process.env.NODE_PORT || '1337';
-var ip = process.env.NODE_IP || 'localhost';
+var port = process.env.OPENSHIFT_DIY_PORT || process.env.NODE_PORT || '1337';
+var ip = process.env.OPENSHIFT_DIY_IP || 'localhost';
 
 var server = http.createServer(app);
 server.listen(port, ip);
