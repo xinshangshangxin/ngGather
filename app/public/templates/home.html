@@ -43,14 +43,16 @@
       <div class="col-xs-12 col-sm-9">
         <div class="col-xs-12 col-sm-10">
           <a ng-href="{{content.href}}" target="_blank">
-            <div class="title">[{{content.site}}] {{content.title}}</div>
+            <div class="title"
+                 ng-bind-html="('[' + content.site + ']' + content.title) | highlight:keyword">
+            </div>
           </a>
         </div>
         <div class="col-xs-12 col-sm-2 detail">
           {{content.gatherTime | date:"yy/MM/dd HH:mm"}}
         </div>
-        <div class="col-xs-12 col-sm-12">
-          {{content.intro}}
+        <div class="col-xs-12 col-sm-12"
+             ng-bind-html="content.intro | highlight:keyword">
         </div>
       </div>
       <div class="col-xs-12 col-sm-12">
