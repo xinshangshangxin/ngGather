@@ -116,7 +116,7 @@ function getCommonConfig() {
       }, {
         src: ['components/constants.js'],
         subStr: '.constant(\'SERVER_URL\', \'\')',
-        newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? '' : '') + '\')'
+        newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? 'http://cron-nggather.xinshangshangxin.com' : '') + '\')'
       }, {
         src: ['home/choose-ctrl.js'],
         subStr: /href: '\/css\/themes\/night\/night\.css'/,
@@ -217,6 +217,7 @@ function getCommonConfig() {
       dest: alterableSetting.publicPath
     },
     cp: [{
+      staticDisabled: true,
       src: [
         'config/**/*'
       ],

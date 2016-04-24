@@ -21,11 +21,13 @@ angular
         return config;
       },
       responseError: function(response) {
+        if(response.status >= 300) {
+          response.isShow = true;
+        }
         if(response.status === 401 || response.status === 403) {
           notificationService.error('无权限');
         }
         else if(response.status === 400) {
-          response.isShow = true;
           notificationService.error(response.data.msg);
         }
         else if(response.status === 404) {
