@@ -1,10 +1,13 @@
 .PHONY: all test clean static
+d='template2'
 dev:
-	node config/dev_start.js
+	sh config/start.sh
+node-dev:
+	node-dev app/app.js
 supervisor:
 	supervisor -n error -i 'app/public/,app/views/,config/tasks/' app/app.js
 push:
-	git push origin v2
+	git push origin v4
 test:
 	@ if [ -n "$(g)" ]; \
 	then \
@@ -17,9 +20,6 @@ test:
 prod:
 	gulp prod
 	node production/app.js
-static:
-	gulp static
-	cd static && hs
 pushProd:
 	cp ./package.json ./production
 	cd ./production && git add -A && git commit -m "auto" && git push origin master:production
@@ -37,13 +37,12 @@ pushAll:
 	git add -A; \
 	git commit -m "auto"; \
 	git push origin master:gh-pages -f;
-startOpenShift:
-	pm2 start app.js
-pushOpenShift:
-	cp .git/config production/.git; \
-	cp ./package.json ./production; \
-	cp Makefile ./production/Makefile; \
-	cd ./production; \
-	git add -A; \
-	git commit -m "auto"; \
-	git push openshift master -f;
+static:
+	gulp static
+	cd static && hs
+copy:
+	cp -r ./ ../$(d)
+	rm -r ../$(d)/.idea
+	rm -r ../$(d)/.git
+openshift:
+	NODE_ENV=openshift pm2 start app.js --max-memory-restart 256M

@@ -1,13 +1,15 @@
 'use strict';
 
-var http = require('http');
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+require('./config/init.js');
 
-var routes = require('./routes/index');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var express = require('express');
+var http = require('http');
+var logger = require('morgan');
+var path = require('path');
+
+var routes = require('./routes/routes');
 
 var app = express();
 
@@ -41,9 +43,8 @@ app.use(function(err, req, res) {
   });
 });
 
-var port = process.env.OPENSHIFT_DIY_PORT || process.env.NODE_PORT || '1337';
-var ip = process.env.OPENSHIFT_DIY_IP || 'localhost';
-
+var port = config.env.port || '1337';
+var ip = config.env.ip || 'localhost';
 var server = http.createServer(app);
 server.listen(port, ip);
 
@@ -74,8 +75,8 @@ function onError(error) {
  */
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  console.log('Listening on: ' + bind + '   http://' + ip + ':' + port);
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : ('http://' + addr.address + ':' + addr.port);
+  console.log('Listening on: ' + bind);
 }
 
 server.on('error', onError);

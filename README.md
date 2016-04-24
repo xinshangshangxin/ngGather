@@ -1,7 +1,7 @@
 # ngGather
 
 ## 演示
-[http://gather-server.xinshangshangxin.com](http://gather-server.xinshangshangxin.com)
+[http://nggather.xinshangshangxin.com](http://nggather.xinshangshangxin.com)
 
 ## 说明
 > 采集以下站点首页
@@ -18,8 +18,7 @@
 1. `git clone`
 2. `npm install`
 3. `bower install`
-3. `gulp && make`  *总共运行了3条命令: 1. gulp  2. node app/app.js  3. gulp quickStart*
-4. 浏览器打开 `http://localhost:8888/`( `browser-sync` ) 或者 `http://localhost:1337/`( `express` )
+4. `make` or `sh start.sh` **本机环境为windows + cygwin**
 
 ## 许可证
 ### MIT
