@@ -117,7 +117,13 @@ var svc = {
   },
   calculateTime: function(timeStr) {
     var timeNu = 0;
-
+    timeStr = timeStr.trim();
+    if(/今日更新/.test(timeStr)) {
+      return new Date().getTime();
+    }
+    else if(/^\d+月\d+$/.test(timeStr)) {
+      return svc.calculateTimeWithNoYear(timeStr.replace('月', '/'));
+    }
     if(/(\d+[-\/]\d+[-\/]\d+)/.test(timeStr)) {
       return new Date(RegExp.$1.replace(/\-/g, '/')).getTime();
     }

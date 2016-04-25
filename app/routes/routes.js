@@ -6,11 +6,11 @@ var router = express.Router();
 
 var articleController = require('../controllers/articleController.js');
 var executeCmdController = require('../controllers/executeCmdController.js');
-var tokenAuth = require('../policies/tokenAuth.js');
+//var tokenAuth = require('../policies/tokenAuth.js');
 var wrapError = require('../policies/wrapError.js');
 var utilitiesService = require('../services/utilitiesService.js');
 
-var execCmdKey = config.execCmdKey;
+var execCmdKey = config.env.execCmdKey;
 
 router
   .all('*', wrapError)
@@ -19,15 +19,16 @@ router
     if((req.query.key || req.body.key) === execCmdKey) {
       return next();
     }
-    return res.json(400, {
-      code: 1001
-    });
+    res.wrapError({
+      code: 1001,
+      msg: '无权限执行cmd'
+    }, null, 401);
   })
   .get(/^\/(?!api)/, function(req, res) {
     res.render('index.html');
   })
   .get(/^\/(?=api\/v\d+\/execCmds)/, executeCmdController.help)
-  .post(/^\/(?=api\/v\d+\/execCmds)/, tokenAuth(), executeCmdController.execCmds)
+  .post(/^\/(?=api\/v\d+\/execCmds)/, executeCmdController.execCmds)
   .get('/api/v1/sites', function(req, res) {
     if(req.query.force) {
       articleController.taskUpdate();

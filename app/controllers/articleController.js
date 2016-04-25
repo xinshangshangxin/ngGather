@@ -8,9 +8,9 @@
 
 var gather = require('gather-site');
 
-var articleDao = require('../models/articleModel.js');
+var articleModel = require('../models/articleModel.js');
 var captureService = require('../services/captureService.js');
-var gatherRecordDao = require('../models/gatherRecordModel.js');
+var gatherRecordModel = require('../models/gatherRecordModel.js');
 var mailSendService = require('../services/mailSendService.js');
 var utilitiesService = require('../services/utilitiesService.js');
 
@@ -41,7 +41,7 @@ var errTime = new Date();
 var updateOrCreatefilter = function(list) {
   return Promise
     .filter(list, function(article) {
-      return articleDao
+      return articleModel
         .findOneByHref(article.href || '')
         .then(function(docArticle) {
           // 如果不存在此文章, 说明新建文章
@@ -67,7 +67,6 @@ var updateOrCreatefilter = function(list) {
 
 var updateSiteArticles = function(siteInfo) {
   updateTime = new Date();
-
   return myGather(siteInfo.requestConfig, siteInfo.parseConfig)
     .then(function(data) {
       var list = data.articleList || [];
@@ -90,7 +89,7 @@ var updateSiteArticles = function(siteInfo) {
             }
             article.gatherTime = article.time;
           }
-          return articleDao.createOrUpdate(article);
+          return articleModel.createOrUpdate(article);
         }));
     })
     .then(function(list) {
@@ -110,7 +109,7 @@ var updateSiteArticles = function(siteInfo) {
 
 var search = function(req, res) {
   req.query.keyword = req.query.keyword.trim();
-  articleDao
+  articleModel
     .search(req.query)
     .then(function(data) {
       res.json(data);
@@ -132,7 +131,7 @@ var getSites = function(req, res) {
   var updateTime = req.query.updateTime;
   // 采集时间15秒超时, 2分钟内只能采集一次, 故加上 1分钟的容错时间
   updateTime = updateTime ? (parseInt(updateTime) + 60 * 1000) : 0;
-  articleDao
+  articleModel
     .findLimit(req.query.perPage || 20, req.query.pageNu || 0, req.query.sites, updateTime)
     .then(function(data) {
       res.json(data);
@@ -163,7 +162,7 @@ var record = function(results) {
     if(result.isFulfilled()) {
       data = result.value();
       console.log(data.site + ' 采集 ' + data.info);
-      return gatherRecordDao.add({
+      return gatherRecordModel.add({
         type: 1,
         site: data.site,
         info: data.info
@@ -172,7 +171,7 @@ var record = function(results) {
 
     data = result.reason();
     console.error(data.site + ' 失败 ', data.info);
-    return gatherRecordDao.add({
+    return gatherRecordModel.add({
       type: 2,
       site: data.site,
       info: data.info
@@ -258,7 +257,7 @@ var taskUpdate = function() {
 var getSitesStatus = function(req, res) {
   return Promise
     .map(allSites, function(siteInfo) {
-      return gatherRecordDao.findLatestStatus(siteInfo.site, 1)
+      return gatherRecordModel.findLatestStatus(siteInfo.site, 1)
         .then(function(data) {
           var time = data && data.createdAt;
           return {
@@ -284,7 +283,7 @@ var getStatus = function(req, res) {
   var projection = utilitiesService.parseJson(req.query.projection);
   var options = utilitiesService.parseJson(req.query.options);
 
-  gatherRecordDao
+  gatherRecordModel
     .find(conditions, projection, options)
     .then(function(data) {
       return res.json(data);

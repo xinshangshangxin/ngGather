@@ -11,6 +11,13 @@ angular
     site: 'zd',
     classify: 'windows'
   }, {
+    ischecked: true,
+    name: 'dayanzai',
+    chName: '大眼仔旭',
+    site: 'dayanzai',
+    description: '爱软件 爱汉化 爱分享 - 博客型软件首页',
+    classify: 'windows'
+  }, {
     name: 'llm',
     ischecked: true,
     description: '浏览迷(原浏览器之家)是一个关注浏览器及软件、IT的科技博客,致力于为广大浏览器爱好者提供一个关注浏览器、交流浏览器、折腾浏览器的专门网站',

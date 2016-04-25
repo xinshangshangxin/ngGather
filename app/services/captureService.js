@@ -1,3 +1,4 @@
+
 'use strict';
 
 var utilitiesService = require('../services/utilitiesService.js');
@@ -98,31 +99,6 @@ function captureWaitsun($) {
   return list;
 }
 
-function captureMacpeers($) {
-  var list = [];
-  var now = new Date();
-  $('#themepacific_infinite .blogposts-inner')
-    .each(function(i, e) {
-      var thumb = $(e).find('.magbig-thumb').first().find('a').first();
-
-      var img = thumb.find('img').first().attr('src');
-      var title = thumb.attr('title');
-      var href = thumb.attr('href');
-      var timeNu = calculateTimeWithChinese($(e).find('.post-meta-blog').first().find('.meta_date').first().text().replace('月', ''));
-      var intro = title;
-
-      list.push({
-        img: img,
-        title: title,
-        href: href,
-        time: timeNu + 1000 - i,
-        gatherTime: now.getTime() + 1000 - i,
-        intro: intro
-      });
-    });
-  return list;
-}
-
 function captureXclient($) {
   var list = [];
   var now = new Date();
@@ -147,6 +123,33 @@ function captureXclient($) {
   return list;
 }
 
+function captureDayanzai($) {
+  var list = [];
+  var now = new Date();
+  $('.list li').each(function(i, e) {
+    var item = $(e).find('.a2').first().find('h3').first().find('a').first();
+    var title = item.text();
+    var link = item.attr('href');
+    var img = $(e).find('.b').first().find('img').first().attr('src');
+    var time = utilitiesService.calculateTime($(e).find('.a1').first().text());
+    var intro = $(e).find('.c').first().text();
+
+    if(!title || !link) {
+      return;
+    }
+
+    list.push({
+      img: img,
+      title: title,
+      href: link,
+      time: time,
+      gatherTime: now.getTime() + 1000 - i,
+      intro: intro
+    });
+  });
+  return list;
+}
+
 module.exports.captureLLM = captureLLM;
 module.exports.allSites = [{
   ischecked: true,
@@ -159,26 +162,27 @@ module.exports.allSites = [{
   },
   parseConfig: {
     mode: 'css',
-    extract_rules:[{
+    extract_rules: [{
       name: 'articleList',
       expression: captureWaitsun
     }]
   }
 }, {
-  name: 'MacPeers',
-  site: 'MacPeers',
-  description: '最有价值的mac软件免费分享源，提供最新mac破解软件免费下载。',
-  classify: 'mac',
+  ischecked: true,
+  name: 'dayanzai',
+  chName: '大眼仔旭',
+  site: 'dayanzai',
+  description: '爱软件 爱汉化 爱分享 - 博客型软件首页',
+  classify: 'windows',
   requestConfig: {
-    url: 'http://www.macpeers.com/'
+    url: 'http://www.dayanzai.me/'
   },
   parseConfig: {
     encoding: 'utf8',
-    noCheck: true,
     mode: 'css',
-    extract_rules:[{
+    extract_rules: [{
       name: 'articleList',
-      expression: captureMacpeers
+      expression: captureDayanzai
     }]
   }
 }, {
@@ -192,7 +196,7 @@ module.exports.allSites = [{
   },
   parseConfig: {
     mode: 'css',
-    extract_rules:[{
+    extract_rules: [{
       name: 'articleList',
       expression: captureZD
     }]
@@ -208,7 +212,7 @@ module.exports.allSites = [{
   },
   parseConfig: {
     mode: 'css',
-    extract_rules:[{
+    extract_rules: [{
       name: 'articleList',
       expression: captureLLM
     }]
@@ -224,7 +228,7 @@ module.exports.allSites = [{
   },
   parseConfig: {
     mode: 'css',
-    extract_rules:[{
+    extract_rules: [{
       name: 'articleList',
       expression: captureIQQ
     }]
@@ -243,7 +247,7 @@ module.exports.allSites = [{
   },
   parseConfig: {
     mode: 'css',
-    extract_rules:[{
+    extract_rules: [{
       name: 'articleList',
       expression: captureXclient
     }]

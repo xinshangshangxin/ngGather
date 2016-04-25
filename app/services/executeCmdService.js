@@ -155,7 +155,7 @@ function execCmd(option) {
     var opt = {stdio: 'inherit'};
     // set ENV
     var env = Object.create(process.env);
-    env.NODE_ENV = process.env.NODE_ENV;
+    env.NODE_ENV = process.env.NODE_ENV || '';
     opt.env = env;
 
     var cmd = spawn(option.cmd, option.arg, opt);
