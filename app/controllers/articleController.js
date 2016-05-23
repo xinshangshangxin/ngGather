@@ -156,17 +156,18 @@ var simpleDiffSites = function(oldErrSites, newErrSites) {
 };
 
 var record = function(results) {
-  results.forEach(function(result) {
+  return Promise.map(results, function(result) {
     var data;
     // 采集成功
     if(result.isFulfilled()) {
       data = result.value();
       console.log(data.site + ' 采集 ' + data.info);
-      return gatherRecordModel.add({
-        type: 1,
-        site: data.site,
-        info: data.info
-      });
+      return gatherRecordModel
+        .add({
+          type: 1,
+          site: data.site,
+          info: data.info
+        });
     }
 
     data = result.reason();

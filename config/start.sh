@@ -19,4 +19,4 @@ startServer &
 until startGulp; do
     echo "startGulp exit code $?.  ReStart.." >&2
     sleep 1
-done 
+done

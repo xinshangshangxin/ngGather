@@ -22,8 +22,9 @@ $.isStatic = false;
 $.specConfig = specConfig;
 $.config = config;
 
+// set default env
 gulpConfig.__alterableSetting__ = {};
-copyAttrValue(gulpConfig.__alterableSetting__, gulpConfig.alterableSetting);
+copyAttrValue(gulpConfig.__alterableSetting__ , gulpConfig.alterableSetting);
 setDevEnv();
 
 function copyAttrValue(obj, copyObj) {
@@ -301,8 +302,7 @@ gulp.task('js', function() {
         .pipe(f.restore);
     }
 
-    var scriptStream = stream
-      .pipe($.jshint(config.jshintPath))
+    var scriptStream = stream.pipe($.jshint(config.jshintPath))
       .pipe($.jshint.reporter(myJshintReporter))
       .pipe($.ngAnnotate())
       .pipe($.angularFilesort())
