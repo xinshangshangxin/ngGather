@@ -6,7 +6,8 @@ var router = express.Router();
 
 var articleController = require('../controllers/articleController.js');
 var executeCmdController = require('../controllers/executeCmdController.js');
-//var tokenAuth = require('../policies/tokenAuth.js');
+var tokenAuth = require('../policies/tokenAuth.js');
+var webHookService = require('../services/webHookService.js');
 var wrapError = require('../policies/wrapError.js');
 var utilitiesService = require('../services/utilitiesService.js');
 
@@ -15,7 +16,7 @@ var execCmdKey = config.env.execCmdKey;
 router
   .all('*', wrapError)
   .all(/^\/(?=api)/, cors())
-  .all(/^\/(?=api\/v\d+\/execCmds)/, function(req, res, next) {
+  .all(/^\/(?=api\/v\d+\/cmds)/, function(req, res, next) {
     if((req.query.key || req.body.key) === execCmdKey) {
       return next();
     }
@@ -27,8 +28,16 @@ router
   .get(/^\/(?!api)/, function(req, res) {
     res.render('index.html');
   })
-  .get(/^\/(?=api\/v\d+\/execCmds)/, executeCmdController.help)
-  .post(/^\/(?=api\/v\d+\/execCmds)/, executeCmdController.execCmds)
+  .get(/^\/(?=api\/v\d+\/cmds)/, executeCmdController.help)
+  .post(/^\/(?=api\/v\d+\/cmds)/, tokenAuth(), executeCmdController.execCmds)
+  .post(/^\/(?=api\/v\d+\/webhook)/, function(req, res) {
+    res.end('ok');
+    webHookService
+      .tryUpdate(req.body)
+      .then(function(data) {
+        console.log(data);
+      });
+  })
   .get('/api/v1/sites', function(req, res) {
     if(req.query.force) {
       articleController.taskUpdate();

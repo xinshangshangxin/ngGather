@@ -8,6 +8,9 @@ supervisor:
 	supervisor -n error -i 'app/public/,app/views/,config/tasks/' app/app.js
 push:
 	git push origin v4
+merge:
+	git fetch template template
+	git merge remotes/template/template
 test:
 	@ if [ -n "$(g)" ]; \
 	then \

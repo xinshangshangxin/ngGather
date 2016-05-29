@@ -67,7 +67,7 @@ function getCommonConfig() {
       src: [              // src 可以为空数组
         'vendor/angular-aside/dist/css/angular-aside.min.css',
         'framework/paper/bootstrap.min.css',
-        'vendor/font-awesome/css/font-awesome.min.css'
+        'vendor/fontawesome/css/font-awesome.min.css'
       ],
       opt: {
         cwd: 'app/public/'
@@ -136,7 +136,7 @@ function getCommonConfig() {
       dest: alterableSetting.publicPath
     },
     fonts: {
-      src: ['app/public/vendor/font-awesome/fonts/**/*'],
+      src: ['app/public/vendor/fontawesome/fonts/**/*'],
       dest: path.join(alterableSetting.publicPath, 'fonts')
     },
     injectHtmlProd: {
