@@ -73,7 +73,19 @@ var updateSiteArticles = function(siteInfo) {
       if(!list.length) {
         return Promise.reject(new Error('no article gather'));
       }
-      return updateOrCreatefilter(list);
+      // set update time
+      return gatherRecordModel
+        .add({
+          type: 1,
+          site: siteInfo.site,
+          info: 'update success'
+        })
+        .catch(function(e) {
+          console.log(e);
+        })
+        .then(function() {
+          return updateOrCreatefilter(list);
+        });
     })
     .then(function(list) {
       // 更新或创建文章
@@ -99,11 +111,10 @@ var updateSiteArticles = function(siteInfo) {
       });
     })
     .catch(function(e) {
-      //console.log(e && e.stack || e);
-      return Promise.reject([{
+      return Promise.reject({
         site: siteInfo.site,
         info: e
-      }]);
+      });
     });
 };
 
@@ -164,7 +175,7 @@ var record = function(results) {
       console.log(data.site + ' 采集 ' + data.info);
       return gatherRecordModel
         .add({
-          type: 1,
+          type: 2,
           site: data.site,
           info: data.info
         });
@@ -173,7 +184,7 @@ var record = function(results) {
     data = result.reason();
     console.error(data.site + ' 失败 ', data.info);
     return gatherRecordModel.add({
-      type: 2,
+      type: 3,
       site: data.site,
       info: data.info
     });
@@ -186,7 +197,7 @@ var notifyErr = function(results) {
   var errResults = [];
   results.forEach(function(result, i) {
     // 最新采集时间
-    allSites[i].latesGatherTime = result.isFulfilled() ? new Date() : allSites[i].latesGatherTime;
+    allSites[i].latestGatherTime = result.isFulfilled() ? new Date() : allSites[i].latestGatherTime;
 
     // 采集成功
     if(result.isFulfilled()) {
@@ -258,7 +269,8 @@ var taskUpdate = function() {
 var getSitesStatus = function(req, res) {
   return Promise
     .map(allSites, function(siteInfo) {
-      return gatherRecordModel.findLatestStatus(siteInfo.site, 1)
+      return gatherRecordModel
+        .findLatestStatus(siteInfo.site, 1)
         .then(function(data) {
           var time = data && data.createdAt;
           return {
@@ -267,7 +279,7 @@ var getSitesStatus = function(req, res) {
             url: siteInfo.requestConfig.url,
             site: siteInfo.site,
             description: siteInfo.description,
-            latesGatherTime: time,
+            latestGatherTime: time,
             ischecked: siteInfo.ischecked
           };
         });

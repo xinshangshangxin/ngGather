@@ -4,7 +4,7 @@ var dbService = require('../services/dbService.js');
 
 var gather = dbService.define('gather', {
   type: {
-    type: dbService.Types.Number,   // 0未知  1成功  2错误
+    type: dbService.Types.Number,   // 0未知   1更新时间  2有新增内容 3更新失败
     default: 1
   },
   site: {
@@ -39,17 +39,23 @@ function find(conditions, projection, options) {
 
 function findLatestStatus(site, type) {
   var conditions = {
-    site: site,
-    type: type || 2
+    site: site
   };
+
+  if(type) {
+    conditions.type = type;
+  }
 
   var options = {
-    limit: 1
+    sort: {
+      createdAt: -1
+    }
   };
 
-  return find(conditions, null, options)
+  return gatherRecordModel
+    .findOne(conditions, null, options)
     .then(function(data) {
-      return data[0];
+      return data;
     });
 }
 
