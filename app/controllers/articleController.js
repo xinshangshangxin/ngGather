@@ -14,16 +14,8 @@ var gatherRecordModel = require('../models/gatherRecordModel.js');
 var mailSendService = require('../services/mailSendService.js');
 var utilitiesService = require('../services/utilitiesService.js');
 
-
 var myGather = gather.defaults(null, null, {
-  urls: [
-    null,
-    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
-    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
-    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
-    'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0}))
-  ],
-  time: 60 * 60 * 1000
+  urls: ['http://proxy.xinshangshangxin.com/api/v1/combine']
 });
 
 // 服务器最新采集时间

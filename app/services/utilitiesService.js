@@ -13,16 +13,10 @@ var proxy;
 gather
   .proxyPool
   .getProxy({
-    urls: [
-      null,
-      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
-      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=nt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
-      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wt&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0})),
-      'http://proxy.xinshangshangxin.com/api/v1/proxy/?type=wn&condition=' + encodeURIComponent(JSON.stringify({statusChangeTimes: 0}))
-    ],
-    time: 60 * 60 * 1000
+    urls: ['http://proxy.xinshangshangxin.com/api/v1/combine']
   })
   .then(function(_proxy) {
+    console.log('_proxy init');
     proxy = _proxy;
   });
 
@@ -96,7 +90,7 @@ var svc = {
             url: encodeURI(url),
             pool: false,
             followRedirect: false,
-            proxy: proxy.getOne(nu),
+            proxy: proxy.get(nu),
             timeout: 15 * 1000,
             headers: {
               'Connection': 'close',
@@ -106,7 +100,7 @@ var svc = {
           })
           .on('error', function(err) {
             console.log('getImg err:  ', err, 'error type: ', nu);
-            if(nu >= proxy.tryRange[1]) {
+            if(nu >= proxy.proxies.length) {
               if(res.headersSent) {
                 console.log('res.headersSent!!!!');
                 return;
