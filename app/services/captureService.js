@@ -175,7 +175,8 @@ module.exports.allSites = [{
   description: '爱软件 爱汉化 爱分享 - 博客型软件首页',
   classify: 'windows',
   requestConfig: {
-    url: 'http://www.dayanzai.me/'
+    url: 'http://www.dayanzai.me/',
+    timeout: 10 * 1000
   },
   parseConfig: {
     encoding: 'utf8',
