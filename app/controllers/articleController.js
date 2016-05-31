@@ -15,7 +15,7 @@ var mailSendService = require('../services/mailSendService.js');
 var utilitiesService = require('../services/utilitiesService.js');
 
 var myGather = gather.defaults(null, null, {
-  urls: ['http://proxy.xinshangshangxin.com/api/v1/combine']
+  urls: ['http://proxy.xinshangshangxin.com/api/v1/combine?nu=2']
 });
 
 // 服务器最新采集时间
