@@ -62,7 +62,7 @@ console.log('connect mongodbUri: ', mongodbUri);
 
 var db = mongoose.connect(mongodbUri);
 
-function define(modelName, opt) {
+function define(modelName, opt, index) {
   var modelNameSchema = new mongoose.Schema(_.assign({
     createdAt: {
       type: Date,
@@ -72,6 +72,10 @@ function define(modelName, opt) {
       type: Date
     }
   }, opt));
+
+  if(index) {
+    modelNameSchema.index.apply(modelNameSchema, index);
+  }
 
   // 更新 updatedAt
   modelNameSchema.pre('save', function(next) {

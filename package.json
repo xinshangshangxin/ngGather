@@ -2,7 +2,7 @@
   "name": "ngGather",
   "version": "0.4.0",
   "engines": {
-    "node": "0.12.7"
+    "node": "6.0.0"
   },
   "scripts": {
     "start": "NODE_ENV=openshift pm2 start app.js",

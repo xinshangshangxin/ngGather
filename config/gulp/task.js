@@ -24,7 +24,7 @@ $.config = config;
 
 // set default env
 gulpConfig.__alterableSetting__ = {};
-copyAttrValue(gulpConfig.__alterableSetting__ , gulpConfig.alterableSetting);
+copyAttrValue(gulpConfig.__alterableSetting__, gulpConfig.alterableSetting);
 setDevEnv();
 
 function copyAttrValue(obj, copyObj) {
@@ -70,8 +70,9 @@ function errorHandler(error) {
   this.end();
 }
 
-function validConfig(config) {
-  return config.src && config.src.length;
+function validConfig(config, name) {
+  name = name || 'src';
+  return config[name] && config[name].length;
 }
 
 
@@ -108,16 +109,16 @@ gulp.task('browser-sync', function(done) {
 });
 
 // no-op = empty function
-gulp.task('noop', function() {
+gulp.task('no-op', function() {
 });
 
 gulp.task('clean', function(done) {
   return $.del(config.clean.src, done);
 });
 
-// 复制 lib css
+// 复制 lib css, 在build时起作用
 gulp.task('libCss', function(done) {
-  if(!validConfig(config.libCss)) {
+  if(!$.isBuild || !validConfig(config.libCss)) {
     return done();
   }
 
@@ -158,11 +159,21 @@ gulp.task('injectHtml:dev', function(done) {
     ignorePath: config.injectHtmlDev.ignorePath
   };
 
-  var arr = [{objectMode: true}];
-  if(config.injectHtmlDev.cssSoruce && config.injectHtmlDev.cssSoruce.length) {
-    var css = gulp.src(config.injectHtmlDev.cssSoruce, {read: false});
-    arr.push(css);
+  var arr = [{
+    objectMode: true
+  }];
+
+  if(validConfig(config.libCss)) {
+    var libCss = gulp.src(config.libCss.src.map(function(value) {
+      return path.join(config.injectHtmlDev.libCssPrefix, value);
+    }), {read: false});
+    arr.push(libCss);
   }
+
+  if(validConfig(config.injectHtmlDev, 'cssSource')) {
+    arr.push(gulp.src(config.injectHtmlDev.cssSource, {read: false}));
+  }
+
   if(validConfig(config.libJs) && config.injectHtmlDev.libJsPrefix) {
     var libJs = gulp.src(config.libJs.src.map(function(value) {
       return path.join(config.injectHtmlDev.libJsPrefix, value);
@@ -175,7 +186,7 @@ gulp.task('injectHtml:dev', function(done) {
     arr.push(specJs);
   }
 
-  if(config.injectHtmlDev.jsSource && config.injectHtmlDev.jsSource.length) {
+  if(validConfig(config.injectHtmlDev, 'jsSource')) {
     var userJs = gulp
       .src(config.injectHtmlDev.jsSource)
       .pipe($.angularFilesort())
@@ -208,7 +219,7 @@ gulp.task('images', function(done) {
 });
 
 gulp.task('fonts', function(done) {
-  if(!validConfig(config.fonts)) {
+  if(!$.isBuild || !validConfig(config.fonts)) {
     return done();
   }
   return gulp
@@ -218,11 +229,32 @@ gulp.task('fonts', function(done) {
 
 gulp.task('css', function(done) {
 
-  if(!config.injectHtmlProd.cssSoruce || !config.injectHtmlProd.cssSoruce.length || !config.injectHtmlProd.prodCssName) {
+  if(!validConfig(config.injectHtmlProd, 'cssSource') || !config.injectHtmlProd.prodCssName) {
     return done();
   }
 
-  return gulp.src(config.injectHtmlProd.cssSoruce)
+
+  var stream = gulp.src(config.injectHtmlProd.cssSource);
+
+  var filters = config.injectHtmlProd.cssFilters;
+  var f;
+  for(var i = 0, l = filters.length; i < l; i++) {
+    if(!filters[i].src || !filters[i].src.length) {
+      continue;
+    }
+    f = $.filter(changeSrc(filters[i].src), {restore: true});
+
+    if(typeof filters[i].newStr === 'function') {
+      filters[i].newStr = filters[i].newStr($);
+    }
+
+    stream = stream
+      .pipe(f)
+      .pipe($.replace(filters[i].subStr, filters[i].newStr))
+      .pipe(f.restore);
+  }
+
+  return stream
     .pipe($.concat(config.injectHtmlProd.prodCssName))
     .pipe($.cssnano())
     .pipe($.rev())
@@ -263,7 +295,7 @@ gulp.task('cp', function(done) {
 });
 
 // jshint 用户的js
-gulp.task('js', function() {
+gulp.task('js', function(done) {
   if(!validConfig(config.js)) {
     return done();
   }

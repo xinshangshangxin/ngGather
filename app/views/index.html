@@ -8,13 +8,14 @@
   <base href="/">
   <link rel="shortcut icon" href="http://upload.xinshangshangxin.com/o_19pbo74ug1egh1d4tt818hb14b49.ico">
   <!-- inject:css -->
-  <link rel="stylesheet" href="/css/angular-aside.min.css">
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/highlite/highlite.css">
-  <link rel="stylesheet" href="/css/notification/notification-bar.css">
-  <link rel="stylesheet" href="/css/toast/toast.css">
+  <link rel="stylesheet" href="/vendor/angular-aside/dist/css/angular-aside.min.css">
+  <link rel="stylesheet" href="/framework/paper/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/angular-loading-bar/build/loading-bar.min.css">
+  <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/styles/style.css">
+  <link rel="stylesheet" href="/styles/notification/notification-bar.css">
+  <link rel="stylesheet" href="/styles/highlite/highlite.css">
+  <link rel="stylesheet" href="/styles/toast/toast.css">
   <!-- endinject -->
   <theme-switcher></theme-switcher>
 </head>
@@ -35,15 +36,7 @@
   <script src="/vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
   <script src="/vendor/angular-scroll-watch/build/angular-scroll-watch.min.js"></script>
   <script src="/vendor/angular-aside/dist/js/angular-aside.min.js"></script>
-  <script src="/vendor/lodash/lodash.min.js"></script>
-  <script src="/app.js"></script>
-  <script src="/components/theme-switcher/theme-switcher-svc.js"></script>
-  <script src="/components/theme-switcher/theme-switcher-drtv.js"></script>
-  <script src="/components/toast/toast-svc.js"></script>
-  <script src="/components/toast/toast-drtv.js"></script>
-  <script src="/components/services/local-save-svc.js"></script>
-  <script src="/components/filters/time-filter.js"></script>
-  <script src="/components/filters/img-filter.js"></script>
+  <script src="/vendor/lodash/dist/lodash.min.js"></script>
   <script src="/common/common.js"></script>
   <script src="/common/resize/resize-drvt.js"></script>
   <script src="/common/notification/notification-service.js"></script>
@@ -52,6 +45,18 @@
   <script src="/common/http-injector/http-injector-factory.js"></script>
   <script src="/common/highlite/highlite.js"></script>
   <script src="/common/dialog/dialog-svc.js"></script>
+  <script src="/common/custom-fields/custom-fields-drtv.js"></script>
+  <script src="/app.js"></script>
+  <script src="/components/toast/toast-svc.js"></script>
+  <script src="/components/toast/toast-drtv.js"></script>
+  <script src="/components/theme-switcher/theme-switcher-svc.js"></script>
+  <script src="/components/theme-switcher/theme-switcher-drtv.js"></script>
+  <script src="/components/services/local-save-svc.js"></script>
+  <script src="/components/filters/time-filter.js"></script>
+  <script src="/components/filters/img-filter.js"></script>
+  <script src="/webhook/webhppk-routes.js"></script>
+  <script src="/webhook/webhooks-ctrl.js"></script>
+  <script src="/webhook/webhook-detail-ctrl.js"></script>
   <script src="/home/home-routes.js"></script>
   <script src="/home/choose-ctrl.js"></script>
   <script src="/components/entities-factory.js"></script>

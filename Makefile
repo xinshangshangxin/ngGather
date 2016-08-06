@@ -45,7 +45,18 @@ static:
 	cd static && hs
 copy:
 	cp -r ./ ../$(d)
-	rm -r ../$(d)/.idea
-	rm -r ../$(d)/.git
+	if [ -n "$(b)" ]; \
+	then \
+		rm -rf ../$(d)/app/public; \
+		rm -rf ../$(d)/config/gulp/config.js; \
+		mv ../$(d)/config/gulp/backendConfig.js ../$(d)/config/gulp/config.js; \
+		rm -rf ../$(d)/app/views/index.html; \
+		mv ../$(d)/app/views/backendIndex.html ../$(d)/app/views/index.html; \
+	else \
+		rm -rf ../$(d)/config/gulp/backendConfig.js; \
+		rm -rf ../$(d)/app/views/backendIndex.html; \
+	fi
+	rm -rf ../$(d)/.idea
+	rm -rf ../$(d)/.git
 openshift:
 	NODE_ENV=openshift pm2 start app.js
