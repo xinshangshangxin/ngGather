@@ -97,7 +97,7 @@ function getCommonConfig() {
         newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? '' : '') + '\')'
       }, {
         src: ['this_is_a_template.js'],
-        subStr: /shangAngularTemplate/,
+        subStr: /ngGather/,
         newStr: function($) {
           var filepath = $.storeFileName.get($.specConfig.theme.storeFileNameSpaceName, 'relative') || [];
           return filepath[0];
@@ -150,7 +150,7 @@ function getCommonConfig() {
         'base': 'app/'
       },
       config: {
-        module: 'shangAngularTemplate',
+        module: 'ngGather',
         transformUrl: function(url) {
           return url.replace(/.*[\/\\]public[\/\\]/, '');
         }

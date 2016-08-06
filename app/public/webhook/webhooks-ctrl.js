@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('shangAngularTemplate')
+  .module('ngGather')
   .controller('WebhooksCtrl', function($scope, $stateParams, $state, $translate, webhookEntity) {
     $stateParams.page = $stateParams.page || 1;
     $stateParams.per_page = $stateParams.per_page || 10;

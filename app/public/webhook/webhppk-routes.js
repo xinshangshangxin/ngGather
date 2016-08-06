@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('shangAngularTemplate')
+  .module('ngGather')
   .config(function($urlRouterProvider, $stateProvider) {
     $stateProvider
       .state('webhook', {

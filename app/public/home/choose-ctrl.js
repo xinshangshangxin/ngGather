@@ -248,7 +248,7 @@ angular
 
     function changeTheme() {
       if(!themes || !themes.length) {
-        themes.push({href: '/css/themes/night/night.css', disabled: true});
+        themes.push({href: '/styles/themes/night/night.css', disabled: true});
         themeSwitcherService.replaceThemes(themes);
       }
       themes.forEach(function(item) {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('shangAngularTemplate')
+  .module('ngGather')
   .controller('WebhookDetailCtrl',
     function($scope, $state, $stateParams, $translate, events, webhookEntity, dialogService) {
       $scope.events = events;
