@@ -103,14 +103,15 @@ function captureXclient($) {
   var list = [];
   var now = new Date();
   $('#main')
-    .find('.list-soft')
+    .find('.post_list li')
     .each(function(i, e) {
-      var img = $(e).find('.list-item-icon').first().attr('src');
-      var listItemMeta = $(e).find('.list-item-meta').first();
-      var title = listItemMeta.find('a').first().text();
-      var href = listItemMeta.find('a').first().attr('href');
-      var timeNu = utilitiesService.calculateTime($(e).find('.list-item-date').first().text());
-      var intro = $(e).find('.list-item-summary').first().text();
+      var img = $(e).find('.lim-icon').first().attr('src');
+      var listItemMeta = $(e).find('.info').first();
+      var title = listItemMeta.find('h3').first().text();
+      var href = $(e).find('a').first().attr('href');
+      var time = $(e).find('.date').first().text().replace(/\./gi, '/');
+      var timeNu = utilitiesService.calculateTime(time);
+      var intro = listItemMeta.find('p').first().text();
       list.push({
         img: img,
         title: title,
@@ -120,6 +121,7 @@ function captureXclient($) {
         intro: intro
       });
     });
+  console.log('list: ', list);
   return list;
 }
 
