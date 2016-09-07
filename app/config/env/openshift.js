@@ -32,6 +32,7 @@ module.exports = {
     ref: 'production'
   },
   bootstrap: [
-    'mongodbBackupService'
+    // 'mongodbBackupService',
+    // 'webhookService',
   ]
 };

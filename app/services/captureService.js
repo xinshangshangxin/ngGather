@@ -121,7 +121,6 @@ function captureXclient($) {
         intro: intro
       });
     });
-  console.log('list: ', list);
   return list;
 }
 
