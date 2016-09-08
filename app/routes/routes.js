@@ -6,7 +6,6 @@ var router = express.Router();
 
 var articleController = require('../controllers/articleController.js');
 var executeCmdController = require('../controllers/executeCmdController.js');
-var tokenAuth = require('../policies/tokenAuth.js');
 var webhookController = require('../controllers/webhookController');
 var wrapError = require('../policies/wrapError.js');
 var utilitiesService = require('../services/utilitiesService.js');
@@ -29,7 +28,7 @@ router
     res.render('index.html');
   })
   .get(/^\/(?=api\/v\d+\/cmds)/, executeCmdController.help)
-  .post(/^\/(?=api\/v\d+\/cmds)/, tokenAuth(), executeCmdController.execCmds)
+  .post(/^\/(?=api\/v\d+\/cmds)/, executeCmdController.execCmds)
   .post('/api/v1/auto-deploy', function(req, res) {
     res.end('ok');
 

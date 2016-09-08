@@ -41,6 +41,9 @@ function getMongodbUri(config) {
       uri = resolveEnvUrl(config);
       break;
     }
+    case 'uri': {
+      return config.uri;
+    }
     default: {
       break;
     }
@@ -98,7 +101,7 @@ function define(modelName, opt, config) {
     });
   }
 
-  var modelNameModel = db.model(modelName, modelNameSchema);
+  var modelNameModel = db.model((global.config.env.mongo.collectionPrefix || '') + modelName, modelNameSchema);
 
   return {
     model: modelNameModel,

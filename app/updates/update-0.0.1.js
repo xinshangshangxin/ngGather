@@ -5,7 +5,7 @@
  *
  */
 
-require('../config/init.js');
+require('../config/globalInit.js');
 var articleController = require('../controllers/articleController.js');
 var captureService = require('../services/captureService.js');
 
