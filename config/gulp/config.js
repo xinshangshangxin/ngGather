@@ -117,7 +117,7 @@ function getCommonConfig() {
       }, {
         src: ['components/constants.js'],
         subStr: '.constant(\'SERVER_URL\', \'\')',
-        newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? 'http://cron-nggather.xinshangshangxin.com' : '') + '\')'
+        newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? 'https://mysterious-earth-85524.herokuapp.com' : '') + '\')'
       }, {
         src: ['home/choose-ctrl.js'],
         subStr: /href: '\/styles\/themes\/night\/night\.css'/,
