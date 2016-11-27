@@ -3,7 +3,6 @@
 
 var utilitiesService = require('../services/utilitiesService.js');
 var calculateTime = utilitiesService.calculateTime;
-var calculateTimeWithChinese = utilitiesService.calculateTimeWithChinese;
 
 function captureZD($) {
   var list = [];
@@ -75,17 +74,14 @@ function captureLLM($) {
 function captureWaitsun($) {
   var list = [];
   var now = new Date();
-  $('.content .group .post-inner')
+  $('#postlist .post')
     .each(function(i, e) {
-      var temp = $(e).find('.post-thumbnail').first();
-      var content = $(e).find('.post-content').first();
-      var imgEle = temp.find('a').first().find('img').first();
-
-      var img = imgEle.data('cfsrc') || imgEle.attr('src');
-      var title = temp.find('a').first().attr('title');
-      var href = temp.find('a').first().attr('href');
-      var timeNu = calculateTimeWithChinese(content.find('.post-date').first().text());
-      var intro = $(e).find('.excerpt').first().find('p').first().text();
+      var img = decodeURIComponent($(e).find('.post-thumbnail').first().find('img').first().attr('data-original').replace(/.*\?src=/, '').replace(/png&w.*/, 'png'));
+      var title = $(e).find('.post-title').first().text();
+      var href = $(e).find('.post-title').first().find('a').first().attr('href');
+      var timeStr = $(e).find('.post-meta').first().find('.inline-li').first().text();
+      var timeNu = calculateTime(timeStr);
+      var intro = $(e).find('.post-content').first().text();
 
       list.push({
         img: img,
