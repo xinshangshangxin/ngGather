@@ -73,7 +73,7 @@ function captureAll() {
     .then(function(results) {
       _.forEachRight(results, function(result, i) {
         if(result.isRejected()) {
-          console.log(sites[i].name + '    ' + sites[i].url + '    ' + result.reason());
+          console.log(sites[i].name + '    ' + sites[i].url + '    ', result.reason());
 
           sites[i].canErrNu--;
         }
@@ -103,7 +103,7 @@ function captureAll() {
 
 function closeConnection() {
   require('../services/dbService').closeMongoose();
-  gather.proxyPool.clearUpdateInterval();
+  gather.proxyPool.clearAll();
 }
 
 captureAll();
