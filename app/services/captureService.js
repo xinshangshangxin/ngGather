@@ -120,33 +120,6 @@ function captureXclient($) {
   return list;
 }
 
-function captureDayanzai($) {
-  var list = [];
-  var now = new Date();
-  $('.list li').each(function(i, e) {
-    var item = $(e).find('.a2').first().find('h3').first().find('a').first();
-    var title = item.text();
-    var link = item.attr('href');
-    var img = $(e).find('.b').first().find('img').first().attr('src');
-    var time = utilitiesService.calculateTime($(e).find('.a1').first().text());
-    var intro = $(e).find('.c').first().text();
-
-    if(!title || !link) {
-      return;
-    }
-
-    list.push({
-      img: img,
-      title: title,
-      href: link,
-      time: time,
-      gatherTime: now.getTime() + 1000 - i,
-      intro: intro
-    });
-  });
-  return list;
-}
-
 module.exports.captureLLM = captureLLM;
 module.exports.allSites = [{
   ischecked: true,
@@ -162,25 +135,6 @@ module.exports.allSites = [{
     extract_rules: [{
       name: 'articleList',
       expression: captureWaitsun
-    }]
-  }
-}, {
-  ischecked: true,
-  name: 'dayanzai',
-  chName: '大眼仔旭',
-  site: 'dayanzai',
-  description: '爱软件 爱汉化 爱分享 - 博客型软件首页',
-  classify: 'windows',
-  requestConfig: {
-    url: 'http://www.dayanzai.me/',
-    timeout: 10 * 1000
-  },
-  parseConfig: {
-    encoding: 'utf8',
-    mode: 'css',
-    extract_rules: [{
-      name: 'articleList',
-      expression: captureDayanzai
     }]
   }
 }, {
