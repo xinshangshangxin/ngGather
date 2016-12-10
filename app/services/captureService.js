@@ -1,6 +1,7 @@
 
 'use strict';
 
+var moment = require('moment');
 var utilitiesService = require('../services/utilitiesService.js');
 var calculateTime = utilitiesService.calculateTime;
 
@@ -79,8 +80,8 @@ function captureWaitsun($) {
       var img = decodeURIComponent($(e).find('.post-thumbnail').first().find('img').first().attr('data-original').replace(/.*\?src=/, '').replace(/png&w.*/, 'png'));
       var title = $(e).find('.post-title').first().text();
       var href = $(e).find('.post-title').first().find('a').first().attr('href');
-      var timeStr = $(e).find('.post-meta').first().find('.inline-li').first().text();
-      var timeNu = calculateTime(timeStr);
+      var timeStr = $(e).find('.post-meta').first().find('.inline-li').first().text().trim();
+      var timeNu = moment(timeStr, 'YYYYMMDD').toDate().getTime();
       var intro = $(e).find('.post-content').first().text();
 
       list.push({
