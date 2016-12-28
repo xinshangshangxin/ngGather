@@ -75,14 +75,13 @@ function captureLLM($) {
 function captureWaitsun($) {
   var list = [];
   var now = new Date();
-  $('#postlist .post')
+  $('#content .masonry').first().find('.loop')
     .each(function(i, e) {
-      var img = decodeURIComponent($(e).find('.post-thumbnail').first().find('img').first().attr('data-original').replace(/.*\?src=/, '').replace(/png&w.*/, 'png'));
-      var title = $(e).find('.post-title').first().text();
-      var href = $(e).find('.post-title').first().find('a').first().attr('href');
-      var timeStr = $(e).find('.post-meta').first().find('.inline-li').first().text().trim();
-      var timeNu = moment(timeStr, 'YYYYMMDD').toDate().getTime();
-      var intro = $(e).find('.post-content').first().text();
+      var img = $(e).find('.img-div').first().find('img').first().attr('src');
+      var title = $(e).find('.caption').first().find('dt').first().text();
+      var href = $(e).find('.caption').first().find('dd').first().find('a').first().attr('href');
+      var timeNu = moment().toDate().getTime();
+      var intro = $(e).find('.img-div').first().find('a').first().attr('title');
 
       list.push({
         img: img,
@@ -128,6 +127,7 @@ module.exports.allSites = [{
   chName: '爱情守望者',
   site: 'waitsun',
   description: '爱情守望者博客以分享，互助和交流为宗旨，分享软件，电影，资源，设计和网络免费资源。',
+  classify: 'mac',
   requestConfig: {
     url: 'http://www.waitsun.com/'
   },
