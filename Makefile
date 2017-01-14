@@ -31,20 +31,17 @@ static:
 	gulp static
 	cd static && hs
 copy:
-	cp -r ./ ../$(d)
-	if [ -n "$(b)" ]; \
+	@ if [ -e ../$(d)/ ]; \
 	then \
-		rm -rf ../$(d)/app/public; \
-		rm -rf ../$(d)/config/gulp/config.js; \
-		mv ../$(d)/config/gulp/backendConfig.js ../$(d)/config/gulp/config.js; \
-		rm -rf ../$(d)/app/views/index.html; \
-		mv ../$(d)/app/views/backendIndex.html ../$(d)/app/views/index.html; \
-	else \
-		rm -rf ../$(d)/config/gulp/backendConfig.js; \
-		rm -rf ../$(d)/app/views/backendIndex.html; \
+		echo "../$(d)/ 目录存在!!"; \
+		exit 1; \
 	fi
-	rm -rf ../$(d)/.idea
-	rm -rf ../$(d)/.git
+	mkdir -p ../$(d)/
+	ls -A | grep -vE "node_modules|.git/|.idea|production|.DS_Store" | xargs -I  {} cp -rf {} ../$(d)/
+	cd ../$(d); \
+	git init; \
+	git remote add template https://git.coding.net/xinshangshangxin/my-express-template.git; \
+	git remote -v
 rsync:
 	cp ./package.json ./production
 	gsed -i 's/"start": "NODE_ENV=.*/"start": "PORT=1337 NODE_ENV=production pm2 start .\/app.js --name template:1337",/g' ./production/package.json
