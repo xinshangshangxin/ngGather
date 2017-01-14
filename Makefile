@@ -27,6 +27,8 @@ pushHeroku:
 	cp ./package.json ./production
 	gsed -i 's/"start": "NODE_ENV=.*/"start": "NODE_ENV=heroku pm2 start .\/app.js --no-daemon",/g' ./production/package.json
 	cd ./production && git add -A && git commit -m "auto" && git push heroku master && heroku logs --tail
+pushProd:
+	sh ./config/push.sh
 static:
 	gulp static
 	cd static && hs
