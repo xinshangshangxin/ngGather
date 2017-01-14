@@ -21,7 +21,7 @@ module.exports = {
     collectionPrefix: '',
   },
   update: {
-    ref: 'master'
+    // ref: 'master'
   },
   port: process.env.PORT,
   log: {

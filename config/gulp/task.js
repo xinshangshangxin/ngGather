@@ -211,6 +211,9 @@ gulp.task('injectHtml:dev', function(done) {
 
   return gulp
     .src(config.injectHtmlDev.src, config.injectHtmlDev.opt)
+    .pipe($.rename(function (path) {
+      path.basename = config.injectHtmlDev.destName;
+    }))
     .pipe($.inject(
       $.streamqueue.apply($.streamqueue, arr),
       ignorePath
@@ -408,6 +411,9 @@ gulp.task('injectHtml:prod', function() {
   var injectSource = gulp.src(config.injectHtmlProd.injectSource, {read: false});
   return gulp
     .src(config.injectHtmlProd.src, config.injectHtmlProd.opt)
+    .pipe($.rename(function (path) {
+      path.basename = config.injectHtmlDev.destName;
+    }))
     .pipe($.inject(injectSource, {
       ignorePath: config.injectHtmlProd.injectIgnorePath
     }))
@@ -526,6 +532,22 @@ gulp.task('buildServer', gulp.series(
       'server'
     ),
   'injectHtml:prod'
+));
+
+gulp.task('devServer', gulp.series(
+  setDevEnv,
+  'clean',
+  gulp
+    .parallel(
+      'server'
+    ),
+  'injectHtml:prod',
+  function (done) {
+    if(config.server.jsWatch) {
+      gulp.watch(config.server.jsWatch, gulp.series('server'));
+    }
+    return done();
+  }
 ));
 
 gulp.task('prod', gulp.series('build'));

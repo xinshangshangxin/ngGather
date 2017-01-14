@@ -1,13 +1,13 @@
 {
   "name": "shangTemplate",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "SHANG",
   "license": "MIT",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=7.0.0"
   },
   "scripts": {
-    "start": "node app/app.js",
+    "start": "node server",
     "test": "mocha --recursive --timeout 10000 --harmony --bail test"
   },
   "dependencies": {

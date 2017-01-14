@@ -9,13 +9,13 @@ var alterableSetting = {  // prod 的 基础路径
   viewPath: 'production/views/'
 };
 
-
 function getCommonConfig() {
   return {
     clean: {                   // 清除生成文件的路径
       src: [
         alterableSetting.basePath + '**/*',
-        'app/public/styles/',
+        'client/styles/',
+        'server/views/**/*',
         '!' + alterableSetting.basePath + '/.git/',
         '!' + alterableSetting.basePath + '/CNAME',
         '!' + alterableSetting.basePath + '/Makefile'
@@ -32,35 +32,36 @@ function getCommonConfig() {
     less: {
       watcherPath: [
         'less/**/*.less',
-        'app/public/common/**/*.less',
-        'app/public/components/**/*.less'
+        'client/common/**/*.less',
+        'client/components/**/*.less'
       ],    // watch:sass 文件路径
       src: [
         'less/variables.less',
-        'app/public/common/**/*.less',
-        'app/public/components/**/*.less'
+        'client/common/**/*.less',
+        'client/components/**/*.less'
       ],
       opt: {},
-      dest: 'app/public/styles'
+      dest: 'client/styles',
     },
     injectHtmlDev: {            // development环境
-      src: 'index.html',
+      src: '__index__.html',
       opt: {
-        cwd: 'app/views',
-        base: 'app/views'
+        cwd: 'client',
+        base: 'client'
       },
       cssSource: [                    // 需要引入的css
-        'app/public/styles/**/*.css'
+        'client/styles/**/*.css'
       ],
       jsSource: [         // 需要引入的js, config.specJs会加载在其上面
-        'app/public/**/*.js',
-        '!app/public/vendor/**/*',
-        '!app/public/framework/**/*'
+        'client/**/*.js',
+        '!client/vendor/**/*',
+        '!client/framework/**/*'
       ],
-      libJsPrefix: 'app/public/vendor',  // libJS  依赖于 config.libJs.src; 需要加上前缀
-      libCssPrefix: 'app/public',       // libCss  依赖于 config.libCss.src; 需要加上前缀
-      ignorePath: 'app/public/',       // 路径去除, 相当于 base
-      dest: 'app/views'
+      libJsPrefix: 'client/vendor',  // libJS  依赖于 config.libJs.src; 需要加上前缀
+      libCssPrefix: 'client',       // libCss  依赖于 config.libCss.src; 需要加上前缀
+      ignorePath: 'client/',       // 路径去除, 相当于 base
+      dest: 'server/views',
+      destName: 'index',
     },
     libCss: {             // lib css 需要引入的的css
       src: [              // src 可以为空数组
@@ -69,9 +70,9 @@ function getCommonConfig() {
         'vendor/font-awesome/css/font-awesome.min.css'
       ],
       opt: {
-        cwd: 'app/public/'
+        cwd: 'client/'
       },
-      dest: 'app/public/styles'
+      dest: 'client/styles'
     },
     libJs: {              // lib js, 需要按照顺序书写
       'src': [
@@ -86,8 +87,8 @@ function getCommonConfig() {
         'lodash/dist/lodash.min.js'
       ],
       'opt': {
-        'cwd': 'app/public/vendor',
-        'base': 'app/public/vendor'
+        'cwd': 'client/vendor',
+        'base': 'client/vendor'
       },
       dest: path.join(alterableSetting.publicPath, 'js')          // libJs在prod环境下才需要 输出, 故dest为 prod环境的dest
     },
@@ -103,8 +104,8 @@ function getCommonConfig() {
         '!framework/**/*'
       ],
       opt: {
-        cwd: 'app/public/',
-        base: 'app/public/'
+        cwd: 'client/',
+        base: 'client/'
       },
       filters: [{
         src: ['app.js'],
@@ -127,24 +128,24 @@ function getCommonConfig() {
     images: {
       src: [],
       opt: {
-        cwd: 'app/public/images',
-        base: 'app/public'
+        cwd: 'client/images',
+        base: 'client'
       },
       dest: alterableSetting.publicPath
     },
     fonts: {
-      src: ['app/public/vendor/font-awesome/fonts/**/*'],
+      src: ['client/vendor/font-awesome/fonts/**/*'],
       dest: path.join(alterableSetting.publicPath, 'styles/fonts')
     },
     injectHtmlProd: {
-      src: 'index.html',
+      src: '__index__.html',
       opt: {
-        cwd: 'app/views',
-        base: 'app/views'
+        cwd: 'client',
+        base: 'client'
       },
       cssSource: [                    // 需要引入的cs
-        'app/public/styles/bootstrap.min.css',
-        'app/public/styles/**/*.css'
+        'client/styles/bootstrap.min.css',
+        'client/styles/**/*.css'
       ],
       injectSource: [
         path.join(alterableSetting.publicPath, 'styles/**/*.css'),
@@ -158,6 +159,7 @@ function getCommonConfig() {
         newStr: 'fonts/'
       }],
       dest: alterableSetting.viewPath,
+      destName: 'index',
       injectIgnorePath: alterableSetting.publicPath,
       isHtmlmin: true,
       prodCssName: 'production',     // css压缩后的名称(无需写 min.css)
@@ -168,17 +170,18 @@ function getCommonConfig() {
       src: [
         '**/*.html',
         '!index.html',
+        '!__index__.html',
         '!vendor/**/*',
         '!framework/**/*'
       ],
       opt: {
-        'cwd': 'app/public/',
-        'base': 'app/'
+        'cwd': 'client/',
+        'base': 'server/'
       },
       config: {
         module: 'shangAngularTemplate',
         transformUrl: function(url) {
-          return url.replace(/.*[\/\\]public[\/\\]/, '');
+          return url.replace(/.*[\/\\]client[\/\\]/, '');
         }
       },
       isHtmlmin: true,
@@ -187,9 +190,9 @@ function getCommonConfig() {
     },
     server: {
       jsWatch: [
-        'app/**/*.js',
-        '!app/public/**/*',
-        '!app/views/**/*'
+        'server/**/*.js',
+        '!client/**/*',
+        '!server/views/**/*'
       ],
       src: [
         '**/*',
@@ -198,8 +201,8 @@ function getCommonConfig() {
         '!index.html'
       ],
       opt: {
-        'cwd': 'app/',
-        'base': 'app/'
+        'cwd': 'server/',
+        'base': 'server/'
       },
       dest: alterableSetting.basePath
     },
@@ -222,8 +225,8 @@ function getCommonConfig() {
         'config/**/*'
       ],
       opt: {
-        'cwd': 'app/',
-        'base': 'app/'
+        'cwd': 'server/',
+        'base': 'server/'
       },
       dest: alterableSetting.basePath
     }, {
@@ -231,8 +234,8 @@ function getCommonConfig() {
         'languages/**/*'
       ],
       opt: {
-        'cwd': 'app/public',
-        'base': 'app/public'
+        'cwd': 'client',
+        'base': 'client'
       },
       dest: alterableSetting.publicPath
     }],
@@ -242,9 +245,9 @@ function getCommonConfig() {
         online: true,
         port: 13370,
         files: [
-          'app/public/**/*',
-          '!app/public/styles/**/*',
-          'app/views/**/*'
+          'client/**/*',
+          '!client/styles/**/*',
+          'server/views/**/*'
         ]
       }
     },
@@ -261,7 +264,7 @@ function getCommonConfig() {
       removeComments: true
     },
     jshintPath: 'config/gulp/.jshintrc',        // jshintrc 的路径, 相对gulpfile.js
-    jshintPathApp: 'config/gulp/.jshintrc_app'  // jshintrc 的路径, 相对gulpfile.js
+    jshintPathApp: 'config/gulp/.jshintrc_server'  // jshintrc 的路径, 相对gulpfile.js
   };
 }
 
@@ -273,8 +276,8 @@ function getSpecConfig() {
     theme: {
       src: [],
       opt: {
-        cwd: 'app/public',
-        base: 'app/public'
+        cwd: 'client',
+        base: 'client'
       },
       dest: alterableSetting.publicPath,
       storeFileNameSpaceName: 'nightTheme'

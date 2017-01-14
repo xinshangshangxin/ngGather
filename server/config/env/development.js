@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path');
+
 module.exports = {
   dbName: 'noDbName',
   superSecret: process.env.SUPER_SECRET || 'SUPER_SECRET',
@@ -30,7 +32,8 @@ module.exports = {
   },
   bootstrap: [
     // 'webhookService',
-  ]
+  ],
+  staticPath: path.join(__dirname, '../../../client'),
 };
 
 

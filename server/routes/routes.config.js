@@ -8,17 +8,18 @@ function getRouterPath(relativePath) {
 
 var svc = [
   {
+    name: 'view-routes',
+    path: getRouterPath('./view-routes'),
+  }, {
     name: 'system-routes',
-    disabled: false,
     path: getRouterPath('./system-routes'),
   }, {
     name: 'webhook-routes',
     disabled: true,
     path: getRouterPath('./webhook-routes'),
   }, {
-    name: 'user-routes',
-    disabled: false,
-    path: getRouterPath('./routes'),
+    name: 'custom-routes',
+    path: getRouterPath('./custom-routes'),
   },
 ];
 

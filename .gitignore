@@ -49,8 +49,8 @@ Temporary Items
 .git
 .idea
 
-app/public/vendor/*
-app/public/styles/*
+client/vendor/*
+client/styles/*
 static
 production
 deploy

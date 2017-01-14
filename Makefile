@@ -3,9 +3,9 @@ d='template2'
 dev:
 	@sh config/start.sh
 node-dev:
-	node-dev app/app.js
+	node-dev server/app.js
 supervisor:
-	supervisor -n error -i 'app/public/,app/views/,config/tasks/' app/app.js
+	supervisor -n error -i 'server/public/,server/views/,config/tasks/' server/app.js
 push:
 	git push origin template
 merge:
@@ -22,7 +22,7 @@ test:
 	fi
 prod:
 	gulp prod
-	node production/app.js
+	NODE_ENV=production PRETTY_LOG=1 node production/app.js
 pushHeroku: 
 	cp ./package.json ./production
 	gsed -i 's/"start": "NODE_ENV=.*/"start": "NODE_ENV=heroku pm2 start .\/app.js --no-daemon",/g' ./production/package.json
@@ -37,7 +37,7 @@ copy:
 		exit 1; \
 	fi
 	mkdir -p ../$(d)/
-	ls -A | grep -vE "node_modules|.git/|.idea|production|.DS_Store" | xargs -I  {} cp -rf {} ../$(d)/
+	ls -A | grep -vE "node_modules/|.git/|.idea/|production/|static/|.DS_Store" | xargs -I  {} cp -rf {} ../$(d)/
 	cd ../$(d); \
 	git init; \
 	git remote add template https://git.coding.net/xinshangshangxin/my-express-template.git; \

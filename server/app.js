@@ -27,7 +27,7 @@ var appStart = require('./config/bootstrap')()
         extended: false
       }));
       app.use(cookieParser());
-      app.use(express.static(path.join(__dirname, 'public')));
+      app.use(express.static(config.env.staticPath || path.join(__dirname, 'public')));
 
       app.use('/', wrapError);
       app.use('/', cors());

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function startServer {
-	node-dev app/app.js
+	node-dev server/app.js
 }
 
 function startGulp {
