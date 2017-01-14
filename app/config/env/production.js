@@ -24,6 +24,9 @@ module.exports = {
     ref: 'master'
   },
   port: process.env.PORT,
+  log: {
+    pretty: process.env.PRETTY_LOG === '1',
+  },
   bootstrap: [
     // 'webhookService',
   ]

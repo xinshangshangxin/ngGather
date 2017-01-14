@@ -24,9 +24,12 @@ module.exports = {
     ref: 'master'
   },
   port: process.env.PORT,
+  log: {
+    pretty: true,
+    level: 'trace',
+  },
   bootstrap: [
     // 'webhookService',
-    'mailSendService',
   ]
 };
 

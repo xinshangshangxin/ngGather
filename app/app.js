@@ -11,8 +11,9 @@ var appStart = require('./config/bootstrap')()
       var http = require('http');
       var morgan = require('morgan');
       var path = require('path');
-
-      var routes = require('./routes/routes');
+      var cors = require('cors');
+      var wrapError = require('./policies/wrapError.js');
+      var routersConfig = require('./routes/routes.config');
 
       var app = express();
 
@@ -28,13 +29,22 @@ var appStart = require('./config/bootstrap')()
       app.use(cookieParser());
       app.use(express.static(path.join(__dirname, 'public')));
 
-      app.use('/', routes);
+      app.use('/', wrapError);
+      app.use('/', cors());
+
+      routersConfig.forEach(function (routerConfig) {
+        if(!routerConfig.disabled) {
+          app.use('/', require(routerConfig.path));
+        }
+      });
 
       // 404
-      app.use(function(req, res, next) {
-        var err = new Error('Not Found');
+      app.use(function(req, res) {
+        var err = new Error('Not Found: ' + req.url);
+        logger.warn(err);
         err.status = 404;
-        next(err);
+        res.status(404);
+        res.end();
       });
 
 
@@ -56,7 +66,8 @@ var appStart = require('./config/bootstrap')()
       function onError(error) {
         reject(error);
         if(error.syscall !== 'listen') {
-          throw error;
+          logger.error(error);
+          return;
         }
 
         var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
@@ -72,7 +83,8 @@ var appStart = require('./config/bootstrap')()
             process.exit(1);
             break;
           default:
-            throw error;
+            logger.error(error);
+            process.exit(1);
         }
       }
 
@@ -81,6 +93,12 @@ var appStart = require('./config/bootstrap')()
        */
       function onListening() {
         var addr = server.address();
+
+        if(addr.address === '::') {
+          logger.info('addr.address === ::');
+          addr.address = '127.0.0.1';
+        }
+
         var bind = typeof addr === 'string' ? 'pipe ' + addr : ('http://' + addr.address + ':' + addr.port);
         logger.info('Listening on: ' + bind);
         resolve(app);
