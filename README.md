@@ -1,8 +1,1 @@
-err code  | 含义
-------------- | -------------
-1001    | 认证失败
-1002    | 缺少 token 参数
-1003    | 无权限
-2001    | 执行命令失败
-
-11000   | WebhookController
+# my node server template
