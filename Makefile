@@ -37,7 +37,7 @@ copy:
 		exit 1; \
 	fi
 	mkdir -p ../$(d)/
-	ls -A | grep -vE "node_modules/|.git/|.idea/|production/|static/|.DS_Store" | xargs -I  {} cp -rf {} ../$(d)/
+	ls -A | grep -vE "node_modules$$|.git$$|.idea$$|production$$|static$$|.DS_Store" | xargs -I  {} cp -rf {} ../$(d)/
 	cd ../$(d); \
 	git init; \
 	git remote add template https://git.coding.net/xinshangshangxin/my-express-template.git; \
