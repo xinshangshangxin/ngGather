@@ -3,8 +3,30 @@
 projectName="template";
 nodeEnv="leancloud";
 prettyLog="1";
+remoteOrigin="git@production.coding.net:shangxin/Production.git"
+
+currentDir=`pwd`
+
+function resetDir() {
+  cd ${currentDir}
+}
+
+function initRemote() {
+  mkdir -p ./production
+  cd ./production
+  localRepoDir=`git remote -v | grep -E "production\s+${remoteOrigin}\s+\(push\)"`
+  if [ -z "$localRepoDir" ]
+  then
+    git init
+    git remote add production ${remoteOrigin}
+  else
+    echo ${localRepoDir}
+  fi
+  resetDir
+}
 
 function pushCoding() {
+  initRemote
 	if [ -n "$1" ]
 	then
 	  echo "set projectName to $1";
@@ -24,14 +46,24 @@ function pushCoding() {
 	fi
 
 	gulp prod
-	cp ./package.json ./production
-	cp ./Dockerfile ./production
+	echo "cp ./package.json ./production/"
+	cp ./package.json ./production/
+
+	if [ -e ./config/Dockerfiles/${nodeEnv} ]
+	then
+	  cp ./config/Dockerfiles/${nodeEnv} ./production/Dockerfile
+	else
+	  echo "no ${nodeEnv} Dockerfile, skip"
+	fi
+
 	gsed -i "s/\"start\": \".*/\"start\": \"NODE_ENV=${nodeEnv} PRETTY_LOG=${prettyLog} pm2 start .\/index.js --no-daemon\",/g" ./production/package.json
 	cd ./production
 	git add -A
-	git commit -m "auto"  || echo "nothing to commit"
-	echo "git push -u production master:${projectName}"
+	now=`date +%Y_%m_%d_%H_%M_%S`
+	git commit -m "${now}"  || echo "nothing to commit"
+	echo "git push -u production master:${projectName} -f"
 	git push -u production master:${projectName} -f
+	resetDir
 }
 
 pushCoding $*
