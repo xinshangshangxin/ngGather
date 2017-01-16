@@ -1,8 +1,8 @@
 'use strict';
 
-var jwt = require('jsonwebtoken');
+var jwt = require('jwt-simple');
 
-var superSecret = config.superSecret;
+var superSecret = config.env.superSecret;
 
 function getTokenFromHeader(req) {
   var bearerHeader = req.headers.authorization;
@@ -26,20 +26,25 @@ module.exports = function() {
       return res.wrapError(new ApplicationError.TokenNotFound(), null, 401);
     }
 
-    jwt.verify(token, superSecret, function(err, decoded) {
-      if(err) {
-        return res.wrapError(new ApplicationError.TokenNotVerify());
-      }
+    var decoded;
+    try {
+      decoded = jwt.decode(token, superSecret);
+    }
+    catch(e) {
 
-      req.user = decoded;
-      req.userId = decoded && decoded.id;
+    }
 
-      if(!req.user || !req.userId) {
-        return res.wrapError(new ApplicationError.UserNotFound(), null, 403);
-      }
+    if(!decoded) {
+      return res.wrapError(new ApplicationError.TokenNotVerify());
+    }
 
-      next();
-      return null;
-    });
+    req.user = decoded;
+    req.userId = decoded && decoded.id;
+
+    if(!req.user || !req.userId) {
+      return res.wrapError(new ApplicationError.UserNotFound(), null, 403);
+    }
+
+    next();
   };
 };
