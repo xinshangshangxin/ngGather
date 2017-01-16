@@ -15,7 +15,8 @@ function getCommonConfig() {
     clean: {                   // 清除生成文件的路径
       src: [
         alterableSetting.basePath + '**/*',
-        'app/public/styles/',
+        'client/styles/',
+        'server/views/**/*',
         '!' + alterableSetting.basePath + '/.git/',
         '!' + alterableSetting.basePath + '/CNAME',
         '!' + alterableSetting.basePath + '/Makefile'
@@ -32,48 +33,50 @@ function getCommonConfig() {
     less: {
       watcherPath: [
         'less/**/*.less',
-        'app/public/common/**/*.less',
-        'app/public/components/**/*.less'
+        'client/common/**/*.less',
+        'client/components/**/*.less'
       ],    // watch:sass 文件路径
       src: [
-        'less/**/*.less',
-        'app/public/common/**/*.less',
-        'app/public/components/**/*.less'
+        'less/variables.less',
+        'less/themes*/**/*.less',
+        'client/common/**/*.less',
+        'client/components/**/*.less'
       ],
       opt: {},
-      dest: 'app/public/styles'
+      dest: 'client/styles',
     },
     injectHtmlDev: {            // development环境
-      src: 'index.html',
+      src: '__index__.html',
       opt: {
-        cwd: 'app/views',
-        base: 'app/views'
+        cwd: 'client',
+        base: 'client'
       },
       cssSource: [                    // 需要引入的css
-        'app/public/styles/**/*.css',
-        '!app/public/styles/themes/**/*.css'
+        'client/styles/**/*.css',
+        '!client/styles/themes/**/*.css'
       ],
       jsSource: [         // 需要引入的js, config.specJs会加载在其上面
-        'app/public/**/*.js',
-        '!app/public/vendor/**/*',
-        '!app/public/framework/**/*'
+        'client/**/*.js',
+        '!client/vendor/**/*',
+        '!client/framework/**/*'
       ],
-      libJsPrefix: 'app/public/vendor',  // libJS  依赖于 config.libJs.src; 需要加上前缀
-      libCssPrefix: 'app/public',       // libCss  依赖于 config.libCss.src; 需要加上前缀
-      ignorePath: 'app/public/',       // 路径去除, 相当于 base
-      dest: 'app/views'
+      libJsPrefix: 'client/vendor',  // libJS  依赖于 config.libJs.src; 需要加上前缀
+      libCssPrefix: 'client',       // libCss  依赖于 config.libCss.src; 需要加上前缀
+      ignorePath: 'client/',       // 路径去除, 相当于 base
+      dest: 'server/views',
+      destName: 'index',
     },
     libCss: {             // lib css 需要引入的的css
       src: [              // src 可以为空数组
         'vendor/angular-aside/dist/css/angular-aside.min.css',
-        'framework/paper/bootstrap.min.css',
+        'framework/paper/dist/bootstrap.min.css',
         'vendor/angular-loading-bar/build/loading-bar.min.css',
         'vendor/font-awesome/css/font-awesome.min.css'
       ],
       opt: {
-        cwd: 'app/public/'
+        cwd: 'client/'
       },
-      dest: 'app/public/styles'
+      dest: 'client/styles'
     },
     libJs: {              // lib js, 需要按照顺序书写
       'src': [
@@ -90,8 +93,8 @@ function getCommonConfig() {
         'lodash/dist/lodash.min.js'
       ],
       'opt': {
-        'cwd': 'app/public/vendor',
-        'base': 'app/public/vendor'
+        'cwd': 'client/vendor',
+        'base': 'client/vendor'
       },
       dest: path.join(alterableSetting.publicPath, 'js')          // libJs在prod环境下才需要 输出, 故dest为 prod环境的dest
     },
@@ -107,8 +110,8 @@ function getCommonConfig() {
         '!framework/**/*'
       ],
       opt: {
-        cwd: 'app/public/',
-        base: 'app/public/'
+        cwd: 'client/',
+        base: 'client/'
       },
       filters: [{
         src: ['app.js'],
@@ -122,7 +125,7 @@ function getCommonConfig() {
         src: ['home/choose-ctrl.js'],
         subStr: /href: '\/styles\/themes\/night\/night\.css'/,
         newStr: function($) {
-          var filepath = $.storeFileName.get($.specConfig.theme.storeFileNameSpaceName, 'relative') || [];
+          var filepath = $.utilities.getStoreFile($.specConfig.theme.storeFileNameSpaceName, 'relative') || [];
           return 'href: \'' + filepath[0].replace(/\\/gi, '\\\\') + '\'';
         }
       }],
@@ -131,25 +134,25 @@ function getCommonConfig() {
     images: {
       src: [],
       opt: {
-        cwd: 'app/public/imgs',
-        base: 'app/public'
+        cwd: 'client/images',
+        base: 'client'
       },
       dest: alterableSetting.publicPath
     },
     fonts: {
-      src: ['app/public/vendor/font-awesome/fonts/**/*'],
+      src: ['client/vendor/font-awesome/fonts/**/*'],
       dest: path.join(alterableSetting.publicPath, 'styles/fonts')
     },
     injectHtmlProd: {
-      src: 'index.html',
+      src: '__index__.html',
       opt: {
-        cwd: 'app/views',
-        base: 'app/views'
+        cwd: 'client',
+        base: 'client'
       },
       cssSource: [                    // 需要引入的cs
-        'app/public/styles/bootstrap.min.css',
-        'app/public/styles/**/*.css',
-        '!app/public/styles/themes/**/*.css'
+        'client/styles/bootstrap.min.css',
+        'client/styles/**/*.css',
+        '!client/styles/themes/**/*.css'
       ],
       injectSource: [
         path.join(alterableSetting.publicPath, 'styles/**/*.css'),
@@ -164,6 +167,7 @@ function getCommonConfig() {
         newStr: 'fonts/'
       }],
       dest: alterableSetting.viewPath,
+      destName: 'index',
       injectIgnorePath: alterableSetting.publicPath,
       isHtmlmin: true,
       prodCssName: 'production',     // css压缩后的名称(无需写 min.css)
@@ -174,17 +178,18 @@ function getCommonConfig() {
       src: [
         '**/*.html',
         '!index.html',
+        '!__index__.html',
         '!vendor/**/*',
         '!framework/**/*'
       ],
       opt: {
-        'cwd': 'app/public/',
-        'base': 'app/'
+        'cwd': 'client/',
+        'base': 'server/'
       },
       config: {
         module: 'ngGather',
         transformUrl: function(url) {
-          return url.replace(/.*[\/\\]public[\/\\]/, '');
+          return url.replace(/.*[\/\\]client[\/\\]/, '');
         }
       },
       isHtmlmin: true,
@@ -193,9 +198,9 @@ function getCommonConfig() {
     },
     server: {
       jsWatch: [
-        'app/**/*.js',
-        'config/**/*',
-        '!app/public/**/*'
+        'server/**/*.js',
+        '!client/**/*',
+        '!server/views/**/*'
       ],
       src: [
         '**/*',
@@ -204,8 +209,8 @@ function getCommonConfig() {
         '!index.html'
       ],
       opt: {
-        'cwd': 'app/',
-        'base': 'app/'
+        'cwd': 'server/',
+        'base': 'server/'
       },
       dest: alterableSetting.basePath
     },
@@ -228,17 +233,17 @@ function getCommonConfig() {
         'config/**/*'
       ],
       opt: {
-        'cwd': 'app/',
-        'base': 'app/'
+        'cwd': 'server/',
+        'base': 'server/'
       },
       dest: alterableSetting.basePath
-    },{
+    }, {
       src: [
         'languages/**/*'
       ],
       opt: {
-        'cwd': 'app/public',
-        'base': 'app/public'
+        'cwd': 'client',
+        'base': 'client'
       },
       dest: alterableSetting.publicPath
     }],
@@ -246,11 +251,11 @@ function getCommonConfig() {
       development: {
         proxy: 'http://127.0.0.1:1337',
         online: true,
-        port: 9999,
+        port: 13370,
         files: [
-          'app/public/**/*',
-          '!app/public/styles/**/*',
-          'app/views/**/*'
+          'client/**/*',
+          '!client/styles/**/*',
+          'server/views/**/*'
         ]
       }
     },
@@ -267,7 +272,7 @@ function getCommonConfig() {
       removeComments: true
     },
     jshintPath: 'config/gulp/.jshintrc',        // jshintrc 的路径, 相对gulpfile.js
-    jshintPathApp: 'config/gulp/.jshintrc_app'  // jshintrc 的路径, 相对gulpfile.js
+    jshintPathApp: 'config/gulp/.jshintrc_server'  // jshintrc 的路径, 相对gulpfile.js
   };
 }
 
@@ -279,8 +284,8 @@ function getSpecConfig() {
     theme: {
       src: ['styles/themes/night/**/*.css'],
       opt: {
-        cwd: 'app/public',
-        base: 'app/public'
+        cwd: 'client',
+        base: 'client'
       },
       dest: alterableSetting.publicPath,
       storeFileNameSpaceName: 'nightTheme'

@@ -1,8 +1,8 @@
 {
-  "name": "ngGather",
+  "name": "ng-gather",
   "version": "0.4.0",
   "engines": {
-    "node": "6.0.0"
+    "node": ">=7"
   },
   "scripts": {
     "start": "NODE_ENV=heroku pm2 start app.js",
@@ -16,6 +16,7 @@
     "debug": "~2.2.0",
     "ejs": "~2.4.1",
     "express": "~4.13.0",
+    "fast-json-parse": "^1.0.2",
     "gather-site": "^0.4.0",
     "iconv-lite": "^0.4.11",
     "jsonwebtoken": "^5.7.0",
@@ -24,10 +25,12 @@
     "mongoose": "4.4.10",
     "morgan": "~1.7.0",
     "nodemailer": "^2.3.0",
+    "pino": "^3.1.1",
     "pm2": "^1.0.1",
     "redis": "^2.5.3",
     "request": "^2.72.0",
-    "require-directory": "^2.1.1"
+    "require-directory": "^2.1.1",
+    "split2": "^2.1.1"
   },
   "devDependencies": {
     "browser-sync": "^2.11.0",

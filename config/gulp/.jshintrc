@@ -51,7 +51,7 @@
   "latedef": "nofunc",
 
   "predef": [
-    "angular",
-    "_"
+    "_",
+    "angular"
   ]
 }

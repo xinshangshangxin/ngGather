@@ -46,11 +46,14 @@ Temporary Items
 *node_modules*
 
 # user
+yarn-error.log
 .git
 .idea
 
-app/public/vendor/*
-app/public/styles/*
+client/vendor/*
+client/styles/*
+server/views/*
+server/public/*
 static
 production
 deploy
