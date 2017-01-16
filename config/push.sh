@@ -5,13 +5,14 @@ nodeEnv="leancloud";
 prettyLog="1";
 remoteOrigin="git@production.coding.net:shangxin/Production.git"
 
-currentDir=`pwd`
+projectDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 function resetDir() {
-  cd ${currentDir}
+  cd ${projectDir}
 }
 
 function initRemote() {
+  resetDir
   mkdir -p ./production
   cd ./production
   localRepoDir=`git remote -v | grep -E "production\s+${remoteOrigin}\s+\(push\)"`
@@ -26,6 +27,7 @@ function initRemote() {
 }
 
 function pushCoding() {
+  resetDir
   initRemote
 	if [ -n "$1" ]
 	then
