@@ -1,0 +1,27 @@
+<div class="modal-body choose-site">
+  <table class="table table-bordered table-striped">
+    <tr ng-repeat="choose in (showSites || chooseSite)">
+      <td>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="choose.ischecked"/>{{choose.name}}
+          </label>
+        </div>
+      </td>
+      <td>
+        <a href="{{choose.url}}" target="_blank">{{choose.description}}</a>
+      </td>
+      <td>
+        <span>{{choose.latestGatherTime | updateTimeFilter}}</span>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <button class="btn btn-primary" ng-click="ok($event)">保存</button>
+        <button class="btn btn-warning" ng-click="cancel($event)">取消</button>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+</div>

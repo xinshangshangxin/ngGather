@@ -1,1 +1,1 @@
-require('./config/tasks/all.js');
+require('./config/gulp/task.js');
