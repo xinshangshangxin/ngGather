@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-projectName="template";
 nodeEnv="leancloud";
 prettyLog="1";
 remoteOrigin="git@production.coding.net:shangxin/Production.git"
 
 projectDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+projectName=`cat ${projectDir}"/package.json" | grep -E "\"name\"(.*?)" | sed "s/\"name\": \"\([^\"]*\)\",/\1/g" | xargs -I {} echo {}`
+echo "projectName: "${projectName}
 
 function resetDir() {
   cd ${projectDir}
