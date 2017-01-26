@@ -25,6 +25,10 @@ module.exports = {
   update: {
     // ref: 'production'
   },
+  log: {
+    pretty: true,
+    level: 'trace',
+  },
   bootstrap: [
     // 'webhookService',
   ],

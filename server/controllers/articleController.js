@@ -60,7 +60,9 @@ var updateOrCreatefilter = function(list) {
 var updateSiteArticles = function(siteInfo) {
   updateTime = new Date();
   console.log('start update siteInfo： ', siteInfo.site);
-  return myGather(siteInfo.requestConfig, siteInfo.parseConfig)
+  return myGather(_.assign({
+    timeout: 15 * 1000,
+  }, siteInfo.requestConfig), siteInfo.parseConfig)
     .then(function(data) {
       var list = data.articleList || [];
       if(!list.length) {
@@ -98,14 +100,14 @@ var updateSiteArticles = function(siteInfo) {
         }));
     })
     .then(function(list) {
-      console.log('success update siteInfo： ', siteInfo.site);
+      logger.info('success update siteInfo： ', siteInfo.site);
       return Promise.resolve({
         site: siteInfo.site,
         info: list.length
       });
     })
     .catch(function(e) {
-      console.log('fail update siteInfo： ', siteInfo.site);
+      logger.info('fail update siteInfo： ', siteInfo.site);
       return Promise.reject({
         site: siteInfo.site,
         info: e

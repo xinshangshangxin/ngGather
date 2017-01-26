@@ -120,7 +120,7 @@ function getCommonConfig() {
       }, {
         src: ['components/constants.js'],
         subStr: '.constant(\'SERVER_URL\', \'\')',
-        newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? 'https://mysterious-earth-85524.herokuapp.com' : '') + '\')'
+        newStr: '.constant(\'SERVER_URL\', \'' + (alterableSetting.noServer ? '//ng-gather.leanapp.cn' : '') + '\')'
       }, {
         src: ['home/choose-ctrl.js'],
         subStr: /href: '\/styles\/themes\/night\/night\.css'/,

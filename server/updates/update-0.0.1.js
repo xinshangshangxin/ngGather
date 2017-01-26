@@ -73,12 +73,12 @@ function captureAll() {
     .then(function(results) {
       _.forEachRight(results, function(result, i) {
         if(result.isRejected()) {
-          console.log(sites[i].name + '    ' + sites[i].url + '    ', result.reason());
+          logger.info(sites[i].name + '    ' + sites[i].url + '    ', result.reason());
 
           sites[i].canErrNu--;
         }
         else {
-          console.log(sites[i].name + '    ' + sites[i].url + '    采集成功');
+          logger.info(sites[i].name + '    ' + sites[i].url + '    采集成功');
 
           sites[i].canErrNu = 3;
           sites[i].curPage++;
@@ -88,7 +88,7 @@ function captureAll() {
           sites.splice(i, 1);
         }
       });
-      console.log('---------------------------');
+      logger.info('---------------------------');
       if(sites.length > 0) {
         captureAll();
       }
@@ -97,7 +97,7 @@ function captureAll() {
       }
     })
     .catch(function(e) {
-      console.log(e);
+      logger.info(e);
     });
 }
 

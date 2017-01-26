@@ -24,7 +24,7 @@ router
     articleController.taskUpdate();
     return res.json({});
   })
-  .get('/api/v1/getImg', function(req, res) {
+  .get('/api/v1/proxy/img', function(req, res) {
     return utilitiesService.getImg(req, res);
   })
   .get('/api/v1/allSites', articleController.getSitesStatus)

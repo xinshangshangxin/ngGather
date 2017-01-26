@@ -77,7 +77,7 @@ var svc = {
     }
 
     nu = nu || 0;
-    var url = req.query.imgurl;
+    var url = req.query.url;
 
     // promise just for catch err
     Promise.resolve()

@@ -75,12 +75,15 @@ function captureLLM($) {
 function captureWaitsun($) {
   var list = [];
   var now = new Date();
-  $('#content .masonry').first().find('.loop')
+  $('#content .masonry .col-md-2.loop.item').remove();
+  $('#content .masonry').first().find('.row')
     .each(function(i, e) {
       var img = $(e).find('.img-div').first().find('img').first().attr('src');
-      var title = $(e).find('.caption').first().find('dt').first().text();
-      var href = $(e).find('.caption').first().find('dd').first().find('a').first().attr('href');
-      var timeNu = moment().toDate().getTime();
+      var title = $(e).find('.col-md-10').first().find('a').first().text();
+      var href = $(e).find('.col-md-10').first().find('a').first().attr('href');
+      var timeNu = $(e).find('.col-md-10 .post-meta').first().text().replace(/日.*/, '日');
+      timeNu += ' GMT+0800 (CST)';
+      timeNu = moment(timeNu, 'YYYY-MM-DD Z').toDate().getTime();
       var intro = $(e).find('.img-div').first().find('a').first().attr('title');
 
       list.push({
@@ -92,6 +95,7 @@ function captureWaitsun($) {
         intro: intro
       });
     });
+  logger.info('list: ', list);
   return list;
 }
 
